@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% block body %}
-<div>
-    meow :3
-</div>
-<div>
-    welcome to twisted
-</div>
-<div>
-    <button class="bg-blue-400 py-2 px-4 m-2 rounded-xl">login</button>
+<div class="m-4">
+    <h1 class="font-bold text-4xl">twisted</h1>
+    <div>
+        meow :3
+    </div>
+    <div>
+        welcome to twisted
+    </div>
+    <div>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-blue-400 text-2xl py-4 px-8 m-2 rounded-xl">login</button>
+        </form>
+    </div>
 </div>
 {% endblock body %}

@@ -5,4 +5,10 @@
         "reportShadowedImports": "none"
     },
     "circuitpython.board.version": null,
+    "files.exclude": {
+        "**/node_modules": true,
+        ".venv": true,
+        "**/__pycache__": true,
+    }
+
 }
