@@ -8,8 +8,8 @@ from django.views import View
 import random
 
 from ...models import Profile
-from ...slack import slack_client
 from ... import hackatime
+from ...slack import slack_bot
 
 oauth = OAuth()
 
@@ -60,7 +60,7 @@ class AuthCallbackView(View):
 
         if slack_id:
             try:
-                slack_user = slack_client.users_info(user=slack_id)["user"]  # ty:ignore[not-subscriptable]
+                slack_user = slack_bot.users_info(user=slack_id)["user"]  # ty:ignore[not-subscriptable]
                 slack_profile = slack_user["profile"]
 
                 display_name = (
