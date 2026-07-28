@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     TAILWIND_APP_NAME,
     'common',
     'twisted_site',
+    'django_cotton',
 ]
 
 if DEBUG:

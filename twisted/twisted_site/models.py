@@ -5,7 +5,7 @@ User = get_user_model()
 
 # Create your models here.
 class Profile(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="hackclub_profile")
+	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
 	verification_status = models.CharField(max_length=64, blank=True, default="")
 	slack_id = models.CharField(max_length=64, blank=True, default="")
 	slack_username = models.CharField(max_length=64, blank=True, default="")

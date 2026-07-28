@@ -5,11 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aiohttp>=3.14.3",
     "authlib>=1.7.2",
     "django>=6.0.7",
+    "django-cotton>=2.7.2",
     "django-jazzmin>=3.0.5",
     "django-tailwind[cookiecutter,honcho,reload]>=4.5.0",
     "gunicorn>=26.0.0",
     "psycopg[binary]>=3.3.4",
     "python-dotenv>=1.2.2",
+    "slack-sdk>=3.43.0",
 ]
