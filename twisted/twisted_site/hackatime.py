@@ -1,0 +1,35 @@
+import requests
+from dataclasses import dataclass
+
+HACKATIME_ROOT_URL = "https://hackatime.hackclub.com"
+
+
+@dataclass
+class MeResponse:
+    id: int
+    emails: list[str]
+    slack_id: str
+    gh_username: str
+    trust_level: str
+    trust_value: int
+
+
+def authhelper(access_token, headers={}):
+    return {"Authorization": f"Bearer {access_token}", **headers}
+
+
+def me(access_token) -> MeResponse:
+    """Returns information about the authenticated user."""
+    resp = requests.get(
+        HACKATIME_ROOT_URL + "/api/v1/authenticated/me", headers=authhelper(access_token)
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    return MeResponse(
+        id=data["id"],
+        emails=data["emails"],
+        slack_id=data["slack_id"],
+        gh_username=data["github_username"],
+        trust_level=data["trust_factor"]["trust_level"],
+        trust_value=data["trust_factor"]["trust_value"],
+    )

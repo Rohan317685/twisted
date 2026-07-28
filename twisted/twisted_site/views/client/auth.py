@@ -1,12 +1,15 @@
+import requests
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model, login, logout
 from django.shortcuts import redirect
 import os
 from authlib.integrations.django_client import OAuth
 from django.views import View
+import random
 
 from ...models import Profile
-from ...helpers import slack_client
+from ...slack import slack_client
+from ... import hackatime
 
 oauth = OAuth()
 
@@ -21,7 +24,7 @@ oauth.register(
 
 class LoginView(View):
     def post(self, request):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.profile.hackatime_access_token:
             return redirect("dashboard")
 
         redirect_uri = os.environ["HCA_REDIRECT_URI"]
@@ -80,9 +83,56 @@ class AuthCallbackView(View):
             profile.save()
 
         login(request, user)
-        response = redirect("dashboard")
-        return response
+        
+        if not profile.hackatime_access_token:
+            HACKATIME_CLIENT_ID = os.environ['HACKATIME_CLIENT_ID']
+            HACKATIME_REDIRECT_URI = os.environ['HACKATIME_REDIRECT_URI']
+            scopes = 'profile+read'
+            
+            profile.hackatime_state = str(random.randint(0,10**20))
+            profile.save()
+            
+            return redirect(f'https://hackatime.hackclub.com/oauth/authorize?client_id={HACKATIME_CLIENT_ID}&redirect_uri={HACKATIME_REDIRECT_URI}&response_type=code&scope={scopes}&state={profile.hackatime_state}')
+        
+        return redirect("dashboard")
 
+class HackatimeCallbackView(View):
+    def get(self, request):
+        profile = request.user.profile
+        
+        state = request.GET['state']
+        if state != profile.hackatime_state:
+            profile.hackatime_state = ""
+            profile.save()
+            return JsonResponse({"error": "State mismatch; Auth failed. Please contact support with the error code if this is unexpected!"})
+        profile.hackatime_state = ""
+        profile.save()
+        
+        code = request.GET['code']
+        HACKATIME_CLIENT_ID = os.environ['HACKATIME_CLIENT_ID']
+        HACKATIME_CLIENT_SECRET = os.environ['HACKATIME_CLIENT_SECRET']
+        HACKATIME_REDIRECT_URI = os.environ['HACKATIME_REDIRECT_URI']
+        resp = requests.post("https://hackatime.hackclub.com/oauth/token", data={
+            "client_id": HACKATIME_CLIENT_ID,
+            "client_secret": HACKATIME_CLIENT_SECRET,
+            "code": code,
+            "redirect_uri": HACKATIME_REDIRECT_URI,
+            "grant_type": "authorization_code",
+        })
+        resp.raise_for_status()
+        data = resp.json()
+        access_token = data['access_token']
+        
+        me = hackatime.me(access_token)
+        if profile.slack_id != me.slack_id:
+            return JsonResponse({"error": "Slack ID mismatch. Please contact support with the error code if this is unexpected!"})
+
+        profile.hackatime_access_token = ""
+        profile.save()
+        return redirect('dashboard')
+
+        
+        
 
 class LogoutView(View):
     def post(self, request):

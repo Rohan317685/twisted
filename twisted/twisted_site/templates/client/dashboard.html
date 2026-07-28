@@ -2,8 +2,15 @@
 {% block body %}
 <div class="bg-gray-500 h-full">
     hi
+    <div>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-blue-400 text-2xl py-4 px-8 m-2 rounded-xl">logout</button>
+        </form>
+    </div>
     <div class="fixed bottom-0 left-0 right-0 bg-fair-gray">
         <div class="py-1 my-0.5 mx-0.5 px-3 border w-fit">Start</div>
     </div>
 </div>
+
 {% endblock body %}
