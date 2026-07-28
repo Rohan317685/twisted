@@ -1,0 +1,12 @@
+# Kavyansh
+- [x] implement hackatime auth
+- [ ] add hackatime helper functions
+- [ ] implement hackatime for projects
+- [ ] add journal creation (backend)
+- [ ] add journal editing
+- [ ] implement shipping
+- [ ] implement pathways
+- [ ] implement images in journals
+- [ ] implement admin dash
+- [ ] implement reviewer dash
+- [ ] 
