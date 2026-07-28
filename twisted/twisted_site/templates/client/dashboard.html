@@ -1,31 +1,9 @@
 {% extends "base.html" %}
 {% block body %}
-<div class="m-4">
-    <h1 class="font-bold text-4xl">dashboard</h1>
-    <div>
-        welcome to the club
-    </div>
-    <div class="bg-blue-400 font-semibold w-fit p-4 rounded-2xl">
-        <div class="w-32">
-            <img src="{{ profile.slack_pfp_url }}">
-        </div>
-        <div>
-            {{ profile.slack_username }}
-        </div>
-        <div>
-            Verified? {{ profile.verification_status }}
-        </div>
-        <div>
-            Slack ID: {{ profile.slack_id }}
-        </div>
-    </div>
-
-
-    <div>
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="bg-red-400 text-2xl py-4 px-8 m-2 rounded-xl">logout</button>
-        </form>
+<div class="bg-gray-500 h-full">
+    hi
+    <div class="fixed bottom-0 left-0 right-0 bg-fair-gray">
+        <div class="py-1 my-0.5 mx-0.5 px-3 border w-fit">Start</div>
     </div>
 </div>
 {% endblock body %}

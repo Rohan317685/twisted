@@ -12,3 +12,10 @@
 button {
     cursor: pointer;
 }
+
+@theme {
+  --color-twisted-purple: #9900EF;
+  --color-absolute-white: #FAFAFA;
+  --color-fair-gray: #A1A1A1;
+  --color-dark-black: #050505;
+}
