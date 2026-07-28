@@ -6,7 +6,7 @@ from slack_sdk import WebClient
 
 class SlackBot:
 	def __init__(self, token: str | None = None):
-		slack_token = token or os.environ["SLACK_TOKEN"]
+		slack_token = token
 		self.client = WebClient(token=slack_token)
 
 	def post_message(
@@ -43,5 +43,5 @@ class SlackBot:
 		return self.client.users_info(user=user)
 
 
-slack_bot = SlackBot()
+slack_bot = SlackBot(token=os.environ["SLACK_TOKEN"])
 slack_client = slack_bot.client
