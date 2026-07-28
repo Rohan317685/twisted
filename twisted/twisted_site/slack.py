@@ -5,9 +5,10 @@ from slack_sdk import WebClient
 
 
 class SlackBot:
-	def __init__(self, token: str | None = None):
+	def __init__(self, token: str | None = None, cc_group_id: str | None = None):
 		slack_token = token
 		self.client = WebClient(token=slack_token)
+		self._cc_group_id = cc_group_id
 
 	def post_message(
 		self,
@@ -38,10 +39,58 @@ class SlackBot:
 		**kwargs: Any,
 	):
 		return self.post_message(channel=channel, text=text, blocks=blocks, **kwargs)
+	def error_log(
+		self,
+		*,
+		channel: str,
+		error: str,
+		title: str | None = None,
+		**kwargs: Any,
+	):
+		if title is None:
+			title = "Error Log"
+
+		group_id = self._cc_group_id
+		mention = f"<@{group_id}>" if group_id else ""
+
+		# Parent message
+		parent = self.client.chat_postMessage(
+			channel=channel,
+			text=f"{title}".strip(),
+			blocks=[
+				{
+					"type": "section",
+					"text": {
+						"type": "mrkdwn",
+						"text": f"*{title}*".strip(),
+					},
+				},
+			],
+		)
+
+		# Thread message
+		thread_text = f"```{error}```"
+		if mention:
+			thread_text += f"\n\nCC: {mention}"
+
+		return self.client.chat_postMessage(
+			channel=channel,
+			thread_ts=parent["ts"],
+			text=thread_text,
+			blocks=[
+				{
+					"type": "section",
+					"text": {
+						"type": "mrkdwn",
+						"text": thread_text,
+					},
+				},
+			],
+		)
 
 	def users_info(self, *, user: str):
 		return self.client.users_info(user=user)
 
 
-slack_bot = SlackBot(token=os.environ["SLACK_TOKEN"])
+slack_bot = SlackBot(token=os.environ["SLACK_TOKEN"], cc_group_id=os.environ.get("SLACK_CC_GROUP_ID"))
 slack_client = slack_bot.client
