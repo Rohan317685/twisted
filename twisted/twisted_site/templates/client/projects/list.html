@@ -1,17 +1,26 @@
-{% extends "client/osbase.html" %} {% block body %}
-<div class="bg-[#C0C0C0] flex flex-col w-full h-full p-1">
+{% extends "client/osbase.html" %}
+{% load static time_filters %}
+{% block body %}
+<div class="bg-[#C0C0C0] flex flex-col w-full h-full">
     <div>
         <button><span class="underline">N</span>ew project...</button>
     </div>
     <div
-        class="flex-1 sunken-panel font-vintage overflow-y-scroll"
+        class="flex-1 sunken-panel font-vintage overflow-y-scroll p-4"
     >
-    
+    <div class="flex gap-4 w-full flex-wrap">
         {% for project in projects %}
-        <div>{{ project }}</div>
+        <div class="w-16">
+            <img src="{% static 'images/directory.png' %}" class="w-full">
+            <div class="w-full text-center text-wrap wrap-anywhere" style="text-align: center;">
+                {{ project.project_name }}
+            </div>
+        </div>
         {% endfor %}
+
     </div>
-    <div class="sticky status-field-border font-vintage my-1" style="padding: 4px;">
+    </div>
+    <div class="sticky status-field-border font-vintage">
         {{ projects|length }} project{{ projects|length|pluralize }}
     </div>
 </div>

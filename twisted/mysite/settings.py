@@ -75,6 +75,7 @@ if DEBUG:
         "django_browser_reload.middleware.BrowserReloadMiddleware",
     ]
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 ROOT_URLCONF = 'mysite.urls'
 

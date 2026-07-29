@@ -1,4 +1,3 @@
-from attr.validators import max_len
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -22,8 +21,8 @@ class Profile(models.Model):
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="projects")
-    
-    project_name = models.CharField(max_length=100)
+
+    project_name = models.CharField(max_length=50)
     project_description = models.TextField(max_length=2000)
     
     project_type = models.CharField(choices={'software': 'Software', 'hardware': 'Hardware'}, max_length=100)
@@ -35,8 +34,12 @@ class Project(models.Model):
     def __str__(self):
         return self.project_name
 
-    def new_journal(self, content):
-        Journal.objects.create(project=self)  # ty:ignore[unresolved-attribute]
+    def time_logged(self):
+        minutes = 0
+        for journal in self.journals.all():  # ty:ignore[unresolved-attribute]
+            # django-orm-lens-disable-next-line DOL007
+            minutes += journal.minutes_worked
+        return minutes
 
 class Journal(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, related_name="journals")

@@ -1,16 +1,77 @@
-{% extends "client/osbase.html" %}
-{% block body %}
+{% extends "client/osbase.html" %} {% block body %}
 <div class="bg-gray-500 h-full">
     hi
     <div>
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
-            <button type="submit" class="bg-blue-400 text-2xl py-4 px-8 m-2 rounded-xl">logout</button>
+            <button type="submit">logout</button>
         </form>
+    </div>
+    <div>
+        <button type="submit">projects</button>
+    </div>
+    <div>
+        <div class="absolute window resize overflow-hidden" style="width: 300px; height: 300px;">
+            <div class="title-bar">
+                <div class="title-bar-text">Projects</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize"></button>
+                    <button aria-label="Maximize"></button>
+                    <button aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="window-body h-full pb-10">
+                <iframe class="w-full h-full" src="{% url 'fr.projects' %}" frameborder="0"></iframe>
+            </div>
+        </div>
     </div>
     <div class="fixed bottom-0 left-0 right-0 bg-fair-gray">
         <div class="py-1 my-0.5 mx-0.5 px-3 border w-fit">Start</div>
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('.window').forEach((element) => {
+        dragWindow(element)
+    })
+
+    function dragWindow(window) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        window.getElementsByClassName('title-bar')[0].onmousedown = ((e) => {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = (() => {
+                document.onmouseup = null;
+                document.onmousemove = null
+            });
+            // call a function whenever the cursor moves:
+            document.onmousemove = (function(e){
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                
+                xcoord = window.offsetLeft - pos1
+                ycoord = window.offsetTop - pos2
+
+                if (xcoord < 0) xcoord = 0
+                if (ycoord < 0) ycoord = 0
+
+                console.log(xcoord, ycoord)
+
+                // set the element's new position:
+                window.style.top = ycoord + "px";
+                window.style.left = xcoord + "px";
+
+            });
+        })
+    }
+</script>
 
 {% endblock body %}
