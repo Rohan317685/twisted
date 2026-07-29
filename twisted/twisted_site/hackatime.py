@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 from dataclasses import dataclass
 
@@ -14,6 +15,14 @@ class MeResponse:
     trust_value: int
 
 
+@dataclass
+class HackatimeProject:
+    name: str
+    total_seconds: int
+    most_recent_heartbeat: datetime
+    languages: list[str]
+
+
 def authhelper(access_token, headers={}):
     return {"Authorization": f"Bearer {access_token}", **headers}
 
@@ -21,7 +30,8 @@ def authhelper(access_token, headers={}):
 def me(access_token) -> MeResponse:
     """Returns information about the authenticated user."""
     resp = requests.get(
-        HACKATIME_ROOT_URL + "/api/v1/authenticated/me", headers=authhelper(access_token)
+        HACKATIME_ROOT_URL + "/api/v1/authenticated/me",
+        headers=authhelper(access_token),
     )
     resp.raise_for_status()
     data = resp.json()
@@ -33,3 +43,26 @@ def me(access_token) -> MeResponse:
         trust_level=data["trust_factor"]["trust_level"],
         trust_value=data["trust_factor"]["trust_value"],
     )
+
+
+def projects(access_token) -> list[HackatimeProject]:
+    """Returns the user's projects with time totals."""
+    resp = requests.get(
+        HACKATIME_ROOT_URL + "/api/v1/authenticated/me",
+        headers=authhelper(access_token),
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    projects = []
+    for project in data["projects"]:
+        recent_heartbeat = project["most_recent_heartbeat"]
+        dt = datetime.fromisoformat(recent_heartbeat)
+        projects.append(
+            HackatimeProject(
+                project["name"],
+                total_seconds=project["total_seconds"],
+                most_recent_heartbeat=dt,
+                languages=project["languages"],
+            )
+        )
+    return projects

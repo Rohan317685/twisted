@@ -1,0 +1,19 @@
+{% extends "client/osbase.html" %} {% block body %}
+<div class="bg-[#C0C0C0] flex flex-col w-full h-full p-1">
+    <div>
+        <button><span class="underline">N</span>ew project...</button>
+    </div>
+    <div
+        class="flex-1 sunken-panel font-vintage overflow-y-scroll"
+    >
+    
+        {% for project in projects %}
+        <div>{{ project }}</div>
+        {% endfor %}
+    </div>
+    <div class="sticky status-field-border font-vintage my-1" style="padding: 4px;">
+        {{ projects|length }} project{{ projects|length|pluralize }}
+    </div>
+</div>
+
+{% endblock body %}

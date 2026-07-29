@@ -13,9 +13,52 @@ button {
     cursor: pointer;
 }
 
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("/static/fonts/ms_sans_serif.woff") format("woff");
+  src: url("/static/fonts/ms_sans_serif.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("/static/fonts/ms_sans_serif_bold.woff") format("woff");
+  src: url("/static/fonts/ms_sans_serif_bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+}
+
 @theme {
+  --font-vintage: "Pixelated MS Sans Serif", monospace, sans-serif;
+
   --color-twisted-purple: #9900EF;
   --color-absolute-white: #FAFAFA;
   --color-fair-gray: #A1A1A1;
   --color-dark-black: #050505;
+}
+
+.scrollbar-win9x::-webkit-scrollbar {
+  width: 16px;
+}
+
+.scrollbar-win9x::-webkit-scrollbar-track {
+  background-color: #c0c0c0;
+  border-left: 2px solid #dfdfdf;
+}
+
+.scrollbar-win9x::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #0a0a0a;
+  border-bottom: 2px solid #0a0a0a;
+}
+
+.scrollbar-win9x::-webkit-scrollbar-thumb:focus {
+  background-color: #FFFFFF;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #0a0a0a;
+  border-bottom: 2px solid #0a0a0a;
 }

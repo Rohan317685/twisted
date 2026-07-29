@@ -1,0 +1,26 @@
+{% extends "client/osbase.html" %} {% block body %}
+<div class="bg-[#C0C0C0] flex flex-col w-full h-full p-1">
+    <form method="post" class="h-max w-full flex-1 scrollbar-win9x" style="width: 200px">
+        {% csrf_token %}
+        <div class="field-row-stacked">
+            <label for="name">Project name</label>
+            <input id="name" name="name" type="text" required />
+        </div>
+        <div class="field-row-stacked">
+            <label for="description">Project description</label>
+            <textarea id="description" name="description" rows="8" required></textarea>
+        </div>
+
+        <div class="mt-2 field-row-stacked">
+            <label for="type">Project type</label>
+            <select id="type" name="type" required>
+                <option value="" disabled selected hidden>Select an option</option>
+                <option value="software">Software</option>
+                <option value="hardware">Hardware</option>
+            </select>
+        </div>
+
+        <button class="mt-2">Create</button>
+    </form>
+</div>
+{% endblock body %}

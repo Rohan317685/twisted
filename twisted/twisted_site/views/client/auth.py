@@ -9,7 +9,7 @@ import random
 
 from ...models import Profile
 from ... import hackatime
-from ...slack import slack_client
+from ...slack import slack_bot
 
 oauth = OAuth()
 
@@ -60,7 +60,7 @@ class AuthCallbackView(View):
 
         if slack_id:
             try:
-                slack_user = slack_client.users_info(user=slack_id)["user"]  # ty:ignore[not-subscriptable]
+                slack_user = slack_bot.users_info(user=slack_id)["user"]  # ty:ignore[not-subscriptable]
                 slack_profile = slack_user["profile"]
 
                 display_name = (
@@ -127,7 +127,7 @@ class HackatimeCallbackView(View):
         if profile.slack_id != me.slack_id:
             return JsonResponse({"error": "Slack ID mismatch. Please contact support with the error code if this is unexpected!"})
 
-        profile.hackatime_access_token = ""
+        profile.hackatime_access_token = access_token
         profile.save()
         return redirect('dashboard')
 

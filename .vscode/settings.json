@@ -8,7 +8,7 @@
     "files.exclude": {
         "**/node_modules": true,
         ".venv": true,
-        "**/__pycache__": true,
-    }
-
+        "**/__pycache__": true
+    },
+    "djangoCotton.templatePaths": ["templates/cotton", "twisted/*/templates/cotton"]
 }
