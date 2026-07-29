@@ -92,5 +92,8 @@ class SlackBot:
 		return self.client.users_info(user=user)
 
 
-slack_bot = SlackBot(token=os.environ["SLACK_TOKEN"], cc_group_id=os.environ.get("SLACK_CC_GROUP_ID"))
+slack_token = os.getenv("SLACK_TOKEN")
+cc_group_id = os.getenv("SLACK_CC_GROUP_ID")
+
+slack_bot = SlackBot(token=slack_token, cc_group_id=cc_group_id)
 slack_client = slack_bot.client
