@@ -27,8 +27,15 @@ SECRET_KEY = 'django-insecure-&3p#whs%8@!e1=fl$!wk^y6^e@z+714@714xd$=0ghmfyk43bn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+allowed_hosts_raw = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost")
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_raw.split(",") if host.strip()]
+
+
+csrf_origins_raw = os.getenv("CSRF_TRUSTED_ORIGINS", "http://127.0.0.1:8000,http://localhost:8000")
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_origins_raw.split(",") if origin.strip()]
 # Application definition
 
 TAILWIND_APP_NAME = 'tailwindcsstheme'
