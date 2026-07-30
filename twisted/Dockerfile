@@ -37,22 +37,22 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
 uv sync --locked --no-install-project
 
-# RUN export POSTGRES_DB="$POSTGRES_DB" \
-#     POSTGRES_USER="$POSTGRES_USER" \
-#     POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
-#     POSTGRES_HOST="$POSTGRES_HOST" \
-#     HCA_CLIENT_ID="$HCA_CLIENT_ID" \
-#     HCA_CLIENT_SECRET="$HCA_CLIENT_SECRET" \
-#     HCA_REDIRECT_URI="$HCA_REDIRECT_URI" \
-#     DEFAULT_PFP="$DEFAULT_PFP" \
-#     HACKATIME_CLIENT_ID="$HACKATIME_CLIENT_ID" \
-#     HACKATIME_CLIENT_SECRET="$HACKATIME_CLIENT_SECRET" \
-#     HACKATIME_REDIRECT_URI="$HACKATIME_REDIRECT_URI" \
+RUN export POSTGRES_DB="$POSTGRES_DB" \
+    POSTGRES_USER="$POSTGRES_USER" \
+    POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+    POSTGRES_HOST="$POSTGRES_HOST" \
+    HCA_CLIENT_ID="$HCA_CLIENT_ID" \
+    HCA_CLIENT_SECRET="$HCA_CLIENT_SECRET" \
+    HCA_REDIRECT_URI="$HCA_REDIRECT_URI" \
+    DEFAULT_PFP="$DEFAULT_PFP" \
+    HACKATIME_CLIENT_ID="$HACKATIME_CLIENT_ID" \
+    HACKATIME_CLIENT_SECRET="$HACKATIME_CLIENT_SECRET" \
+    HACKATIME_REDIRECT_URI="$HACKATIME_REDIRECT_URI" \
 
-RUN uv run manage.py tailwind install \
- && uv run manage.py tailwind build \
- && uv run manage.py collectstatic --noinput \
- && uv run manage.py migrate
+RUN uv run manage.py tailwind install
+RUN uv run manage.py tailwind build
+RUN uv run manage.py collectstatic --noinput
+RUN uv run manage.py migrate
 
 
 RUN mkdir -p /tmp/uv-cache /tmp/.cache \
