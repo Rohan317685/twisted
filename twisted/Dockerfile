@@ -4,10 +4,15 @@ FROM ghcr.io/astral-sh/uv:python3.13-trixie-slim AS development
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nodejs \
-    npm \
+    ca-certificates \
+    curl \
+    gnupg \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update && apt-get install -y nodejs \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -37,17 +42,17 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
 uv sync --locked --no-install-project
 
-RUN export POSTGRES_DB="$POSTGRES_DB" \
-    POSTGRES_USER="$POSTGRES_USER" \
-    POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
-    POSTGRES_HOST="$POSTGRES_HOST" \
-    HCA_CLIENT_ID="$HCA_CLIENT_ID" \
-    HCA_CLIENT_SECRET="$HCA_CLIENT_SECRET" \
-    HCA_REDIRECT_URI="$HCA_REDIRECT_URI" \
-    DEFAULT_PFP="$DEFAULT_PFP" \
-    HACKATIME_CLIENT_ID="$HACKATIME_CLIENT_ID" \
-    HACKATIME_CLIENT_SECRET="$HACKATIME_CLIENT_SECRET" \
-    HACKATIME_REDIRECT_URI="$HACKATIME_REDIRECT_URI" \
+# RUN export POSTGRES_DB="$POSTGRES_DB" \
+#     POSTGRES_USER="$POSTGRES_USER" \
+#     POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+#     POSTGRES_HOST="$POSTGRES_HOST" \
+#     HCA_CLIENT_ID="$HCA_CLIENT_ID" \
+#     HCA_CLIENT_SECRET="$HCA_CLIENT_SECRET" \
+#     HCA_REDIRECT_URI="$HCA_REDIRECT_URI" \
+#     DEFAULT_PFP="$DEFAULT_PFP" \
+#     HACKATIME_CLIENT_ID="$HACKATIME_CLIENT_ID" \
+#     HACKATIME_CLIENT_SECRET="$HACKATIME_CLIENT_SECRET" \
+#     HACKATIME_REDIRECT_URI="$HACKATIME_REDIRECT_URI"
 
 RUN uv run manage.py tailwind install
 RUN uv run manage.py tailwind build
