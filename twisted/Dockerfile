@@ -48,9 +48,10 @@ uv sync --locked --no-install-project
 #     HACKATIME_CLIENT_ID="$HACKATIME_CLIENT_ID" \
 #     HACKATIME_CLIENT_SECRET="$HACKATIME_CLIENT_SECRET" \
 #     HACKATIME_REDIRECT_URI="$HACKATIME_REDIRECT_URI" \
+
 RUN uv run manage.py tailwind install \
  && uv run manage.py tailwind build \
- && uv run manage.py collectstatic --noinput
+ && uv run manage.py collectstatic --noinput \
  && uv run manage.py migrate
 
 
