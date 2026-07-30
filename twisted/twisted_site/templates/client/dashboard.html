@@ -8,29 +8,37 @@
         </form>
     </div>
     <div>
-        <button type="submit">projects</button>
+        <button>projects</button>
     </div>
-    <div>
-        <div class="absolute window resize overflow-hidden" style="width: 300px; height: 300px;">
-            <div class="title-bar">
-                <div class="title-bar-text">Projects</div>
-                <div class="title-bar-controls">
-                    <button aria-label="Minimize"></button>
-                    <button aria-label="Maximize"></button>
-                    <button aria-label="Close"></button>
-                </div>
-            </div>
-            <div class="window-body h-full pb-10">
-                <iframe class="w-full h-full" src="{% url 'fr.projects' %}" frameborder="0"></iframe>
-            </div>
-        </div>
+    
+    <div id="windows">
+
     </div>
+
     <div class="fixed bottom-0 left-0 right-0 bg-fair-gray">
         <div class="py-1 my-0.5 mx-0.5 px-3 border w-fit">Start</div>
     </div>
 </div>
 
+<template id="window">
+    <div class="absolute window resize overflow-hidden" style="left: 300px; top: 300px; width: 300px; height: 300px;">
+        <div class="title-bar">
+            <div class="title-bar-text">Projects</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body h-full pb-10">
+            <iframe class="w-full h-full" src="{% url 'fr.projects' %}" frameborder="0"></iframe>
+        </div>
+    </div>
+</template>
+
 <script>
+    function newWindow()
+
     document.querySelectorAll('.window').forEach((element) => {
         dragWindow(element)
     })
