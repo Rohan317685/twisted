@@ -16,6 +16,9 @@ COPY ./twisted .
 ENV PYTHONUNBUFFERED=1
 ENV UV_LINK_MODE=copy
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
+ENV HOME=/tmp
+ENV XDG_CACHE_HOME=/tmp/.cache
+ENV UV_CACHE_DIR=/tmp/uv-cache
 
 ARG POSTGRES_DB=twisted
 ARG POSTGRES_USER=twisted
@@ -48,6 +51,9 @@ RUN export POSTGRES_DB="$POSTGRES_DB" \
  && uv run manage.py tailwind install \
  && uv run manage.py tailwind build \
  && uv run manage.py collectstatic --noinput
+
+RUN mkdir -p /tmp/uv-cache /tmp/.cache \
+ && chown -R 999:999 /tmp/uv-cache /tmp/.cache
 
 ### Deployment ###
 
