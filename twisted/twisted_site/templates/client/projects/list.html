@@ -1,9 +1,9 @@
 {% extends "client/osbase.html" %}
 {% load static time_filters %}
 {% block body %}
-<div class="bg-[#C0C0C0] flex flex-col w-full h-full">
+<div class="bg-surface flex flex-col w-full h-full">
     <div>
-        <button><span class="underline">N</span>ew project...</button>
+        <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'Create project...', 'src': '{% url 'fr.projects.create' %}'}, '*');"><span class="underline">N</span>ew project...</button>
     </div>
     <div
         class="flex-1 sunken-panel font-vintage overflow-y-scroll p-4"

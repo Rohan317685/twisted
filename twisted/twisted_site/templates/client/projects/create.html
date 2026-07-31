@@ -1,6 +1,6 @@
 {% extends "client/osbase.html" %} {% block body %}
-<div class="bg-[#C0C0C0] flex flex-col w-full h-full">
-    <form method="post" class="h-max w-full flex-1 scrollbar-win9x" style="width: 200px">
+<div class="bg-surface flex flex-col w-full h-full">
+    <form method="post" class="h-max w-full flex-1 scrollbar-win9x" onsubmit="window.parent.postMessage({'type': 'internal', 'action': 'reload', 'src': '{% url 'fr.projects' %}'}, '*');">
         {% csrf_token %}
         <div class="field-row-stacked">
             <label for="name">Project name</label>
@@ -8,7 +8,7 @@
         </div>
         <div class="field-row-stacked">
             <label for="description">Project description</label>
-            <textarea id="description" name="description" rows="8" required></textarea>
+            <textarea id="description" name="description" rows="4" required></textarea>
         </div>
 
         <div class="mt-2 field-row-stacked">

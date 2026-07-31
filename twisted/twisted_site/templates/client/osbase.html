@@ -1,8 +1,10 @@
 {% load static tailwind_tags static %}
-<html>
+<html class="win98-scope">
 <head>
    {% tailwind_css %}
    <link rel="stylesheet" href="https://unpkg.com/98.css">
+   <link rel="stylesheet" href="{% static 'css/dist/win98.css' %}">
+   <link rel="stylesheet" href="{% static 'css/98.override.css' %}">
 </head>
 <body class="font-vintage">
     {% block body %}

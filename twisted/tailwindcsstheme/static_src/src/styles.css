@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 /**
-  * A catch-all path to Django template files, JavaScript, and Python files
-  * that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
-  *
-  * If your final CSS file is not being updated after code changes, you may want to broaden or narrow
-  * the scope of this path.
-  */
+* A catch-all path to Django template files, JavaScript, and Python files
+* that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
+*
+* If your final CSS file is not being updated after code changes, you may want to broaden or narrow
+* the scope of this path.
+*/
 @source "../../../**/*.{html,py,js}";
 
 button {
@@ -29,13 +29,28 @@ button {
   font-style: normal;
 }
 
-@theme {
-  --font-vintage: "Pixelated MS Sans Serif", monospace, sans-serif;
+@font-face {
+  font-family: 'Pirkalla';
+  src: url('/static/fonts/pirkkala.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
-  --color-twisted-purple: #9900EF;
+@theme {
+  --font-vintage: "Pirkalla", monospace, sans-serif;
+
   --color-absolute-white: #FAFAFA;
   --color-fair-gray: #A1A1A1;
   --color-dark-black: #050505;
+
+  --color-twisted-200: #CAB3E1;
+  --color-twisted-400: #8364A2;
+  --color-twisted-600: #5A4471;
+  --color-twisted-800: #36214B;
+  --color-twisted-999: #29153D;
+
+  --color-surface: #1E072F;
 }
 
 .scrollbar-win9x::-webkit-scrollbar {

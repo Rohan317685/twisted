@@ -1,5 +1,5 @@
-{% extends "client/osbase.html" %} {% block body %}
-<div class="bg-gray-500 h-full">
+{% extends "client/osbase.html" %} {% load static %} {% block body %}
+<div class="h-full">
     hi
     <div>
         <form method="post" action="{% url 'logout' %}">
@@ -8,10 +8,10 @@
         </form>
     </div>
     <div>
-        <button>projects</button>
+        <button onclick="newWindow('Projects', '{% url 'fr.projects' %}')">projects</button>
     </div>
     
-    <div id="windows">
+    <div id="windows-container">
 
     </div>
 
@@ -19,34 +19,74 @@
         <div class="py-1 my-0.5 mx-0.5 px-3 border w-fit">Start</div>
     </div>
 </div>
+<div class="-z-10 bg-[#211B26] fixed top-0 left-0 bottom-0 right-0">
+    {% comment %} <video class="w-full h-full object-cover" autoplay loop muted>
+        <source src="{% static 'videos/bg.mp4' %}" type="video/mp4">
+    </video> {% endcomment %}
+</div>
 
-<template id="window">
+<template id="window-template">
     <div class="absolute window resize overflow-hidden" style="left: 300px; top: 300px; width: 300px; height: 300px;">
         <div class="title-bar">
-            <div class="title-bar-text">Projects</div>
+            <label class="title-bar-text">TITLE</label>
             <div class="title-bar-controls">
-                <button aria-label="Minimize"></button>
                 <button aria-label="Maximize"></button>
-                <button aria-label="Close"></button>
+                <button class="close-button" aria-label="Close">X</button>
             </div>
         </div>
         <div class="window-body h-full pb-10">
-            <iframe class="w-full h-full" src="{% url 'fr.projects' %}" frameborder="0"></iframe>
+            <iframe class="w-full h-full src-frame" src="about:blank" frameborder="0"></iframe>
         </div>
     </div>
 </template>
 
 <script>
-    function newWindow()
+    window.addEventListener("message", (event) => {
+        data = event.data
+        if (data.type != 'internal') return;
+        console.log("Message received:", data);
+        if (data.action == 'open') {
+            newWindow(data.title, '{% url 'fr.projects.create' %}');
+        }
+        if (data.action == 'reload') {
+            document.querySelectorAll('.window').forEach((element) => {
+                element.querySelector('.src-frame').src = element.querySelector('.src-frame').src
+            })
+        }
+    }, false);
 
-    document.querySelectorAll('.window').forEach((element) => {
-        dragWindow(element)
-    })
 
-    function dragWindow(window) {
+    function newWindow(title, src) {
+        template = document.getElementById('window-template');
+        container = document.getElementById('windows-container');
+
+        const clone = template.content.cloneNode(true);
+
+        clone.querySelector('.title-bar-text').textContent = title;
+        clone.querySelector('.src-frame').src = src;
+        clone.querySelector('.window').style.top = (Math.random() * 200) + 100 + "px"
+        clone.querySelector('.window').style.left = (Math.random() * 200) + 200 + "px"
+        
+        container.appendChild(clone);
+        
+        document.querySelectorAll('.window').forEach((element) => {
+            dragWindow(element)
+            element.onmousedown = () => {
+                document.querySelectorAll('.window').forEach((element) => {
+                    element.style.zIndex = null;
+                })
+                element.style.zIndex = '9999';
+            }
+            element.querySelector('.close-button').onclick = (event) => {
+                element.remove(); // literally 1984
+            }
+        })
+    }
+
+    function dragWindow(mywindow) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        window.getElementsByClassName('title-bar')[0].onmousedown = ((e) => {
-            e = e || window.event;
+        mywindow.getElementsByClassName('title-bar')[0].onmousedown = ((e) => {
+            e = e || mywindow.event;
             e.preventDefault();
             // get the mouse cursor position at startup:
             pos3 = e.clientX;
@@ -57,7 +97,7 @@
             });
             // call a function whenever the cursor moves:
             document.onmousemove = (function(e){
-                e = e || window.event;
+                e = e || mywindow.event;
                 e.preventDefault();
                 // calculate the new cursor position:
                 pos1 = pos3 - e.clientX;
@@ -65,17 +105,16 @@
                 pos3 = e.clientX;
                 pos4 = e.clientY;
                 
-                xcoord = window.offsetLeft - pos1
-                ycoord = window.offsetTop - pos2
+                xcoord = mywindow.offsetLeft - pos1
+                ycoord = mywindow.offsetTop - pos2
 
                 if (xcoord < 0) xcoord = 0
                 if (ycoord < 0) ycoord = 0
 
-                console.log(xcoord, ycoord)
+                const rect = mywindow.getBoundingClientRect();
+                if (!(ycoord + rect.height > window.innerHeight)) mywindow.style.top = ycoord + "px";
+                if (!(xcoord + rect.width > window.innerWidth)) mywindow.style.left = xcoord + "px";
 
-                // set the element's new position:
-                window.style.top = ycoord + "px";
-                window.style.left = xcoord + "px";
 
             });
         })
