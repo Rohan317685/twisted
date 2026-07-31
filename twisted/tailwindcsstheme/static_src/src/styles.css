@@ -53,6 +53,15 @@ button {
   --color-surface: #1E072F;
   --color-dark: #261F2D;
 }
+@keyframes flag-wave {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+.flag-wave {
+  transform-origin: top center;
+  animation: flag-wave 4s ease-in-out infinite;
+}
 
 .scrollbar-win9x::-webkit-scrollbar {
   width: 16px;
