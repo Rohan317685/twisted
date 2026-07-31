@@ -1,22 +1,38 @@
 {% extends "base.html" %}
 {% load static %}
 {% block body %}
-<div class="m-4">
-    <h1 class="font-bold text-4xl">twisted</h1>
-    <div>
-        meow :3
+<div class="bg-cover w-screen h-screen bg-surface text-absolute-white p-4 sm:p-8">
+  <div class="max-w-3xl mx-auto bg-dark border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
+    <div class="flex items-center justify-between bg-twisted-600 text-absolute-white px-2 py-1">
+      <span class="font-bold text-sm">twisted.exe</span>
+      <div class="flex gap-1">
+        <span class="bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">_</span>
+        <span class="bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">□</span>
+        <span class="bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">×</span>
+      </div>
     </div>
-    <div>
-        welcome to twisted
-    </div>
-    <div>
-        <img src="{% static 'images/twisted_logo_big.png' %}" alt="">
-    </div>
-    <div>
+    <div class="p-6 text-center">
+      <img src="{% static 'images/twisted_logo.png' %}" alt="twisted logo" class="mx-auto mb-4 max-h-64">
+
+      <p class="text-lg mb-6 max-w-xl mx-auto text-twisted-200">
+        A unique YSWS where you make cool projects and complete a twisted roadmap full of challenges to get PC!
+      </p>
+      <nav class="flex flex-wrap justify-center gap-4 mb-6 text-twisted-200 underline">
+        <a href="#rsvp">RSVP</a>
+        <a href="#faqs">FAQs</a>
+        <a href="/admin/">Admin panel</a>
+      </nav>
+      <div id="rsvp">
         <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}
-            <button type="submit" class="bg-blue-400 text-2xl py-4 px-8 m-2 rounded-xl">login</button>
+          {% csrf_token %}
+          <button type="submit" class="bg-twisted-400 text-absolute-white text-2xl font-bold py-3 px-10 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+            Login
+          </button>
         </form>
+      </div>
     </div>
+  </div>
+
+  </div>
 </div>
 {% endblock body %}

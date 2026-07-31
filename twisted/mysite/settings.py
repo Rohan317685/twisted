@@ -148,3 +148,4 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
+NPM_BIN_PATH = os.environ.get("NPM_BIN_PATH", "npm")

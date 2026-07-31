@@ -51,6 +51,7 @@ button {
   --color-twisted-999: #29153D;
 
   --color-surface: #1E072F;
+  --color-dark: #261F2D;
 }
 
 .scrollbar-win9x::-webkit-scrollbar {
