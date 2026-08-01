@@ -56,6 +56,7 @@ uv sync --locked --no-install-project
 
 RUN mkdir -p /tmp/uv-cache /tmp/.cache \
  && chown -R 999:999 /tmp/uv-cache /tmp/.cache
+RUN  chown -R 999:999 /app
 
 RUN uv run manage.py tailwind install \
  && uv run manage.py tailwind build \
@@ -69,4 +70,9 @@ EXPOSE 8000
 
 USER 999:999
 
+<<<<<<< HEAD
 CMD ["uv", "run", "gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
+=======
+CMD ["uv", "run", "gunicorn", "-w", "3", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+>>>>>>> 789c307 (update dockerfile and make 3 workers work at once)
