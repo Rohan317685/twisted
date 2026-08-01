@@ -54,7 +54,7 @@ class Project(models.Model):
     def time_spent(self):
         project = self.get_hackatime_project()
         if project is None:
-            return -1
+            return 0
         return project.total_seconds / 60
 
 class Journal(models.Model):

@@ -46,7 +46,7 @@
         if (data.type != 'internal') return;
         console.log("Message received:", data);
         if (data.action == 'open') {
-            newWindow(data.title, '{% url 'fr.projects.create' %}');
+            newWindow(data.title, data.src);
         }
     }, false);
 
