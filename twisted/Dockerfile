@@ -62,6 +62,7 @@ RUN uv run manage.py tailwind install \
  && uv run manage.py tailwind build \
  && uv run manage.py collectstatic --noinput
 
+COPY ./twisted/entrypoint.sh /app/entrypoint.sh
 
 ### Deployment ###
 RUN chmod +x /app/entrypoint.sh
