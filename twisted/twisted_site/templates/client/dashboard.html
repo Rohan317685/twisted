@@ -14,23 +14,46 @@
             <button onclick="toggleStartMenu(event)" class="flex items-center gap-1 bg-twisted-600 text-absolute-white font-bold px-3 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
                 <img src="{% static 'images/twisted_logo.png' %}" alt="" class="w-8 h-5"> Twist
             </button>
+<div id="start-menu" style="display: none; position: fixed; bottom: 48px; left: 4px; width: 520px;" class="z-[10000] bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
 
-           <div id="start-menu" style="display: none; position: fixed; bottom: 48px; left: 4px;" class="w-64 z-[10000] bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
-                <div class="flex items-center gap-3 p-3 bg-twisted-600">
-                    <img src="{{ profile.slack_pfp_url }}" alt="" class="w-12 h-12 border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200">
-                    <div class="text-absolute-white font-bold">
-                        {{ profile.slack_username|default:user.username }}
-                    </div>
-                </div>
-                <div class="p-2">
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="w-full text-left text-absolute-white px-3 py-2 hover:bg-twisted-600 border-2 border-transparent active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
-                            Logout
-                        </button>
-                    </form>
+    <div class="flex">
+        <div class="flex-1 bg-twisted-999 p-2 space-y-0.5">
+            {% for i in "0123456789" %}
+            <button onclick="newWindow('Projects', '{% url 'fr.projects' %}'); toggleStartMenu(event)"
+                class="w-full flex items-center gap-3 px-2 py-1.5 text-absolute-white text-left hover:bg-twisted-600">
+                <img src="{% static 'images/round-square.jpg' %}" alt="" class="w-7 h-7 object-cover border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shrink-0">
+                <span class="text-sm">Projects</span>
+            </button>
+            {% endfor %}
+        </div>
+
+        <div class="w-44 bg-twisted-600 p-3 pt-10 flex flex-col">
+            <div class="text-center mb-3">
+                <img src="{% static 'images/round-square.jpg' %}" alt="" class="w-16 h-16 object-cover mx-auto mb-1 -mt-12 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
+                <div class="text-absolute-white font-bold text-sm">
+                    {{ profile.slack_username|default:user.username }}
                 </div>
             </div>
+
+            <div class="font-vintage space-y-1 text-absolute-white text-sm border-t border-twisted-800 pt-2">
+                
+                <a href="/admin/" class="block text-absolute-white px-2 py-1 hover:bg-twisted-800">Admin Panel</a>
+                <a href="#" class="block text-absolute-white block px-2 py-1 hover:bg-twisted-800">Settings</a>
+                <a href="#" class="block text-absolute-white block px-2 py-1 hover:bg-twisted-800">Help</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between bg-twisted-400 p-2 border-t-2 border-t-twisted-200">
+        
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-absolute-white text-sm px-3 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+                Logout
+            </button>
+        </form>
+    </div>
+</div>
         </div>
 
         <div id="taskbar-clock" class="bg-twisted-600 text-absolute-white px-3 py-1 border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200 min-w-20 text-center">
