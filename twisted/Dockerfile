@@ -72,4 +72,5 @@ USER 999:999
 # ENTRYPOINT ['/app/entrypoint.sh']
 
 # Workers = (2*cores) + 1
-CMD ["uv", "run", "manage.py", "migrate", "&&", "uv", "run", "gunicorn", "-w", "3", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["/usr/bin/bash", "entrypoint.sh"]
+# CMD ["uv", "run", "manage.py", "migrate", "&&", "uv", "run", "gunicorn", "-w", "3", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
