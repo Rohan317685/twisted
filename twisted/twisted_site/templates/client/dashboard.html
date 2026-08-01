@@ -32,7 +32,7 @@
 
                     <div class="w-44 bg-twisted-600 p-3 pt-10 flex flex-col">
                         <div class="text-center mb-3">
-                            <img src="{% static 'images/round-square.jpg' %}" alt=""
+                            <img src="{{ user.profile.slack_pfp_url }}la" alt=""
                                 class="w-16 h-16 object-cover mx-auto mb-1 -mt-12 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
                             <div class="text-absolute-white font-bold text-sm">
                                 {{ profile.slack_username|default:user.username }}
