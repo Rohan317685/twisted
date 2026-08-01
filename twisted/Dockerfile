@@ -62,7 +62,6 @@ RUN uv run manage.py tailwind install \
  && uv run manage.py tailwind build \
  && uv run manage.py collectstatic --noinput
 
-CMD ["uv", "run", "manage.py", "migrate"]
 
 ### Deployment ###
 
@@ -71,4 +70,4 @@ EXPOSE 8000
 USER 999:999
 
 # Workers = (2*cores) + 1
-CMD ["uv", "run", "gunicorn", "-w", "3", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["sh", "-c", "\"uv run manage.py migrate && uv run gunicorn -w 3 mysite.wsgi:application --bind 0.0.0.0:8000\""]
