@@ -64,8 +64,8 @@ RUN uv run manage.py tailwind install \
 
 
 ### Deployment ###
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ['entrypoint.sh']
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ['/app/entrypoint.sh']
 
 EXPOSE 8000
 USER 999:999
