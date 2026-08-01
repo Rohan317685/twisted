@@ -48,11 +48,6 @@
         if (data.action == 'open') {
             newWindow(data.title, '{% url 'fr.projects.create' %}');
         }
-        if (data.action == 'reload') {
-            document.querySelectorAll('.window').forEach((element) => {
-                element.querySelector('.src-frame').src = element.querySelector('.src-frame').src
-            })
-        }
     }, false);
 
 

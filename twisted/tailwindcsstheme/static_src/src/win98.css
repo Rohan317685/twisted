@@ -12,10 +12,6 @@
 */
 @source "../../../**/*.{html,py,js}";
 
-:root {
-    --surface: #1E072F;
-}
-
 button,
 label,
 input,
@@ -41,6 +37,7 @@ li[role="tab"] {
 
     --surface: #1E072F;
     --text-color: #ffffff;
+    --link-blue: #8f8ff4 !important;
 }
 
 .sunken-panel {

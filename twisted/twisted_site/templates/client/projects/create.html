@@ -1,6 +1,16 @@
 {% extends "client/osbase.html" %} {% block body %}
-<div class="bg-surface flex flex-col w-full h-full">
-    <form method="post" class="h-max w-full flex-1 scrollbar-win9x" onsubmit="window.parent.postMessage({'type': 'internal', 'action': 'reload', 'src': '{% url 'fr.projects' %}'}, '*');">
+<div class="bg-surface flex flex-col w-full h-full font-vintage">
+    {% if complete %}
+    <div class="text-center">
+        <div class="text-xl">
+            Your project has been created!
+        </div>
+        <div>
+            You can now close this window.
+        </div>
+    </div>
+    {% else %}
+    <form method="post" class="h-max w-full flex-1 scrollbar-win9x">
         {% csrf_token %}
         <div class="field-row-stacked">
             <label for="name">Project name</label>
@@ -22,5 +32,7 @@
 
         <button class="mt-2">Create</button>
     </form>
+
+    {% endif %}
 </div>
 {% endblock body %}

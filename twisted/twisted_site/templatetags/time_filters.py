@@ -13,4 +13,4 @@ def minutes_to_hours_minutes(minutes):
     
     if hours > 0:
         return f"{hours}h {remaining_minutes}m"
-    return f"{minutes}m"
+    return f"{int(minutes)}m"

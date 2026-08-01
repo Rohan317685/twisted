@@ -1,0 +1,41 @@
+{% extends "client/osbase.html" %} {% load static time_filters maths %} {% block body %}
+<div class="bg-surface flex flex-col w-full h-full font-vintage">
+    <div>
+        <a href="{% url 'fr.projects.detail' project.id %}">
+            <button>Go back</button>
+        </a>
+    </div>
+    <div class="text-xl">Project settings</div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="field-row-stacked">
+            <label for="name">Project name</label>
+            <input id="name" name="name" type="text" value="{{ project.project_name }}" />
+        </div>
+        <div class="field-row-stacked">
+            <label for="description">Project description</label>
+            <textarea id="description" name="description">{{ project.project_description }}</textarea>
+        </div>
+        <div class="mt-2 field-row-stacked">
+            <label for="type">Project type</label>
+            <select id="type" name="type" required>
+                <option {% if project.project_type == 'software' %}selected{% endif %} value="software">Software</option>
+                <option {% if project.project_type == 'hardware' %}selected{% endif %} value="hardware">Hardware</option>
+            </select>
+        </div>
+        <div class="mt-2 field-row-stacked">
+            <label for="hackatime">Hackatime project</label>
+            <select id="hackatime" name="hackatime">
+                <option value="" disabled hidden {% if not project.hackatime_project_name %}selected{% endif %}>Select a project</option>
+                {% for project in hackatime_projects %}
+                {% if project.total_seconds > 300 %}
+                <option value="{{ project.name }}" {% if project.hackatime_project_name == project.name %}selected{% endif %}> {{ project.name }} ({{ project.total_seconds|divide:60|minutes_to_hours_minutes }}) </option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="mt-4">Save</button>
+    </form>
+</div>
+
+{% endblock body %}

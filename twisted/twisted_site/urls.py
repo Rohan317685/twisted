@@ -3,6 +3,7 @@ from django.urls import path
 from .views.client.homepage import HomepageView
 from .views.client.dashboard import DashboardView
 from .views.client.projects import ListProjects, CreateProject
+from .views.client.project import ProjectDetail, ProjectSettings
 
 urlpatterns = [
     path('', view=HomepageView.as_view(), name="homepage"),
@@ -16,4 +17,6 @@ urlpatterns = [
     path("dashboard/frame/projects/", ListProjects.as_view(), name="fr.projects"),
     path("dashboard/frame/projects/create/", CreateProject.as_view(), name="fr.projects.create"),
 
+    path("dashboard/frame/projects/<int:id>/", ProjectDetail.as_view(), name="fr.projects.detail"),
+    path("dashboard/frame/projects/<int:id>/settings/", ProjectSettings.as_view(), name="fr.projects.settings"),
 ]

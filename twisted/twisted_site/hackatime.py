@@ -45,19 +45,29 @@ def me(access_token) -> MeResponse:
     )
 
 
-def projects(access_token) -> list[HackatimeProject]:
+def projects(
+    access_token,
+    include_archived=False,
+    start: datetime | None = None,
+    projects: list[str] | None = None,
+) -> list[HackatimeProject]:
     """Returns the user's projects with time totals."""
     resp = requests.get(
-        HACKATIME_ROOT_URL + "/api/v1/authenticated/me",
+        (
+            HACKATIME_ROOT_URL + "/api/v1/authenticated/projects"
+            f"?include_archived={'true' if include_archived else 'false'}"
+            f"&start={str(start.isoformat()) if start is not None else ''}"
+            f"&projects={','.join(projects) if projects is not None else ''}"
+        ),
         headers=authhelper(access_token),
     )
     resp.raise_for_status()
     data = resp.json()
-    projects = []
+    hackatime_projects = []
     for project in data["projects"]:
         recent_heartbeat = project["most_recent_heartbeat"]
         dt = datetime.fromisoformat(recent_heartbeat)
-        projects.append(
+        hackatime_projects.append(
             HackatimeProject(
                 project["name"],
                 total_seconds=project["total_seconds"],
@@ -65,4 +75,4 @@ def projects(access_token) -> list[HackatimeProject]:
                 languages=project["languages"],
             )
         )
-    return projects
+    return hackatime_projects
