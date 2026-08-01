@@ -10,17 +10,27 @@
 
     <div id="windows-container"></div>
   <div class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between bg-twisted-400 border-t-2 border-t-twisted-200 px-1 py-1">
-        <div class="flex items-center gap-2">
-            <button class="flex items-center gap-1 bg-twisted-600 text-absolute-white font-bold px-3 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+       <div class="relative">
+            <button onclick="toggleStartMenu(event)" class="flex items-center gap-1 bg-twisted-600 text-absolute-white font-bold px-3 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
                 <img src="{% static 'images/twisted_logo.png' %}" alt="" class="w-8 h-5"> Twist
             </button>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit"
-                    class="bg-twisted-400 text-absolute-white font-bold px-4 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
-                    Logout
-                </button>
-            </form>
+
+           <div id="start-menu" style="display: none; position: fixed; bottom: 48px; left: 4px;" class="w-64 z-[10000] bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
+                <div class="flex items-center gap-3 p-3 bg-twisted-600">
+                    <img src="{{ profile.slack_pfp_url }}" alt="" class="w-12 h-12 border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200">
+                    <div class="text-absolute-white font-bold">
+                        {{ profile.slack_username|default:user.username }}
+                    </div>
+                </div>
+                <div class="p-2">
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-left text-absolute-white px-3 py-2 hover:bg-twisted-600 border-2 border-transparent active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div id="taskbar-clock" class="bg-twisted-600 text-absolute-white px-3 py-1 border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200 min-w-20 text-center">
@@ -116,8 +126,21 @@
         h = h % 12 || 12;
         document.getElementById("taskbar-clock").textContent = `${h}:${m} ${ampm}`;
     }
+   function toggleStartMenu(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("start-menu");
+        menu.style.display = (menu.style.display === "none") ? "block" : "none";
+    }
+
+    document.addEventListener("click", (e) => {
+        const menu = document.getElementById("start-menu");
+        if (menu.style.display !== "none" && !menu.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
     updateClock();
     setInterval(updateClock, 1000);
+
 </script>
 
 {% endblock body %}
