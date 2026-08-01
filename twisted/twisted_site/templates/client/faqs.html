@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<a href="https://hackclub.com" target="_blank" rel="noopener" class="fixed top-0 left-4 z-50">
+  <img src="https://assets.hackclub.com/flag-orpheus-top.svg" alt="Hack Club" class="w-48 flag-wave origin-top">
+</a>
+<div class="bg-cover w-screen h-screen bg-surface text-absolute-white p-4 sm:p-8">
+  <div class="max-w-3xl mx-auto bg-dark border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
+    meow
+  </div>
+
+  </div>
+</div>
+<div class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between bg-twisted-400 border-t-2 border-t-twisted-200 px-1 py-1">
+  <button class="flex items-center gap-1 bg-twisted-600 text-absolute-white font-bold px-3 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+    <img src="{% static 'images/twisted_logo.png' %}" alt="" class="w-8 h-5"> Twist 
+  </button>
+
+  <div id="taskbar-clock" class="bg-twisted-600 text-absolute-white px-3 py-1 border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200 min-w-20 text-center">
+    00:00 00
+  </div>
+</div> 
+<script>
+    function updateClock() {
+        const now = new Date();
+        let h = now.getHours();
+        const m = now.getMinutes().toString().padStart(2, "0");
+        const ampm = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+        document.getElementById("taskbar-clock").textContent = `${h}:${m} ${ampm}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>
+{% endblock body %}

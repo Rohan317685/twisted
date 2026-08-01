@@ -5,3 +5,7 @@ from django.shortcuts import render
 class HomepageView(View):
     def get(self, request):
         return render(request, "client/homepage.html")
+
+class FaqsView(View):
+    def get(self, request):
+        return render(request, "client/faqs.html")

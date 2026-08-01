@@ -1,12 +1,13 @@
 from .views.client.auth import LoginView, AuthCallbackView, HackatimeCallbackView, LogoutView
 from django.urls import path
-from .views.client.homepage import HomepageView
+from .views.client.homepage import HomepageView, FaqsView
 from .views.client.dashboard import DashboardView
 from .views.client.projects import ListProjects, CreateProject
 from .views.client.project import ProjectDetail, ProjectSettings
 
 urlpatterns = [
     path('', view=HomepageView.as_view(), name="homepage"),
+    path('faqs/', view=FaqsView.as_view(), name="faqs"),
     
     path("auth/login/", LoginView.as_view(), name="login"),
     path("oauth/callback/", AuthCallbackView.as_view(), name="auth_callback"),
