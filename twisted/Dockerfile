@@ -66,9 +66,9 @@ COPY ./twisted/entrypoint.sh /app/entrypoint.sh
 
 ### Deployment ###
 RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ['/app/entrypoint.sh']
 
 EXPOSE 8000
 USER 999:999
+ENTRYPOINT ['/app/entrypoint.sh']
 # Workers = (2*cores) + 1
 CMD ["uv", "run", "gunicorn", "-w", "3", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
