@@ -70,9 +70,5 @@ EXPOSE 8000
 
 USER 999:999
 
-<<<<<<< HEAD
-CMD ["uv", "run", "gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
-=======
+# Workers = (2*cores) + 1
 CMD ["uv", "run", "gunicorn", "-w", "3", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
-
->>>>>>> 789c307 (update dockerfile and make 3 workers work at once)
