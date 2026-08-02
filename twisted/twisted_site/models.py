@@ -1,6 +1,9 @@
+import martor.extensions
 from django.contrib.auth import get_user_model
 from django.db import models
 from . import hackatime
+from martor.models import MartorField
+
 User = get_user_model()
 
 
@@ -60,7 +63,7 @@ class Project(models.Model):
 class Journal(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, related_name="journals")
     
-    content = models.TextField(max_length=2000)
+    content = MartorField()
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

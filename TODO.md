@@ -1,8 +1,8 @@
 # Kavyansh
 - [x] implement hackatime auth
-- [ ] add project creation
-- [ ] add hackatime helper functions
-- [ ] implement hackatime for projects
+- [x] add project creation
+- [x] add hackatime helper functions
+- [x] implement hackatime for projects
 - [ ] add journal creation (backend)
 - [ ] add journal editing
 - [ ] implement shipping

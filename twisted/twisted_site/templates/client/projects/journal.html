@@ -16,9 +16,6 @@
         Hi! I noticed you dont have a hackatime project linked yet. You can link a hackatime project over at the
         <a href="{% url 'fr.projects.settings' project.id %}">project settings</a>.
     </div>
-    <div>
-        <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'New journal for {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new' project.id %}'}, '*')">New journal...</button>
-    </div>
     {% endif %}
     <div></div>
 </div>

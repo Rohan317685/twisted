@@ -20,4 +20,5 @@ urlpatterns = [
 
     path("dashboard/frame/projects/<int:id>/", ProjectDetail.as_view(), name="fr.projects.detail"),
     path("dashboard/frame/projects/<int:id>/settings/", ProjectSettings.as_view(), name="fr.projects.settings"),
+    path("dashboard/frame/projects/<int:id>/journals/new/", ProjectSettings.as_view(), name="fr.projects.journals.new"),
 ]

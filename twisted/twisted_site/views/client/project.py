@@ -68,3 +68,18 @@ class ProjectSettings(View):
         project.hackatime_project_name = request.POST['hackatime']
         project.save()
         return redirect('fr.projects.detail', project.id)
+
+class NewProjectJournal(View):
+    def get(self, request, id):
+        if self.request.user.is_anonymous:
+            return redirect('homepage')
+        
+        context = {}
+
+        project = Project.objects.get(id=id)
+        context['project'] = project
+        
+        if project.user != request.user:
+            return redirect('dashboard')
+
+        return render(request, 'client/projects/journal.html')
