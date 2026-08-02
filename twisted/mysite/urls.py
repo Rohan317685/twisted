@@ -19,13 +19,10 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from common.views import markdown_imgur_uploader
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("twisted_site.urls")),
-    path('martor/', include('martor.urls')),
-    path('martor/uploader/', markdown_imgur_uploader, name="imgur_uploader"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

@@ -12,7 +12,6 @@ dependencies = [
     "django-jazzmin>=3.0.5",
     "django-tailwind[cookiecutter,honcho,reload]>=4.5.0",
     "gunicorn>=26.0.0",
-    "martor>=1.8.2",
     "psycopg[binary]>=3.3.4",
     "python-dotenv>=1.2.2",
     "requests>=2.34.2",

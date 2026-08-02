@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     'django_cotton',
     'tailwind',
     TAILWIND_APP_NAME,
-    'martor',
 ]
 
 if DEBUG:
@@ -156,27 +155,5 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
+CSRF_COOKIE_HTTPONLY = False
 NPM_BIN_PATH = os.environ.get("NPM_BIN_PATH", "npm")
-
-# Martor
-# https://django-markdown-editor.readthedocs.io/
-
-MARTOR_SEARCH_USERS_URL = '' # Disable user mentions
-
-MARTOR_TOOLBAR_BUTTONS = [
-    'bold',                # Bold text button
-    'italic',              # Italic text button
-    'horizontal',          # Horizontal rule
-    'heading',             # Heading dropdown
-    'pre-code',           # Code block button
-    'blockquote',         # Blockquote button
-    'unordered-list',     # Bullet list
-    'ordered-list',       # Numbered list
-    'link',               # Link insertion
-    'image-link',         # Image by URL
-    'image-upload',       # Image upload (requires imgur/custom uploader)
-    'emoji',              # Emoji picker
-    # 'direct-mention',     # User mention
-    'toggle-maximize',    # Fullscreen toggle
-    'help'                # Help/guide modal
-]

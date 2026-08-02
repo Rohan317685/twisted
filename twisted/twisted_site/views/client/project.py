@@ -81,5 +81,6 @@ class NewProjectJournal(View):
         
         if project.user != request.user:
             return redirect('dashboard')
+        
 
-        return render(request, 'client/projects/journal.html')
+        return render(request, 'client/projects/journal.html', context=context)

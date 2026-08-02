@@ -1,23 +1,16 @@
-{% extends "client/osbase.html" %} {% load static time_filters %} {% block body %}
+{% extends "client/osbase.html" %} {% load static time_filters %}
+{% block body %}
 <div class="bg-surface flex flex-col w-full h-full font-vintage">
     <div class="text-xl">
-        {{ project.project_name }} ({{ project.get_project_type_display }})
+        New journal for {{ project.project_name }}
     </div>
-    <div>{{ project.project_description }}</div>
-    <div>
-        <a href="{% url 'fr.projects.settings' project.id %}">
-            <button>Settings</button>
-        </a>
-    </div>
-    <div>Time spent: {{ project.time_spent|minutes_to_hours_minutes }}</div>
-    <div>Time logged: {{ project.time_logged|minutes_to_hours_minutes }}</div>
-    {% if not project.hackatime_project_name %}
-    <div class="border border-twisted-400 p-1 m-1 w-fit">
-        Hi! I noticed you dont have a hackatime project linked yet. You can link a hackatime project over at the
-        <a href="{% url 'fr.projects.settings' project.id %}">project settings</a>.
-    </div>
-    {% endif %}
-    <div></div>
+    <form method="post">
+        
+        <div>
+            <label for="content">Journal content (Markdown)</label>
+            <textarea name="content" id="content" class="w-full"></textarea>
+        </div>
+        <button>Log journal</button>
+    </form>
 </div>
-
 {% endblock body %}
