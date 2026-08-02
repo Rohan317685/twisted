@@ -60,10 +60,26 @@
             </div>
         </div>
 
-      <div id="taskbar-clock"
+   <div class="flex items-center gap-2">
+  <button id="speaker-btn" onclick="toggleMusic()" class="bg-twisted-600 px-2 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+     <svg id="speaker-icon" width="20" height="16" viewBox="0 0 20 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="6" width="2" height="4" fill="#CAB3E1"/>
+      <rect x="4" y="5" width="2" height="6" fill="#CAB3E1"/>
+      <rect x="6" y="4" width="2" height="8" fill="#CAB3E1"/>
+      <rect x="8" y="2" width="2" height="12" fill="#CAB3E1"/>
+       <g id="sound-waves">
+        <rect x="12" y="5" width="2" height="6" fill="#8364A2"/>
+         <rect x="15" y="3" width="2" height="10" fill="#8364A2"/>
+       </g>
+     </svg>
+   </button>
+      <canvas id="spectrum" width="100" height="24" class="border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200"></canvas>
+       <div id="taskbar-clock"
         class="!font-vintage !text-base !bg-twisted-600 !text-absolute-white !px-3 !py-1 !border-2 !border-t-dark-black !border-l-dark-black !border-r-twisted-200 !border-b-twisted-200 min-w-20 text-center">
         00:00 00
     </div>
+   </div>
+      
     </div>
 </div>
 
@@ -184,21 +200,79 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    const music = document.getElementById("bg-music");
-  const savedTime = sessionStorage.getItem("musicTime");
-  if (savedTime) music.currentTime = parseFloat(savedTime);
+  const music = document.getElementById("bg-music");
+  const savedTime = parseFloat(sessionStorage.getItem("musicTime") || "0");
+  const wasPlaying = sessionStorage.getItem("musicPlaying") === "true";
+  if (savedTime) music.currentTime = savedTime;
 
-  function startMusic() {
+  let audioCtx, analyser, dataArray, sourceConnected = false;
+  const canvas = document.getElementById("spectrum");
+  const ctx = canvas ? canvas.getContext("2d") : null;
+
+  function initAudioGraph() {
+    if (sourceConnected) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    audioCtx = new AC();
+    const source = audioCtx.createMediaElementSource(music);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    sourceConnected = true;
+    drawSpectrum();
+  }
+
+  function playMusic() {
+    initAudioGraph();
+    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
     music.play().catch(() => {});
   }
-  document.addEventListener("click", startMusic, { once: true });
 
+  function toggleMusic() {
+    if (music.paused) { playMusic(); }
+    else { music.pause(); }
+  }
+
+  if (wasPlaying) {
+    playMusic();
+    const resumeOnce = () => {
+        playMusic();
+        document.removeEventListener("pointerdown", resumeOnce);
+        document.removeEventListener("keydown", resumeOnce);
+    };
+    document.addEventListener("pointerdown", resumeOnce, { once: true });
+    document.addEventListener("keydown", resumeOnce, { once: true });
+}
   setInterval(() => {
     sessionStorage.setItem("musicTime", music.currentTime);
-  }, 500);
+    sessionStorage.setItem("musicPlaying", (!music.paused).toString());
+  }, 400);
   window.addEventListener("beforeunload", () => {
     sessionStorage.setItem("musicTime", music.currentTime);
+    sessionStorage.setItem("musicPlaying", (!music.paused).toString());
   });
+
+  function drawSpectrum() {
+    if (!ctx) return;
+    requestAnimationFrame(drawSpectrum);
+    ctx.fillStyle = "#1E072F";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (!analyser || music.paused) return;
+    analyser.getByteFrequencyData(dataArray);
+    const bars = 8, barWidth = canvas.width / bars, pixel = 3;
+    for (let i = 0; i < bars; i++) {
+      const value = dataArray[i] / 255;
+      const barHeight = Math.floor((value * canvas.height) / pixel) * pixel;
+      for (let y = 0; y < barHeight; y += pixel) {
+        const ratio = y / canvas.height;
+        ctx.fillStyle = ratio > 0.6 ? "#CAB3E1" : ratio > 0.3 ? "#8364A2" : "#5A4471";
+        ctx.fillRect(i * barWidth + 1, canvas.height - y - pixel, barWidth - 2, pixel - 1);
+      }
+    }
+  }
+  drawSpectrum();;
 </script>
 
 {% endblock body %}
