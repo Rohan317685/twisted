@@ -54,6 +54,9 @@
   </div>
 </div>
 
+<audio id="bg-music" loop>
+  <source src="{% static 'audio/bg.mp3' %}" type="audio/mpeg">
+</audio>
 <script>
     function updateClock() {
         const now = new Date();
@@ -65,5 +68,18 @@
     }
     updateClock();
     setInterval(updateClock, 1000);
+
+  const music = document.getElementById("bg-music");
+  const savedTime = sessionStorage.getItem("musicTime");
+  if (savedTime) music.currentTime = parseFloat(savedTime);
+  
+  music.play().catch(() => {});
+  
+  setInterval(() => {
+    sessionStorage.setItem("musicTime", music.currentTime);
+  }, 500);
+  window.addEventListener("beforeunload", () => {
+    sessionStorage.setItem("musicTime", music.currentTime);
+  });
 </script>
 {% endblock body %}
