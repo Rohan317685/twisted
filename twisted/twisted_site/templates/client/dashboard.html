@@ -15,7 +15,7 @@
             class="flex items-center gap-1 !bg-twisted-600 !text-base !text-absolute-white !font-bold !px-3 !py-1 !border-2 !border-t-twisted-200 !border-l-twisted-200 !border-r-dark-black !border-b-dark-black active:!border-t-dark-black active:!border-l-dark-black active:!border-r-twisted-200 active:!border-b-twisted-200">
             <img src="{% static 'images/twisted_logo.png' %}" alt="" class="w-8 h-5"> Twist
         </button>
-
+          <div id="taskbar-windows" class="flex-1 flex items-center gap-1 px-2 overflow-x-auto"></div>
             <div id="start-menu" style="display: none; position: fixed; bottom: 48px; left: 4px; width: 520px;"
                 class="z-[10000] bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
                 <div class="flex">
@@ -117,64 +117,82 @@
         }
     }, false);
 
-    function newWindow(title, src, w=400, h=400) {
-        const template = document.getElementById('window-template');
-        const container = document.getElementById('windows-container');
-        const clone = template.content.cloneNode(true);
-        clone.querySelector('.title-bar-text').textContent = title;
-        clone.querySelector('.src-frame').src = src;
-        clone.querySelector('.window').style.top = (Math.random() * 200) + 100 + "px";
-        clone.querySelector('.window').style.left = (Math.random() * 200) + 200 + "px";
-        clone.querySelector('.window').style.width = w + "px";
-        clone.querySelector('.window').style.height = h + "px";
-        container.appendChild(clone);
+   let windowCounter = 0;
 
-        document.querySelectorAll('.window').forEach((element) => {
-            dragWindow(element);
-            element.onmousedown = () => {
-                document.querySelectorAll('.window').forEach((el) => {
-                    el.style.zIndex = null;
-                });
-                element.style.zIndex = '9999';
-            };
-            element.querySelector('.close-button').onclick = () => {
-                element.remove();
-            };
-        });
-    }
+  function newWindow(title, src, w = 400, h = 400) {
+    const template = document.getElementById('window-template');
+    const container = document.getElementById('windows-container');
+    const clone = template.content.cloneNode(true);
+    const win = clone.querySelector('.window');
+    const id = 'win-' + (++windowCounter);
+    win.dataset.winId = id;
 
-    function dragWindow(mywindow) {
-        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        mywindow.getElementsByClassName('title-bar')[0].onmousedown = ((e) => {
-            e = e || mywindow.event;
-            e.preventDefault();
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = (() => {
-                document.onmouseup = null;
-                document.onmousemove = null;
-            });
-            document.onmousemove = (function (e) {
-                e = e || mywindow.event;
-                e.preventDefault();
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
+    win.querySelector('.title-bar-text').textContent = title;
+    win.querySelector('.src-frame').src = src;
+    win.style.top = (Math.random() * 150 + 80) + "px";
+    win.style.left = (Math.random() * 200 + 150) + "px";
+    win.style.width = w + "px";
+    win.style.height = h + "px";
+    container.appendChild(clone);
 
-                let xcoord = mywindow.offsetLeft - pos1;
-                let ycoord = mywindow.offsetTop - pos2;
+    const taskBtn = document.createElement('button');
+    taskBtn.className = "flex items-center gap-1 !bg-twisted-600 !text-absolute-white text-sm !px-2 !py-1 !border-2 !border-t-twisted-200 !border-l-twisted-200 !border-r-dark-black !border-b-dark-black max-w-40 truncate";
+    taskBtn.textContent = title;
+    taskBtn.dataset.winId = id;
+    taskBtn.onclick = () => focusWindow(id);
+    document.getElementById('taskbar-windows').appendChild(taskBtn);
 
-                if (xcoord < 0) xcoord = 0;
-                if (ycoord < 0) ycoord = 0;
+    const realWin = container.querySelector(`[data-win-id="${id}"]`);
+    dragWindow(realWin);
+    focusWindow(id);
 
-                const rect = mywindow.getBoundingClientRect();
-                if (!(ycoord + rect.height > window.innerHeight)) mywindow.style.top = ycoord + "px";
-                if (!(xcoord + rect.width > window.innerWidth)) mywindow.style.left = xcoord + "px";
-            });
-        });
-    }
+    realWin.addEventListener('mousedown', () => focusWindow(id));
+    realWin.querySelector('.close-button').onclick = () => {
+        realWin.remove();
+        taskBtn.remove();
+    };
+}
 
+function focusWindow(id) {
+    document.querySelectorAll('.window').forEach(el => el.style.zIndex = "1");
+    document.querySelectorAll('#taskbar-windows button').forEach(b =>
+        b.classList.remove('!bg-twisted-400'));
+    const win = document.querySelector(`.window[data-win-id="${id}"]`);
+    if (win) win.style.zIndex = "9999";
+    const btn = document.querySelector(`#taskbar-windows button[data-win-id="${id}"]`);
+    if (btn) btn.classList.add('!bg-twisted-400');
+}
+
+function dragWindow(mywindow) {
+    const titleBar = mywindow.getElementsByClassName('title-bar')[0];
+    let startX = 0, startY = 0, origX = 0, origY = 0, dragging = false;
+
+    titleBar.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        origX = mywindow.offsetLeft;
+        origY = mywindow.offsetTop;
+        document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        let newX = origX + (e.clientX - startX);
+        let newY = origY + (e.clientY - startY);
+        const rect = mywindow.getBoundingClientRect();
+        newX = Math.max(0, Math.min(newX, window.innerWidth - rect.width));
+        newY = Math.max(0, Math.min(newY, window.innerHeight - rect.height));
+        mywindow.style.left = newX + "px";
+        mywindow.style.top = newY + "px";
+    });
+
+    document.addEventListener('mouseup', () => {
+        dragging = false;
+        document.body.style.userSelect = '';
+    });
+}
     function updateClock() {
         const now = new Date();
         let h = now.getHours();
