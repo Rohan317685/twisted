@@ -34,6 +34,8 @@ class LoginView(View):
 
 class AuthCallbackView(View):
     def get(self, request):
+        if os.environ.get("LOGIN_ENABLED") == 'false':
+            return JsonResponse("not allowed!")
         
         token = oauth.hca.authorize_access_token(request)
         
@@ -98,6 +100,9 @@ class AuthCallbackView(View):
 
 class HackatimeCallbackView(View):
     def get(self, request):
+        if os.environ.get("LOGIN_ENABLED") == 'false':
+            return JsonResponse("not allowed!")
+        
         profile = request.user.profile
         
         state = request.GET['state']

@@ -93,11 +93,15 @@
         const data = event.data;
         if (data.type != 'internal') return;
         if (data.action == 'open') {
-            newWindow(data.title, data.src);
+            w = 400;
+            h = 400;
+            if (data.width) w = data.width;
+            if (data.height) h = data.height;
+            newWindow(data.title, data.src, w, h);
         }
     }, false);
 
-    function newWindow(title, src) {
+    function newWindow(title, src, w=400, h=400) {
         const template = document.getElementById('window-template');
         const container = document.getElementById('windows-container');
         const clone = template.content.cloneNode(true);
@@ -105,6 +109,8 @@
         clone.querySelector('.src-frame').src = src;
         clone.querySelector('.window').style.top = (Math.random() * 200) + 100 + "px";
         clone.querySelector('.window').style.left = (Math.random() * 200) + 200 + "px";
+        clone.querySelector('.window').style.width = w + "px";
+        clone.querySelector('.window').style.height = h + "px";
         container.appendChild(clone);
 
         document.querySelectorAll('.window').forEach((element) => {
