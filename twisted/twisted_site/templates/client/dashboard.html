@@ -106,8 +106,8 @@
 </audio>
 
 <script>
-    let windowCounter = 0;
-
+ let windowCounter = 0;
+ 
     window.addEventListener("message", (event) => {
         const data = event.data;
         if (data.type != 'internal') return;
@@ -118,7 +118,7 @@
             newWindow(data.title, data.src, w, h);
         }
     }, false);
-
+ 
     function newWindow(title, src, w = 400, h = 400) {
         const template = document.getElementById('window-template');
         const container = document.getElementById('windows-container');
@@ -126,34 +126,35 @@
         const win = clone.querySelector('.window');
         const id = 'win-' + (++windowCounter);
         win.dataset.winId = id;
-
+ 
         win.querySelector('.title-bar-text').textContent = title;
         win.querySelector('.src-frame').src = src;
-        win.style.top = (Math.random() * 200) + 100 + "px";
-        win.style.left = (Math.random() * 200) + 200 + "px";
+        win.style.top = (Math.random() * 150 + 80) + "px";
+        win.style.left = (Math.random() * 200 + 150) + "px";
         win.style.width = w + "px";
         win.style.height = h + "px";
         container.appendChild(clone);
-
+ 
         const realWin = container.querySelector('[data-win-id="' + id + '"]');
-
+ 
+        // Taskbar button with round png icon
         const taskBtn = document.createElement('button');
         taskBtn.dataset.winId = id;
         taskBtn.className = "flex items-center gap-1 !bg-twisted-600 !text-absolute-white text-sm !px-2 !py-1 !border-2 !border-t-twisted-200 !border-l-twisted-200 !border-r-dark-black !border-b-dark-black max-w-40";
         taskBtn.innerHTML = '<img src="{% static "images/round-square.jpg" %}" class="w-4 h-4 object-cover shrink-0"><span class="truncate">' + title + '</span>';
         taskBtn.onclick = () => focusWindow(id);
         document.getElementById('taskbar-windows').appendChild(taskBtn);
-
+ 
         dragWindow(realWin);
         focusWindow(id);
-
-        realWin.onmousedown = () => focusWindow(id);
+ 
+        realWin.addEventListener('mousedown', () => focusWindow(id));
         realWin.querySelector('.close-button').onclick = () => {
             realWin.remove();
             taskBtn.remove();
         };
     }
-
+ 
     function focusWindow(id) {
         document.querySelectorAll('.window').forEach(el => el.style.zIndex = "1");
         document.querySelectorAll('#taskbar-windows button').forEach(b =>
@@ -163,39 +164,53 @@
         const btn = document.querySelector('#taskbar-windows button[data-win-id="' + id + '"]');
         if (btn) btn.classList.add('!bg-twisted-400');
     }
-
+ 
     function dragWindow(mywindow) {
-        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        mywindow.getElementsByClassName('title-bar')[0].onmousedown = ((e) => {
-            e = e || mywindow.event;
+        const titleBar = mywindow.getElementsByClassName('title-bar')[0];
+        let dragging = false, startX = 0, startY = 0, origX = 0, origY = 0, pendingX = 0, pendingY = 0, rafId = null;
+ 
+        function apply() {
+            rafId = null;
+            mywindow.style.left = pendingX + "px";
+            mywindow.style.top = pendingY + "px";
+        }
+ 
+        function onMove(e) {
+            if (!dragging) return;
             e.preventDefault();
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = (() => {
-                document.onmouseup = null;
-                document.onmousemove = null;
-            });
-            document.onmousemove = (function (e) {
-                e = e || mywindow.event;
-                e.preventDefault();
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-
-                let xcoord = mywindow.offsetLeft - pos1;
-                let ycoord = mywindow.offsetTop - pos2;
-
-                if (xcoord < 0) xcoord = 0;
-                if (ycoord < 0) ycoord = 0;
-
-                const rect = mywindow.getBoundingClientRect();
-                if (!(ycoord + rect.height > window.innerHeight)) mywindow.style.top = ycoord + "px";
-                if (!(xcoord + rect.width > window.innerWidth)) mywindow.style.left = xcoord + "px";
-            });
+            const rect = mywindow.getBoundingClientRect();
+            let x = origX + (e.clientX - startX);
+            let y = origY + (e.clientY - startY);
+            // clamp to viewport
+            x = Math.max(0, Math.min(x, window.innerWidth - rect.width));
+            y = Math.max(0, Math.min(y, window.innerHeight - rect.height));
+            pendingX = x;
+            pendingY = y;
+            // throttle DOM writes to one per animation frame for smoothness
+            if (rafId === null) rafId = requestAnimationFrame(apply);
+        }
+ 
+        function onUp() {
+            dragging = false;
+            document.body.style.userSelect = '';
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+        }
+ 
+        titleBar.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            dragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            origX = mywindow.offsetLeft;
+            origY = mywindow.offsetTop;
+            document.body.style.userSelect = 'none';
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
         });
     }
-
+ 
     function updateClock() {
         const now = new Date();
         let h = now.getHours();
@@ -204,32 +219,32 @@
         h = h % 12 || 12;
         document.getElementById("taskbar-clock").textContent = h + ":" + m + " " + ampm;
     }
-
+ 
     function toggleStartMenu(event) {
         event.stopPropagation();
         const menu = document.getElementById("start-menu");
         menu.style.display = (menu.style.display === "none") ? "block" : "none";
     }
-
+ 
     document.addEventListener("click", (e) => {
         const menu = document.getElementById("start-menu");
         if (menu.style.display !== "none" && !menu.contains(e.target)) {
             menu.style.display = "none";
         }
     });
-
+ 
     updateClock();
     setInterval(updateClock, 1000);
-
+ 
     const music = document.getElementById("bg-music");
     const savedTime = parseFloat(sessionStorage.getItem("musicTime") || "0");
     const wasPlaying = sessionStorage.getItem("musicPlaying") === "true";
     if (savedTime) music.currentTime = savedTime;
-
+ 
     let audioCtx, analyser, dataArray, sourceConnected = false;
     const canvas = document.getElementById("spectrum");
     const ctx = canvas ? canvas.getContext("2d") : null;
-
+ 
     function initAudioGraph() {
         if (sourceConnected) return;
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -244,18 +259,18 @@
         sourceConnected = true;
         drawSpectrum();
     }
-
+ 
     function playMusic() {
         initAudioGraph();
         if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
         music.play().catch(() => {});
     }
-
+ 
     function toggleMusic() {
         if (music.paused) { playMusic(); }
         else { music.pause(); }
     }
-
+ 
     if (wasPlaying) {
         playMusic();
         const resumeOnce = () => {
@@ -266,7 +281,7 @@
         document.addEventListener("pointerdown", resumeOnce, { once: true });
         document.addEventListener("keydown", resumeOnce, { once: true });
     }
-
+ 
     setInterval(() => {
         sessionStorage.setItem("musicTime", music.currentTime);
         sessionStorage.setItem("musicPlaying", (!music.paused).toString());
@@ -275,7 +290,7 @@
         sessionStorage.setItem("musicTime", music.currentTime);
         sessionStorage.setItem("musicPlaying", (!music.paused).toString());
     });
-
+ 
     function drawSpectrum() {
         if (!ctx) return;
         requestAnimationFrame(drawSpectrum);
