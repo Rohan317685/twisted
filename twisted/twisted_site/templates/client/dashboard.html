@@ -117,6 +117,7 @@
         }
     }, false);
 
+<<<<<<< HEAD
    let windowCounter = 0;
 
   function newWindow(title, src, w = 400, h = 400) {
@@ -126,6 +127,35 @@
     const win = clone.querySelector('.window');
     const id = 'win-' + (++windowCounter);
     win.dataset.winId = id;
+=======
+    function newWindow(title, src, w=400, h=400) {
+        const template = document.getElementById('window-template');
+        const container = document.getElementById('windows-container');
+        const clone = template.content.cloneNode(true);
+        clone.querySelector('.title-bar-text').textContent = title;
+        clone.querySelector('.src-frame').src = src;
+        clone.querySelector('.window').style.top = (Math.random() * 200) + 100 + "px";
+        clone.querySelector('.window').style.left = (Math.random() * 200) + 200 + "px";
+        clone.querySelector('.window').style.width = w + "px";
+        clone.querySelector('.window').style.height = h + "px";
+        // container.insertBefore(clone, container.firstChild);
+        container.appendChild(clone);
+        document.querySelectorAll('.window').forEach((element) => {
+            dragWindow(element);
+            element.onmousedown = () => {
+                if (container.lastChild != element) {
+                    container.moveBefore(element, null)
+                    // element.remove()
+                    // container.appendChild(element)
+                }
+                
+            };
+            element.querySelector('.close-button').onclick = () => {
+                element.remove();
+            };
+        });
+    }
+>>>>>>> 4f6aab3ac9792be2b40e6fd23b84906dda174409
 
     win.querySelector('.title-bar-text').textContent = title;
     win.querySelector('.src-frame').src = src;
