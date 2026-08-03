@@ -156,11 +156,13 @@
     }
  
     function focusWindow(id) {
-        document.querySelectorAll('.window').forEach(el => el.style.zIndex = "1");
         document.querySelectorAll('#taskbar-windows button').forEach(b =>
             b.classList.remove('!bg-twisted-400'));
         const win = document.querySelector('.window[data-win-id="' + id + '"]');
-        if (win) win.style.zIndex = "9999";
+
+        container = document.getElementById('windows-container')
+        container.moveBefore(win, null)
+        
         const btn = document.querySelector('#taskbar-windows button[data-win-id="' + id + '"]');
         if (btn) btn.classList.add('!bg-twisted-400');
     }
