@@ -87,7 +87,7 @@
 <div class="-z-10 bg-surface fixed top-0 left-0 bottom-0 right-0"></div>
 
 <template id="window-template">
-    <div class="absolute window resize overflow-hidden" style="left: 300px; top: 300px; width: 300px; height: 300px;">
+    <div class="absolute window resize flex flex-col overflow-hidden" style="left: 300px; top: 300px; width: 300px; height: 300px;">
         <div class="title-bar">
             <label class="title-bar-text">TITLE</label>
             <div class="title-bar-controls">
@@ -95,7 +95,7 @@
                 <button class="close-button" aria-label="Close">X</button>
             </div>
         </div>
-        <div class="window-body h-full pb-10">
+        <div class="window-body h-full flex-1">
             <iframe class="w-full h-full src-frame" src="about:blank" frameborder="0"></iframe>
         </div>
     </div>

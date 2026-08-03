@@ -46,18 +46,27 @@ class Project(models.Model):
                 return project
         return
     
-    def time_logged(self):
+    def time_logged(self, include_all_minutes=False):
         minutes = 0
         for journal in self.journals.all():  # ty:ignore[unresolved-attribute]
             # django-orm-lens-disable-next-line DOL007
-            minutes += journal.minutes_worked
+            if include_all_minutes:
+                minutes += journal.minutes_worked
+            else:
+                minutes += journal.reduced_minutes
         return minutes
+    
+    def all_time_logged(self):
+        return self.time_logged(True)
     
     def time_spent(self):
         project = self.get_hackatime_project()
         if project is None:
             return 0
-        return project.total_seconds / 60
+        return project.total_seconds // 60
+
+    def time_unjournaled(self):
+        return self.time_spent() - self.time_logged(include_all_minutes=True)
 
 class Journal(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, related_name="journals")
@@ -68,6 +77,7 @@ class Journal(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     minutes_worked = models.IntegerField()
+    reduced_minutes = models.IntegerField()
     
     def __str__(self):
         return f"{self.minutes_worked} mins on {self.project}"

@@ -1,16 +1,13 @@
 {% load static tailwind_tags static %}
-<html class="win98-scope">
-<head>
-   {% tailwind_css %}
-   <link rel="stylesheet" href="https://unpkg.com/98.css">
-   <link rel="stylesheet" href="{% static 'css/dist/win98.css' %}">
-   <link rel="stylesheet" href="{% static 'css/98.override.css' %}">
-   {% block css %}
-   {% endblock css %}
-</head>
-<body class="font-vintage">
-    {% block body %}
-    meow :3
-    {% endblock body %}
-</body>
+<html style="font-size: 12px;">
+    <head>
+        {% tailwind_css %}
+        <link rel="stylesheet" href="https://unpkg.com/98.css" />
+        <link rel="stylesheet" href="{% static 'css/dist/win98.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/98.override.css' %}" />
+        {% block css %} {% endblock css %}
+    </head>
+    <body class="font-vintage">
+        {% block body %} meow :3 {% endblock body %}
+    </body>
 </html>
