@@ -148,7 +148,7 @@
         dragWindow(realWin);
         focusWindow(id);
  
-        realWin.addEventListener('mousedown', () => focusWindow(id));
+        realWin.querySelector('.title-bar').addEventListener('mousedown', () => focusWindow(id));
         realWin.querySelector('.close-button').onclick = () => {
             realWin.remove();
             taskBtn.remove();
@@ -159,10 +159,10 @@
         document.querySelectorAll('#taskbar-windows button').forEach(b =>
             b.classList.remove('!bg-twisted-400'));
         const win = document.querySelector('.window[data-win-id="' + id + '"]');
-
+        
         container = document.getElementById('windows-container')
         container.moveBefore(win, null)
-        
+
         const btn = document.querySelector('#taskbar-windows button[data-win-id="' + id + '"]');
         if (btn) btn.classList.add('!bg-twisted-400');
     }
@@ -190,6 +190,7 @@
             pendingY = y;
             // throttle DOM writes to one per animation frame for smoothness
             if (rafId === null) rafId = requestAnimationFrame(apply);
+
         }
  
         function onUp() {
