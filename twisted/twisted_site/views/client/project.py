@@ -127,8 +127,9 @@ class NewProjectJournal(View):
                 context={"content": content},
             )
         
-        Journal(project=project, content=content, minutes_worked = project.time_unjournaled(), reduced_minutes=reduced_minutes)
-
+        journal = Journal(project=project, content=content, minutes_worked = project.time_unjournaled(), reduced_minutes=reduced_minutes)
+        journal.save()
+        
         return render(
             request, "client/projects/journal.html", context={"success": True}
         )
