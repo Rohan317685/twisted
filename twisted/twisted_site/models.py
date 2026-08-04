@@ -5,6 +5,12 @@ from . import hackatime
 
 User = get_user_model()
 
+class UploadedFile(models.Model):
+    uploaded_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    link = models.CharField(max_length=500)
+    cdn_response = models.JSONField()
+    uploaded_thru = models.CharField(max_length=500)
+    filesize = models.IntegerField()
 
 # Create your models here.
 class Profile(models.Model):

@@ -89,7 +89,7 @@
 <template id="window-template">
     <div class="absolute window resize flex flex-col overflow-hidden" style="left: 300px; top: 300px; width: 300px; height: 300px;">
         <div class="title-bar">
-            <label class="title-bar-text">TITLE</label>
+            <label class="title-bar-text w-full">TITLE</label>
             <div class="title-bar-controls">
                 <button aria-label="Maximize"></button>
                 <button class="close-button" aria-label="Close">X</button>
@@ -145,26 +145,26 @@
         taskBtn.onclick = () => focusWindow(id);
         document.getElementById('taskbar-windows').appendChild(taskBtn);
  
+        realWin.querySelector('.title-bar').addEventListener('mousedown', () => focusWindow(id));
         dragWindow(realWin);
         focusWindow(id);
- 
-        realWin.querySelector('.title-bar').addEventListener('mousedown', () => focusWindow(id));
-        realWin.querySelector('.close-button').onclick = () => {
+        realWin.querySelector('.close-button').addEventListener('mouseup', () => {
+            console.log('close!')
             realWin.remove();
             taskBtn.remove();
-        };
+        });
     }
  
     function focusWindow(id) {
         document.querySelectorAll('#taskbar-windows button').forEach(b =>
-            b.classList.remove('!bg-twisted-400'));
+            b.classList.remove('!bg-twisted-999'));
         const win = document.querySelector('.window[data-win-id="' + id + '"]');
         
         container = document.getElementById('windows-container')
         container.moveBefore(win, null)
 
         const btn = document.querySelector('#taskbar-windows button[data-win-id="' + id + '"]');
-        if (btn) btn.classList.add('!bg-twisted-400');
+        if (btn) btn.classList.add('!bg-twisted-999');
     }
  
     function dragWindow(mywindow) {

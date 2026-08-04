@@ -47,9 +47,13 @@
 </div>
 
 <script>
+    textbox = document.querySelector('#content')
+    console.log(textbox)
+    csrfToken = "{{ csrf_token }}"
+
     function renderpreview() {
         console.log('rendering...');
-        content = document.getElementById('content').value;
+        content = textbox.value;
         parsed = DOMPurify.sanitize(marked.parse(content));
         document.getElementById('preview').innerHTML = parsed;
     }
@@ -61,6 +65,59 @@
         document.getElementById('previewtab').style.display = null;
         document.getElementById('journaltab').style.display = 'none';
     }
+
+    function generateRandomString(length) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+
+    textbox.addEventListener('paste', (event) => {
+        console.log('paste detect!')
+        const items = (event.clipboardData || window.clipboardData).items;
+
+        for (let i = 0; i < items.length; i++) {
+            if (!items[i].type.startsWith('image/')) {
+                continue;
+            }
+            console.log("found image!")
+            const blob = items[i].getAsFile();
+
+            const id = `![Uploading... ${generateRandomString(5)}]()`
+
+            textbox.value = textbox.value + id + '\n'
+
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', csrfToken);
+            formData.append('file', blob);
+            formData.append('ref', 'journals');
+
+            // 4. Send the POST request to your backend URL
+            response = fetch("{% url 'misc.upload_file' %}", {
+                method: 'POST',
+                body: formData, // Fetch automatically sets Content-Type to multipart/form-data
+            });
+            response.then((response) => {
+                console.log(response);
+                response.json().then((result) => {
+                    console.log(result);
+                    if (result['status'] == 'ok') {
+                        console.log('Upload successful:', result);
+                        textbox.value = textbox.value.replace(id, `![${result['name']}](${result['link']})`);
+                    } else {
+                        console.log('Upload failed:', result);
+                        textbox.value = textbox.value.replace(id, `![Error: ${result['reason']}]()`);
+                    }
+                    renderpreview()
+                })
+            });
+                
+        }
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
 <script src="

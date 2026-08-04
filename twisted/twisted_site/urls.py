@@ -4,10 +4,13 @@ from .views.client.homepage import HomepageView, FaqsView
 from .views.client.dashboard import DashboardView
 from .views.client.projects import ListProjects, CreateProject
 from .views.client.project import ProjectDetail, ProjectSettings, NewProjectJournal
+from .views.misc import upload_file
 
 urlpatterns = [
     path('', view=HomepageView.as_view(), name="homepage"),
     path('faqs/', view=FaqsView.as_view(), name="faqs"),
+
+    path("api/upload_image/", upload_file, name="misc.upload_file"),
     
     path("auth/login/", LoginView.as_view(), name="login"),
     path("oauth/callback/", AuthCallbackView.as_view(), name="auth_callback"),
@@ -21,4 +24,5 @@ urlpatterns = [
     path("dashboard/frame/projects/<int:id>/", ProjectDetail.as_view(), name="fr.projects.detail"),
     path("dashboard/frame/projects/<int:id>/settings/", ProjectSettings.as_view(), name="fr.projects.settings"),
     path("dashboard/frame/projects/<int:id>/journals/new/", NewProjectJournal.as_view(), name="fr.projects.journals.new"),
+
 ]
