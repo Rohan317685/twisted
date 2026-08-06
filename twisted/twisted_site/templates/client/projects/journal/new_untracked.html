@@ -1,0 +1,23 @@
+{% extends "client/projects/journal/new_journal.base.html" %} {% load static time_filters %} {% block links %}
+<a href="{% url 'fr.projects.journals.new.hackatime' project.id %}">
+    <button>Hackatime</button>
+</a>
+<a href="{% url 'fr.projects.journals.new.lookout' project.id %}">
+    <button>Lookout</button>
+</a>
+{% if project.project_type == 'hardware' %}
+<button disabled>untracked</button>
+{% endif %} {% endblock links %} {% block journal_log_message %} {% endblock journal_log_message %} {% block preform %}
+<div>
+    This journal will log
+    <input
+        value="1"
+        type="number"
+        min="0"
+        max="{{ max_mins }}"
+        class="no-spinner text-right"
+        oninput="if(Number(this.value) > {{ max_mins }}) this.value = {{ max_mins }};"
+    />
+    minutes.
+</div>
+{% endblock preform %}

@@ -18,7 +18,7 @@
     </div>
     {% endif %}
     <div>
-        <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new' project.id %}'}, '*')">New journal...</button>
+        <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new.hackatime' project.id %}'}, '*')">New journal...</button>
     </div>
 </div>
 

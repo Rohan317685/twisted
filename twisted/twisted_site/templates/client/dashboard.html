@@ -129,8 +129,12 @@
  
         win.querySelector('.title-bar-text').textContent = title;
         win.querySelector('.src-frame').src = src;
-        win.style.top = (Math.random() * 150 + 80) + "px";
-        win.style.left = (Math.random() * 200 + 150) + "px";
+
+        x = Math.random() * (window.innerWidth - w)
+        y = Math.random() * (window.innerHeight - w)
+
+        win.style.left = x + "px";
+        win.style.top = y + "px";
         win.style.width = w + "px";
         win.style.height = h + "px";
         container.appendChild(clone);

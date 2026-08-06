@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* @plugin "@tailwindcss/typography"; */
 
 /**
 * A catch-all path to Django template files, JavaScript, and Python files
@@ -53,9 +54,20 @@ button {
   --color-surface: #1E072F;
   --color-dark: #261F2D;
 }
+
 @keyframes flag-wave {
   0%, 100% { transform: rotate(-2deg); }
   50% { transform: rotate(2deg); }
+}
+
+@utility no-spinner {
+  -moz-appearance: textfield;
+  
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 .flag-wave {
