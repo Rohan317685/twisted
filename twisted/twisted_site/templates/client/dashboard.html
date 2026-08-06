@@ -9,7 +9,7 @@
 
     <div id="windows-container"></div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between bg-twisted-400 border-t-2 border-t-twisted-200 px-1 py-1">
+    <div id="taskbar" class="fixed bottom-0 left-0 right-0 z-9999 flex items-center justify-between bg-twisted-400 border-t-2 border-t-twisted-200 px-1 py-1">
         <div class="relative">
             <button onclick="toggleStartMenu(event)"
                 class="flex items-center gap-1 !bg-twisted-600 !text-base !text-absolute-white !font-bold !px-3 !py-1 !border-2 !border-t-twisted-200 !border-l-twisted-200 !border-r-dark-black !border-b-dark-black active:!border-t-dark-black active:!border-l-dark-black active:!border-r-twisted-200 active:!border-b-twisted-200">
@@ -87,11 +87,11 @@
 <div class="-z-10 bg-surface fixed top-0 left-0 bottom-0 right-0"></div>
 
 <template id="window-template">
-    <div class="absolute window resize flex flex-col overflow-hidden" style="left: 300px; top: 300px; width: 300px; height: 300px;">
+    <div class="absolute window resize flex flex-col overflow-hidden" style="min-width: 200px; min-height: 200px; left: 300px; top: 300px; width: 300px; height: 300px;">
         <div class="title-bar">
             <label class="title-bar-text w-full">TITLE</label>
             <div class="title-bar-controls">
-                <button aria-label="Maximize"></button>
+                <button class="max-button" aria-label="Maximize"></button>
                 <button class="close-button" aria-label="Close">X</button>
             </div>
         </div>
@@ -106,8 +106,10 @@
 </audio>
 
 <script>
- let windowCounter = 0;
- 
+    let windowCounter = 0;
+    let currentMaximisedWindow = null;
+
+
     window.addEventListener("message", (event) => {
         const data = event.data;
         if (data.type != 'internal') return;
@@ -152,13 +154,49 @@
         realWin.querySelector('.title-bar').addEventListener('mousedown', () => focusWindow(id));
         dragWindow(realWin);
         focusWindow(id);
+        realWin.querySelector('.max-button').addEventListener('mouseup', () => {
+            console.log('maximise!');
+            fullscreenWindow(id);
+        });
         realWin.querySelector('.close-button').addEventListener('mouseup', () => {
-            console.log('close!')
+            console.log('close!');
             realWin.remove();
             taskBtn.remove();
         });
     }
- 
+    
+    function fullscreenWindow(id) {
+        const win = document.querySelector('.window[data-win-id="' + id + '"]');
+        if (currentMaximisedWindow != null && currentMaximisedWindow.win == win) {
+            win.style.left = currentMaximisedWindow.left;
+            win.style.top = currentMaximisedWindow.top;
+            win.style.width = currentMaximisedWindow.width;
+            win.style.height = currentMaximisedWindow.height;
+            win.classList.add('resize');
+
+            currentMaximisedWindow = null;
+            return
+        }
+        if (currentMaximisedWindow != null) {
+            fullscreenWindow(currentMaximisedWindow.id);
+        }
+        currentMaximisedWindow = {
+            id: id,
+            win: win,
+            left: win.style.left,
+            top: win.style.top,
+            width: win.style.width,
+            height: win.style.height
+        }
+        win.style.left = "0px";
+        win.style.top = "0px";
+        win.style.bottom = document.getElementById('taskbar').offsetHeight+"px";
+        win.style.right = "0px";
+        win.style.width = null;
+        win.style.height = null;
+        win.classList.remove('resize');
+    }
+
     function focusWindow(id) {
         document.querySelectorAll('#taskbar-windows button').forEach(b =>
             b.classList.remove('!bg-twisted-999'));
@@ -172,6 +210,7 @@
     }
  
     function dragWindow(mywindow) {
+        
         const titleBar = mywindow.getElementsByClassName('title-bar')[0];
         let dragging = false, startX = 0, startY = 0, origX = 0, origY = 0, pendingX = 0, pendingY = 0, rafId = null;
  
@@ -182,6 +221,9 @@
         }
  
         function onMove(e) {
+            if (currentMaximisedWindow != null && currentMaximisedWindow.win == mywindow) {
+                return;
+            }
             if (!dragging) return;
             e.preventDefault();
             const rect = mywindow.getBoundingClientRect();
