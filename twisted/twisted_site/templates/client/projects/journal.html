@@ -6,6 +6,13 @@
         New journal for {{ project.project_name }}
     </div>
     <div>
+        <button disabled>Hackatime</button>
+        <button>Lookout</button>
+        {% if project.project_type == 'hardware' %}
+            <button>journal</button>
+        {% endif %}
+    </div>
+    <div>
         This journal will log {{ log_minutes|minutes_to_hours_minutes }}.
     </div>
     {% if info %}
@@ -16,18 +23,16 @@
     <form method="post" class="h-full flex flex-col">
         {% csrf_token %}
         <div>
-            <button type="button" onclick="switchjournal()">Journal</button>
-            <button type="button" onclick="switchpreview()">Preview</button>
+            <button id="journalbutton" type="button" onclick="switchedit()" disabled>Edit</button>
+            <button id="previewbutton" type="button" onclick="switchpreview()">Preview</button>
         </div>
         <div class="flex-1">
             <div class="!text-lg h-full flex flex-col" id="journaltab">
-                <h3>Journal</h3>
                 <div class="flex-1">
                     <textarea name="content" id="content" class="w-full h-full text-2xl!" oninput="renderpreview()">{{ content }}</textarea>
                 </div>
             </div>
             <div id="previewtab" style="display: none;" class="h-full flex flex-col">
-                <h3>Preview</h3>
                 <div class="overflow-y-auto flex-1 bg-twisted-600 p-1">
                     <div id="preview" class="zoom-150 [&_h1,h2,h3,h4,h5,h6]:zoom-50"></div>
                 </div>
@@ -57,13 +62,19 @@
         parsed = DOMPurify.sanitize(marked.parse(content));
         document.getElementById('preview').innerHTML = parsed;
     }
-    function switchjournal() {
+    function switchedit() {
         document.getElementById('previewtab').style.display = 'none';
         document.getElementById('journaltab').style.display = null;
+        
+        document.getElementById('journalbutton').disabled = true;
+        document.getElementById('previewbutton').disabled = null;
     }
     function switchpreview() {
         document.getElementById('previewtab').style.display = null;
         document.getElementById('journaltab').style.display = 'none';
+
+        document.getElementById('journalbutton').disabled = null;
+        document.getElementById('previewbutton').disabled = true;
     }
 
     function generateRandomString(length) {
