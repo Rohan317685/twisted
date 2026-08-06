@@ -156,7 +156,7 @@
         focusWindow(id);
         realWin.querySelector('.max-button').addEventListener('mouseup', () => {
             console.log('maximise!');
-            fullscreenWindow(id);
+            fullscreenWindow(realWin);
         });
         realWin.querySelector('.close-button').addEventListener('mouseup', () => {
             console.log('close!');
@@ -165,8 +165,7 @@
         });
     }
     
-    function fullscreenWindow(id) {
-        const win = document.querySelector('.window[data-win-id="' + id + '"]');
+    function fullscreenWindow(win) {
         if (currentMaximisedWindow != null && currentMaximisedWindow.win == win) {
             win.style.left = currentMaximisedWindow.left;
             win.style.top = currentMaximisedWindow.top;
@@ -178,10 +177,9 @@
             return
         }
         if (currentMaximisedWindow != null) {
-            fullscreenWindow(currentMaximisedWindow.id);
+            fullscreenWindow(currentMaximisedWindow.win);
         }
         currentMaximisedWindow = {
-            id: id,
             win: win,
             left: win.style.left,
             top: win.style.top,

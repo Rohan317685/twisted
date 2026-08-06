@@ -1,24 +1,58 @@
 {% extends "client/osbase.html" %} {% load static time_filters %} {% block body %}
 <div class="bg-surface flex flex-col w-full h-full font-vintage">
-    <div class="text-xl">
-        {{ project.project_name }} ({{ project.get_project_type_display }})
+    <div class="flex mb-2">
+        <div class="flex-1">
+            <div class="text-xl">
+                {{ project.project_name }} ({{ project.get_project_type_display }})
+            </div>
+            <div>{{ project.project_description }}</div>
+        </div>
+        <div>
+            <a href="{% url 'fr.projects.settings' project.id %}">
+                <button>Settings</button>
+            </a>
+        </div>
     </div>
-    <div>{{ project.project_description }}</div>
+    <div class="mb-2">
+        <div class="flex gap-4">
+            <div>
+                <div>
+                    Time spent
+                </div>
+                <div class="text-right">
+                    {{ project.time_spent|minutes_to_hours_minutes }}
+                </div>
+            </div>
+            <div>
+                <div>Time logged</div>
+                <div class="text-right">
+                    {{ project.time_logged|minutes_to_hours_minutes }}
+                </div>
+            </div>
+        </div>
+        {% if not project.hackatime_project_name %}
+        <div class="border border-twisted-400 p-1 m-1 w-fit">
+            Hi! I noticed you dont have a hackatime project linked yet. You can link a hackatime project over at the
+            <a href="{% url 'fr.projects.settings' project.id %}">project settings</a>.
+        </div>
+        {% endif %}
+        <div>
+            <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new.hackatime' project.id %}'}, '*')">New journal...</button>
+        </div>
+    </div>
     <div>
-        <a href="{% url 'fr.projects.settings' project.id %}">
-            <button>Settings</button>
-        </a>
-    </div>
-    <div>Time spent: {{ project.time_spent|minutes_to_hours_minutes }}</div>
-    <div>Time logged: {{ project.time_logged|minutes_to_hours_minutes }}</div>
-    {% if not project.hackatime_project_name %}
-    <div class="border border-twisted-400 p-1 m-1 w-fit">
-        Hi! I noticed you dont have a hackatime project linked yet. You can link a hackatime project over at the
-        <a href="{% url 'fr.projects.settings' project.id %}">project settings</a>.
-    </div>
-    {% endif %}
-    <div>
-        <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new.hackatime' project.id %}'}, '*')">New journal...</button>
+        {% for journal in project.journals.all %}
+        <div class="p-4 m-2 rounded-lg bg-twisted-600">
+            <div class="flex gap-1">
+                <div>{{ journal.reduced_minutes|minutes_to_hours_minutes }} logged</div>
+                •
+                <div>{{ journal.get_type_display }} journal</div>
+            </div>
+            <div>
+                <c-mdpreview class="w-full zoom-100 **:[&_img]:zoom-50">{{ journal.content }}</c-mdpreview>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 

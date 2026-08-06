@@ -5,12 +5,21 @@ from . import hackatime
 
 User = get_user_model()
 
+JOURNAL_TYPES = {
+   'hackatime': 'Hackatime',
+   'lookout': 'Lookout',
+   'untracked': 'Untracked'
+}
+
 class UploadedFile(models.Model):
     uploaded_by = models.ForeignKey(User, on_delete=models.PROTECT)
     link = models.CharField(max_length=500)
     cdn_response = models.JSONField()
     uploaded_thru = models.CharField(max_length=500)
     filesize = models.IntegerField()
+    
+    def __str__(self):
+        return f"{self.cdn_response['filename']} uploaded by {self.uploaded_by.profile.slack_username}"
 
 # Create your models here.
 class Profile(models.Model):
@@ -26,6 +35,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username  # ty:ignore[unresolved-attribute]
 
+PROJECT_TYPE_CHOICES = {'software': 'Software', 'hardware': 'Hardware'}
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="projects")
@@ -33,7 +43,7 @@ class Project(models.Model):
     project_name = models.CharField(max_length=50)
     project_description = models.TextField(max_length=2000)
     
-    project_type = models.CharField(choices={'software': 'Software', 'hardware': 'Hardware'}, max_length=100)
+    project_type = models.CharField(choices=PROJECT_TYPE_CHOICES, max_length=100)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -55,15 +65,24 @@ class Project(models.Model):
     def time_logged(self, include_all_minutes=False):
         minutes = 0
         for journal in self.journals.all():  # ty:ignore[unresolved-attribute]
-            # django-orm-lens-disable-next-line DOL007
             if include_all_minutes:
+                # django-orm-lens-disable-next-line DOL007
                 minutes += journal.minutes_worked
             else:
                 minutes += journal.reduced_minutes
         return minutes
     
-    def all_time_logged(self):
-        return self.time_logged(True)
+    def hackatime_logged(self, include_all_minutes=False):
+        minutes = 0
+        for journal in self.journals.all():  # ty:ignore[unresolved-attribute]
+            if journal.type != 'hackatime':
+                continue
+            if include_all_minutes:
+                # django-orm-lens-disable-next-line DOL007
+                minutes += journal.minutes_worked
+            else:
+                minutes += journal.reduced_minutes
+        return minutes
     
     def time_spent(self):
         project = self.get_hackatime_project()
@@ -71,11 +90,12 @@ class Project(models.Model):
             return 0
         return project.total_seconds // 60
 
-    def time_unjournaled(self):
-        return self.time_spent() - self.time_logged(include_all_minutes=True)
+    def hackatime_time_unjournaled(self):
+        return self.time_spent() - self.hackatime_logged(include_all_minutes=True)
 
 class Journal(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, related_name="journals")
+    type = models.CharField(max_length=100, choices=JOURNAL_TYPES)
     
     content = TextField()
     
@@ -86,4 +106,4 @@ class Journal(models.Model):
     reduced_minutes = models.IntegerField()
     
     def __str__(self):
-        return f"{self.minutes_worked} mins on {self.project}"
+        return f"{self.reduced_minutes} mins on {self.project}"

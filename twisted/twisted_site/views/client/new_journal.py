@@ -9,9 +9,10 @@ import math
 
 HACKATIME_MAX_LOGGABLE_MINUTES = 6 * 60
 
+
 class NewProjectHackatimeJournal(View):
     def get(self, request, id, info=None, context={}):
-        context['info'] = info
+        context["info"] = info
         if self.request.user.is_anonymous:
             return redirect("homepage")
 
@@ -21,13 +22,15 @@ class NewProjectHackatimeJournal(View):
 
         context["project"] = project
 
-        log_minutes = project.time_unjournaled()
+        log_minutes = project.hackatime_time_unjournaled()
 
         log_minutes = min(log_minutes, HACKATIME_MAX_LOGGABLE_MINUTES)
 
         context["log_minutes"] = log_minutes
 
-        return render(request, "client/projects/journal/new_hackatime.html", context=context)
+        return render(
+            request, "client/projects/journal/new_hackatime.html", context=context
+        )
 
     def post(self, request, id):
         project = Project.objects.get(id=id)
@@ -35,7 +38,7 @@ class NewProjectHackatimeJournal(View):
             return redirect("dashboard")
 
         reduced_minutes = min(
-            project.time_unjournaled(), HACKATIME_MAX_LOGGABLE_MINUTES
+            project.hackatime_time_unjournaled(), HACKATIME_MAX_LOGGABLE_MINUTES
         )
 
         content = request.POST["content"]
@@ -57,17 +60,22 @@ class NewProjectHackatimeJournal(View):
                 info=f"Content length must be more than 60 characters per hour!<br>({len(content)} of {reduced_minutes} required)",
                 context={"content": content},
             )
-        
-        journal = Journal(project=project, content=content, minutes_worked = project.time_unjournaled(), reduced_minutes=reduced_minutes)
-        journal.save()
-        
-        return render(
-            request, "client/projects/new_hackatime.html", context={"success": True}
+
+        journal = Journal(
+            project=project,
+            type="hackatime",
+            content=content,
+            minutes_worked=project.hackatime_time_unjournaled(),
+            reduced_minutes=reduced_minutes,
         )
+        journal.save()
+
+        return self.get(request, id, context={"success": True})
+
 
 class NewProjectLookoutJournal(View):
     def get(self, request, id, info=None, context={}):
-        context['info'] = info
+        context["info"] = info
         if self.request.user.is_anonymous:
             return redirect("homepage")
 
@@ -77,15 +85,17 @@ class NewProjectLookoutJournal(View):
 
         context["project"] = project
 
-        log_minutes = project.time_unjournaled()
+        log_minutes = project.hackatime_time_unjournaled()
 
         log_minutes = min(log_minutes, HACKATIME_MAX_LOGGABLE_MINUTES)
 
         context["log_minutes"] = log_minutes
-        
-        context['info'] = "TODO: This has NOT been implemented yet."
 
-        return render(request, "client/projects/journal/new_lookout.html", context=context)
+        context["info"] = "TODO: This has NOT been implemented yet."
+
+        return render(
+            request, "client/projects/journal/new_lookout.html", context=context
+        )
 
     def post(self, request, id):
         project = Project.objects.get(id=id)
@@ -93,7 +103,7 @@ class NewProjectLookoutJournal(View):
             return redirect("dashboard")
 
         reduced_minutes = min(
-            project.time_unjournaled(), HACKATIME_MAX_LOGGABLE_MINUTES
+            project.hackatime_time_unjournaled(), HACKATIME_MAX_LOGGABLE_MINUTES
         )
 
         content = request.POST["content"]
@@ -115,21 +125,31 @@ class NewProjectLookoutJournal(View):
                 info=f"Content length must be more than 60 characters per hour!<br>({len(content)} of {reduced_minutes} required)",
                 context={"content": content},
             )
-        
-        journal = Journal(project=project, content=content, minutes_worked = project.time_unjournaled(), reduced_minutes=reduced_minutes)
+
+        journal = Journal(
+            project=project,
+            content=content,
+            minutes_worked=project.hackatime_time_unjournaled(),
+            reduced_minutes=reduced_minutes,
+        )
         journal.save()
-        
+
         return render(
             request, "client/projects/new_lookout.html", context={"success": True}
         )
 
-UNTRACKED_MAX_LOGGABLE_MINUTES = 120
+
+UNTRACKED_MAX_LOGGABLE_MINUTES = 180
+
 
 class NewProjectUntrackedJournal(View):
     def get(self, request, id, info=None, context={}):
-        context['info'] = info
+        context["info"] = info
         if self.request.user.is_anonymous:
             return redirect("homepage")
+        
+        if project.project_type == 'software':
+            return redirect('fr.projects.journals.new.hackatime')
 
         project = Project.objects.get(id=id)
         if project.user != request.user:
@@ -137,50 +157,56 @@ class NewProjectUntrackedJournal(View):
 
         context["project"] = project
 
-        log_minutes = project.time_unjournaled()
+        log_minutes = project.hackatime_time_unjournaled()
 
         log_minutes = min(log_minutes, HACKATIME_MAX_LOGGABLE_MINUTES)
 
         context["log_minutes"] = log_minutes
 
-        context['max_mins'] = UNTRACKED_MAX_LOGGABLE_MINUTES
-        
-        context['info'] = "logging untracked journals is generally not advised. time deflation may occur."
-        
-        return render(request, "client/projects/journal/new_untracked.html", context=context)
+        context["max_mins"] = UNTRACKED_MAX_LOGGABLE_MINUTES
+
+        context["info"] = (
+            "logging untracked journals is generally not advised. time deflation may occur."
+        )
+
+        return render(
+            request, "client/projects/journal/new_untracked.html", context=context
+        )
 
     def post(self, request, id):
         project = Project.objects.get(id=id)
         if project.user != request.user:
             return redirect("dashboard")
-
-        reduced_minutes = min(
-            project.time_unjournaled(), HACKATIME_MAX_LOGGABLE_MINUTES
-        )
+        
+        if project.project_type == 'software':
+            return redirect('fr.projects.journals.new.hackatime')
 
         content = request.POST["content"]
-        image_regex = r"\!\[.*?\]\(.*?\)"
-        image_count = len(re.findall(image_regex, content))
-        required_image_count = math.ceil(max(1, reduced_minutes / 180))
+        time_logged = int(request.POST["time_logged"])
 
-        if image_count < required_image_count:
+        if time_logged > 180:
             return self.get(
                 request,
                 id,
-                info=f"please add atleast {required_image_count - image_count} more image(s) to log this journal!",
+                info="Time logged cannot be more than 180 minutes!",
                 context={"content": content},
             )
-        if len(content) < min(100, reduced_minutes):
+
+        if len(content) < min(100, time_logged * 2):
             return self.get(
                 request,
                 id,
-                info=f"Content length must be more than 60 characters per hour!<br>({len(content)} of {reduced_minutes} required)",
+                info=f"Content length must be more than 120 characters per hour!<br>({len(content)} of {time_logged} required)",
                 context={"content": content},
             )
-        
-        journal = Journal(project=project, content=content, minutes_worked = project.time_unjournaled(), reduced_minutes=reduced_minutes)
-        journal.save()
-        
-        return render(
-            request, "client/projects/new_untracked.html", context={"success": True}
+
+        journal = Journal(
+            project=project,
+            type="untracked",
+            content=content,
+            minutes_worked=time_logged,
+            reduced_minutes=time_logged,
         )
+        journal.save()
+
+        return self.get(request, id, context={"success": True})
