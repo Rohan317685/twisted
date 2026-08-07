@@ -6,7 +6,18 @@ from django.views import View
 from django.shortcuts import render, redirect
 from ..models import Project, UploadedFile
 from django.contrib.auth.decorators import login_required
+import boto3
+from pathlib import Path
+from uuid import uuid4
+from botocore.exceptions import ClientError, BotoCoreError
 
+s3 = boto3.client(
+    "s3",
+    endpoint_url=os.environ["R2_ENDPOINT"],
+    aws_access_key_id=os.environ["R2_ACCESS_KEY"],
+    aws_secret_access_key=os.environ["R2_SECRET_KEY"],
+    region_name="auto",
+)
 
 @login_required
 def upload_file(request):
@@ -42,27 +53,32 @@ def file_uploader(request, image):
     :param `image` is from `request.FILES['markdown-image-upload']`
     :return json response
     """
-    api_url = "https://cdn.hackclub.com/api/v4/upload"
-    headers = {"Authorization": "Bearer " + os.environ["HACKCLUB_CDN_API_KEY"]}
-    response = requests.post(api_url, headers=headers, files={"file": image})
-
-    if response.status_code in [200, 201]:
-        response_data = response.json()
-        UploadedFile.objects.create(
-            uploaded_by=request.user,
-            link=response_data["url"],
-            cdn_response=response_data,
-            uploaded_thru=request.POST.get("ref", "unknown"),
-            filesize=response_data["size"],
+    try:
+        ext = Path(image.name).suffix.lower()
+        filename = f"{uuid4().hex}{ext}"
+        s3.upload_fileobj(
+            image,
+            os.environ["R2_BUCKET"],
+            filename,
+            ExtraArgs={
+                "ContentType": image.content_type,
+            },
         )
-        return {
-            "status": "ok",
-            "link": response_data["url"],
-            "name": response_data["filename"],
-            "response": response_data,
+
+        response_data = {
+            "url": f"{os.environ['R2_PUBLIC_URL']}/{filename}",
+            "filename": filename,
+            "size": image.size,
         }
 
-    return {
-        "status": response.status_code,
-        "error": response.content.decode("utf-8"),
-    }
+    except (ClientError, BotoCoreError) as e:
+        return {
+            "status": "Error Occured", 
+            "error": str(e)
+            }
+
+    except Exception as e:
+        return {
+            "status": "Error Occurred", 
+            "error": f"Unknown Error Occurred: {str(e)}",
+            }
