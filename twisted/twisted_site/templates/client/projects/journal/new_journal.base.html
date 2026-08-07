@@ -5,7 +5,7 @@
   "prerender": [
     {
     "source": "list",
-    "urls": ["{% url 'fr.projects.journals.new.hackatime' project.id %}", "{% url 'fr.projects.journals.new.lookout' project.id %}", "{% url 'fr.projects.journals.new.untracked' project.id %}"],
+    "urls": ["{% url 'fr.projects.journals.new.hackatime' project.id %}", "{% url 'fr.projects.journals.new.untracked' project.id %}"],
     "eagerness": "eager"
 }]
 }
@@ -19,9 +19,6 @@
         {% block links %}
         <a href="{% url 'fr.projects.journals.new.hackatime' project.id %}">
             <button>Hackatime</button>
-        </a>
-        <a href="{% url 'fr.projects.journals.new.lookout' project.id %}">
-            <button>Lookout</button>
         </a>
         {% if project.project_type == 'hardware' %}
         <a href="{% url 'fr.projects.journals.new.untracked' project.id %}">

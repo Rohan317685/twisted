@@ -15,14 +15,14 @@
     </div>
     <div class="mb-2">
         <div class="flex gap-4">
-            <div>
+            <!-- <div>
                 <div>
                     Time spent
                 </div>
                 <div class="text-right">
                     {{ project.time_spent|minutes_to_hours_minutes }}
                 </div>
-            </div>
+            </div> -->
             <div>
                 <div>Time logged</div>
                 <div class="text-right">
@@ -44,9 +44,12 @@
         {% for journal in project.journals.all %}
         <div class="p-4 m-2 rounded-lg bg-twisted-600">
             <div class="flex gap-1">
-                <div>{{ journal.reduced_minutes|minutes_to_hours_minutes }} logged</div>
-                •
-                <div>{{ journal.get_type_display }} journal</div>
+                <div class="flex-1">
+                    <div>{{ journal.reduced_minutes|minutes_to_hours_minutes }} logged via {{ journal.get_type_display }}</div>
+                </div>
+                <div>
+                    <img class="w-16 image-render-pixelated" src="{% static 'icons/delete.png' %}" alt="">
+                </div>
             </div>
             <div>
                 <c-mdpreview class="w-full zoom-100 **:[&_img]:zoom-50">{{ journal.content }}</c-mdpreview>
