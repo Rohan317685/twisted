@@ -10,8 +10,6 @@ import boto3
 from pathlib import Path
 from uuid import uuid4
 from botocore.exceptions import ClientError, BotoCoreError
-import logging
-logger = logging.getLogger('django')
 
 s3 = boto3.client(
     "s3",
@@ -40,7 +38,15 @@ def upload_file(request):
                 )
 
             response_data = file_uploader(request, image)
-            return JsonResponse(response_data)
+            # Handle upload errors
+            if response_data.get("status") == "error":
+                return JsonResponse(response_data)
+            return JsonResponse({
+                "status": "ok",
+                "link": response_data["url"],
+                "name": response_data["filename"],
+                "response": response_data,
+            })
         return JsonResponse(
             {"status": "error", "reason": "Invalid request: no image found"}
         )
@@ -74,15 +80,13 @@ def file_uploader(request, image):
         }
 
     except (ClientError, BotoCoreError) as e:
-        logger.error(f"Error occurred during file upload. e: {e}")
         return {
                 "status": "Error Occured", 
                 "error": str(e)
             }
 
     except Exception as e:
-        logger.error(f"Unknown error occurred during file upload. e: {e}")
         return {
-                "status": "Error Occurred", 
-                "error": f"Unknown Error Occurred: {str(e)}",
-            }
+            "status": "Error Occurred", 
+            "error": f"Unknown Error Occurred: {str(e)}",
+        }
