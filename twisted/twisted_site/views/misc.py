@@ -10,7 +10,9 @@ import boto3
 from pathlib import Path
 from uuid import uuid4
 from botocore.exceptions import ClientError, BotoCoreError
+import logging
 
+logging.basicConfig(level=logging.INFO)
 s3 = boto3.client(
     "s3",
     endpoint_url=os.environ["R2_ENDPOINT"],
@@ -72,12 +74,14 @@ def file_uploader(request, image):
         }
 
     except (ClientError, BotoCoreError) as e:
+        logging.exception(f"Error occurred during file upload. e: {e}")
         return {
                 "status": "Error Occured", 
                 "error": str(e)
             }
 
     except Exception as e:
+        logging.exception(f"Unknown error occurred during file upload. e: {e}")
         return {
                 "status": "Error Occurred", 
                 "error": f"Unknown Error Occurred: {str(e)}",
