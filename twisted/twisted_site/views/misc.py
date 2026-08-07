@@ -65,7 +65,7 @@ def file_uploader(request, image):
             },
         )
 
-        response_data = {
+        return {
             "url": f"{os.environ['R2_PUBLIC_URL']}/{filename}",
             "filename": filename,
             "size": image.size,
@@ -73,12 +73,12 @@ def file_uploader(request, image):
 
     except (ClientError, BotoCoreError) as e:
         return {
-            "status": "Error Occured", 
-            "error": str(e)
+                "status": "Error Occured", 
+                "error": str(e)
             }
 
     except Exception as e:
         return {
-            "status": "Error Occurred", 
-            "error": f"Unknown Error Occurred: {str(e)}",
+                "status": "Error Occurred", 
+                "error": f"Unknown Error Occurred: {str(e)}",
             }
