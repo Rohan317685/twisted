@@ -148,10 +148,11 @@ class NewProjectUntrackedJournal(View):
         if self.request.user.is_anonymous:
             return redirect("homepage")
         
+        project = Project.objects.get(id=id)
+
         if project.project_type == 'software':
             return redirect('fr.projects.journals.new.hackatime')
-
-        project = Project.objects.get(id=id)
+        
         if project.user != request.user:
             return redirect("dashboard")
 

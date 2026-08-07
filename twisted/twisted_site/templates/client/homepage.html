@@ -25,7 +25,6 @@
         <a href="{% url 'faqs' %}">FAQs</a>
       </nav>
       <div id="rsvp">
-        {% csrf_token %}
         {% if login_enabled %}
         {% if user.is_authenticated %}
         <a href="{% url 'dashboard' %}">
@@ -35,6 +34,7 @@
         </a>
         {% else %}
         <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
           <button type="submit" class="bg-twisted-400 text-absolute-white text-2xl font-bold py-3 px-10 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
             Login
           </button>
