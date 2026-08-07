@@ -74,14 +74,14 @@ def file_uploader(request, image):
         }
 
     except (ClientError, BotoCoreError) as e:
-        logging.exception(f"Error occurred during file upload. e: {e}")
+        print(f"Error occurred during file upload. e: {e}")
         return {
                 "status": "Error Occured", 
                 "error": str(e)
             }
 
     except Exception as e:
-        logging.exception(f"Unknown error occurred during file upload. e: {e}")
+        print(f"Unknown error occurred during file upload. e: {e}")
         return {
                 "status": "Error Occurred", 
                 "error": f"Unknown Error Occurred: {str(e)}",
