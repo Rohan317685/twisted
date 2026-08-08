@@ -1,0 +1,40 @@
+{% extends "client/osbase.html" %} {% load static time_filters %}
+{% block body %}
+<div class="font-vintage">
+    {% if not success %}
+    <div class="p-2">
+        <div>
+            <div class="grid grid-cols-2 w-fit gap-x-4">
+                <div>Time logged:</div>
+                <div>{{ journal.reduced_minutes|minutes_to_hours_minutes }}</div>
+                <div>Journal type:</div>
+                <div>{{ journal.get_type_display }}</div>
+                <div>Created:</div>
+                <div>{{ journal.created_at }}</div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <div>
+                Are you sure you want to delete this journal?
+            </div>
+            <div>
+                It will be lost forever (a long time!)
+            </div>
+            <form method="post" action="{% url 'fr.projects.journals.delete' journal.pk %}">
+                {% csrf_token %}
+                <button>Yes, delete it</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center mt-4">
+        <div class="text-2xl">
+            Your journal has been deleted
+        </div>
+        <div>
+            You can now close this window
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock body %}

@@ -22,4 +22,5 @@ urlpatterns = [
     path("dashboard/frame/projects/<int:id>/settings/", client.ProjectSettings.as_view(), name="fr.projects.settings"),
     path("dashboard/frame/projects/<int:id>/journals/new/hackatime/", client.NewProjectHackatimeJournal.as_view(), name="fr.projects.journals.new.hackatime"),
     path("dashboard/frame/projects/<int:id>/journals/new/untracked/", client.NewProjectUntrackedJournal.as_view(), name="fr.projects.journals.new.untracked"),
+    path("dashboard/frame/journals/delete/<int:id>/", client.DeleteJournal.as_view(), name="fr.projects.journals.delete"),
 ]

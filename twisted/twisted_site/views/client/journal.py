@@ -75,7 +75,6 @@ class NewProjectHackatimeJournal(View):
 
 UNTRACKED_MAX_LOGGABLE_MINUTES = 180
 
-
 class NewProjectUntrackedJournal(View):
     def get(self, request, id, info=None, context={}):
         context["info"] = info
@@ -145,3 +144,42 @@ class NewProjectUntrackedJournal(View):
         journal.save()
 
         return self.get(request, id, context={"success": True})
+
+class DeleteJournal(View):
+    def get(self, request, id, context={'success': False}):
+        if request.user.is_anonymous:
+            return redirect('homepage')
+        
+        if id is not None:
+            journal = Journal.objects.get(id=id)
+            if journal.project.user != request.user:
+                return redirect('dashboard')
+            
+            if journal.type != 'untracked':
+                return redirect('dashboard')
+            
+            
+            context['journal'] = journal
+        
+        return render(
+            request, "client/projects/journal/delete.html", context=context
+        )
+
+    def post(self, request, id):
+        if request.user.is_anonymous:
+            return redirect('homepage')
+        print('hi', flush=True)
+        
+        journal = Journal.objects.get(id=id)
+        print(journal)
+        
+        if journal.project.user != request.user:
+            return redirect('dashboard')
+        
+        if journal.type != 'untracked':
+            return redirect('dashboard')
+        
+        journal.delete()
+        
+        
+        return self.get(request, id=None, context={"success": True})

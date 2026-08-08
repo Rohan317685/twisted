@@ -1,4 +1,4 @@
-{% extends "client/osbase.html" %} {% load static time_filters %} {% block body %}
+{% extends "client/osbase.html" %} {% load static time_filters humanize %} {% block body %}
 <div class="bg-surface flex flex-col w-full h-full font-vintage">
     <div class="flex mb-2">
         <div class="flex-1">
@@ -33,23 +33,34 @@
         {% if not project.hackatime_project_name %}
         <div class="border border-twisted-400 p-1 m-1 w-fit">
             Hi! I noticed you dont have a hackatime project linked yet. You can link a hackatime project over at the
-            <a href="{% url 'fr.projects.settings' project.id %}">project settings</a>.
+            <a href="{% url 'fr.projects.settings' project.pk %}">project settings</a>.
         </div>
         {% endif %}
         <div>
-            <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new.hackatime' project.id %}'}, '*')">New journal...</button>
+            <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new.hackatime' project.pk %}'}, '*')">New journal...</button>
         </div>
     </div>
     <div>
-        {% for journal in project.journals.all %}
+        {% for journal in project.journals.all|dictsortreversed:"created_at" %}
         <div class="p-4 m-2 rounded-lg bg-twisted-600">
             <div class="flex gap-1">
-                <div class="flex-1">
+                <div class="flex-1 flex gap-1">
                     <div>{{ journal.reduced_minutes|minutes_to_hours_minutes }} logged via {{ journal.get_type_display }}</div>
+                    •
+                    <div title="{{ journal.created_at }}">{{ journal.created_at|naturaltime }}</div>
                 </div>
-                <div>
-                    <img class="w-16 image-render-pixelated" src="{% static 'icons/delete.png' %}" alt="">
+                {% if project.user == request.user %}
+                <div class="flex gap-2">
+                    {% if journal.type == "untracked" %}
+                    <div title="Delete" onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'delete journal', 'src': '{% url 'fr.projects.journals.delete' journal.pk %}'}, '*')" class="w-7 h-7 bg-twisted-800 p-1 rounded-md cursor-pointer">
+                        <img draggable="false" class="w-full h-full image-render-pixelated" src="{% static 'icons/delete.png' %}" alt="">
+                    </div>
+                    {% endif %}
+                    <div title="Edit" class="w-7 h-7 bg-twisted-800 p-1 rounded-md cursor-pointer">
+                        <img draggable="false" class="w-full h-full image-render-pixelated" src="{% static 'icons/edit.png' %}" alt="">
+                    </div>
                 </div>
+                {% endif %}
             </div>
             <div>
                 <c-mdpreview class="w-full zoom-100 **:[&_img]:zoom-50">{{ journal.content }}</c-mdpreview>

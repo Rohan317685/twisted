@@ -4,13 +4,11 @@
     <textarea class="textbox">{{ slot }}</textarea>
     <script>
         function rendermarkdown() {
-            console.log('rendering markdown...');
             elem = document.currentScript.parentElement.querySelector('.textbox')
             content = elem.value;
             elem.classList.add('hidden')
             parsed = DOMPurify.sanitize(marked.parse(content));
             elem.parentElement.querySelector('.previewdiv');
-            console.log(elem)
             elem.parentElement.querySelector('.previewdiv').innerHTML = parsed;
         }
         rendermarkdown()

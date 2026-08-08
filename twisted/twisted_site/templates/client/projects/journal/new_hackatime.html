@@ -1,7 +1,7 @@
 {% extends "client/projects/journal/new_journal.base.html" %} {% load static time_filters %}
 {% block links %}
+{% if project.project_type == 'hardware' %}
 <button disabled>Hackatime</button>
-    {% if project.project_type == 'hardware' %}
     <a href="{% url 'fr.projects.journals.new.untracked' project.id %}">
         <button>untracked</button>
     </a>
