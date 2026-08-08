@@ -1,0 +1,35 @@
+{% extends "client/osbase.html" %} {% load static time_filters humanize %}
+{% block body %}
+
+<div class="bg-surface flex flex-col w-full h-full font-vintage">
+    <div class="text-center">
+        <div class="p-4 my-2 bg-twisted-600 text-3xl">READ THE GUIDELINES!</div>
+        <div class="my-2">
+            Please read through our <a href="#">submission guidelines</a> before continuing.
+        </div>
+        <div class="text-3xl my-2">
+            90% of rejections could have taken 5 minutes to fix
+        </div>
+        <form method="post" class="my-2">
+            {% csrf_token %}
+            <button class="text-2xl! py-2! px-4!">
+                I have read and I am ready to submit!
+            </button>
+        </form>
+        <a class="my-2" href="{% url 'fr.projects.detail' project.id %}">Nevermind! Take me back.</a>
+        <div class="my-2">
+            <div>
+                Our reviewers will manually check.
+            </div>
+            <div>
+                {% if project.type == 'software' %}
+                Make sure your project works before shipping it.
+                {% else %}
+                Make sure your design is shipped and looks like it will work.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

@@ -2,7 +2,7 @@ from markdown_it.rules_inline import image
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
-from ...models import Profile, Project, Journal
+from ...models import Profile, Project, Journal, ProjectShip
 from ... import hackatime
 import re
 import math
@@ -75,3 +75,28 @@ class ProjectSettings(View):
         project.save()
         return redirect("fr.projects.detail", project.id)
 
+class SubmitProject(View):
+    def get(self, request, id, context={}):
+        if self.request.user.is_anonymous:
+            return redirect('homepage')
+        
+        project = Project.objects.get(id=id)
+        if project.user != request.user:
+            return redirect('dashboard')
+        
+        context['project'] = project
+        return render(request, 'client/projects/ship.html', context)
+
+    def post(self, request, id, context={}):
+        if self.request.user.is_anonymous:
+            return redirect('homepage')
+        
+        project = Project.objects.get(id=id)
+        if project.user != request.user:
+            return redirect('dashboard')
+        
+        # ships = project.ships:
+        
+        ship = ProjectShip(project)
+        ship.save()
+        return self.get(request, id, context={'success': True})

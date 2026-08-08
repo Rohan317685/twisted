@@ -94,6 +94,14 @@ class Project(models.Model):
 
     def hackatime_time_unjournaled(self):
         return self.time_spent() - self.hackatime_logged(include_all_minutes=True)
+    
+    def is_shipped(self):
+        ships = ProjectShip.objects.filter(status)
+        for ship in ships:
+            if ship.status != 'approved':
+                return ship
+        return None
+                
 
 class Journal(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, related_name="journals")
@@ -109,3 +117,27 @@ class Journal(models.Model):
     
     def __str__(self):
         return f"{self.reduced_minutes} mins on {self.project}"
+
+
+PROJECT_SHIP_STATUSES = {
+    'created': 'Newly created',
+    'rejected': 'Rejected ship',
+    'reqchecked': 'Checked by T1',
+    'approved': 'Approved by T2'
+}
+
+class ProjectShip(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.PROTECT, related_name="ships")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    t1_updated_at = models.DateTimeField(default=None, null=True)
+    t2_updated_at = models.DateTimeField(default=None, null=True)
+    
+    t1_message = models.TextField(blank=True, default="")
+    t2_message =models.TextField(blank=True, default="")
+    
+    status = models.CharField(max_length=200, choices=PROJECT_SHIP_STATUSES, default='created')
+    
+    def __str__(self):
+        return f"Ship created at {self.created_at} ({PROJECT_SHIP_STATUSES.get(str(self.status), self.status)})"

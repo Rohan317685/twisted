@@ -8,15 +8,14 @@
             <div>{{ project.project_description }}</div>
         </div>
         <div class="flex flex-col text-right">
+            {% if project.hackatime_project_name and project.repo_url and project.time_logged > 60 %}
+                <a href="{% url 'fr.projects.ship' project.id %}">
+                    <button>Submit project</button>
+                </a>
+            {% endif %}
             <a href="{% url 'fr.projects.settings' project.id %}">
                 <button>Settings</button>
             </a>
-            {% if project.hackatime_project_name and project.repo_url and project.time_logged > 60 %}
-            <form method="post" action="">
-                {% csrf_token %}
-                <button>Ship project!</button>
-            </form>
-            {% endif %}
         </div>
     </div>
     <div class="mb-2">
