@@ -63,7 +63,7 @@
         <div id="taskbar-windows" class="flex-1 flex items-center gap-1 px-2 overflow-x-auto"></div>
 
         <div class="flex items-center gap-2">
-            <button id="speaker-btn" onclick="toggleMusic()" class="bg-twisted-600 px-2 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+            <div id="speaker-btn" onclick="toggleMusic()" class="cursor-pointer bg-twisted-600 px-2 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
                 <svg id="speaker-icon" width="20" height="16" viewBox="0 0 20 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
                     <rect x="2" y="6" width="2" height="4" fill="#CAB3E1"/>
                     <rect x="4" y="5" width="2" height="6" fill="#CAB3E1"/>
@@ -74,7 +74,7 @@
                         <rect x="15" y="3" width="2" height="10" fill="#8364A2"/>
                     </g>
                 </svg>
-            </button>
+            </div>
             <canvas id="spectrum" width="100" height="24" class="border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200"></canvas>
             <div id="taskbar-clock"
                 class="!font-vintage !text-base !bg-twisted-600 !text-absolute-white !px-3 !py-1 !border-2 !border-t-dark-black !border-l-dark-black !border-r-twisted-200 !border-b-twisted-200 min-w-20 text-center">

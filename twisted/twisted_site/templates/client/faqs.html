@@ -4,15 +4,18 @@
 <a href="https://hackclub.com" target="_blank" rel="noopener" class="fixed top-0 left-4 z-50">
   <img src="https://assets.hackclub.com/flag-orpheus-top.svg" alt="Hack Club" class="w-48 flag-wave origin-top">
 </a>
-<div class="bg-cover w-screen min-h-screen bg-surface text-absolute-white p-4 sm:p-8 pb-20">
+<div class="bg-cover min-h-screen bg-surface text-absolute-white p-4 sm:p-8 pb-20">
 
   <div id="faqs" class="max-w-3xl mx-auto bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
     <div class="flex items-center justify-between bg-twisted-600 text-absolute-white px-2 py-1">
-      <span class="font-bold text-sm">FAQs.exe</span>
+      <span class="font-bold text-sm">
+        <button onclick="location='{% url 'homepage' %}'" class="bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">←</button>
+        FAQs.exe
+      </span>
       <div class="flex gap-1">
         <span class="bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">_</span>
         <span class="bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">□</span>
-        <span class="bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">×</span>
+        <span onclick="location='{% url 'homepage' %}'" class="cursor-pointer bg-twisted-400 text-dark-black border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black px-2 leading-none">×</span>
       </div>
     </div>
     <div class="p-6 space-y-5">
@@ -46,16 +49,28 @@
 </div>
 
 <div class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between bg-twisted-400 border-t-2 border-t-twisted-200 px-1 py-1">
-  <button id="twist-btn" onclick="toggleMusic()" class="flex items-center gap-1 bg-twisted-600 text-absolute-white font-bold px-3 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
-    <img src="{% static 'images/twisted_logo.png' %}" alt="" class="w-8 h-5"> Twist
+  <button id="twist-btn" class="flex items-center gap-1 bg-twisted-600 text-absolute-white font-bold px-3 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+    <img src="{% static 'images/twisted_logo.png' %}" alt="" class="w-8 h-5"> Twist 
   </button>
-<div  class="flex items-center gap-2">
+ <div  class="flex items-center gap-2">
+              <div id="speaker-btn" onclick="toggleMusic()" class="cursor-pointer bg-twisted-600 px-2 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+                <svg id="speaker-icon" width="20" height="16" viewBox="0 0 20 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="6" width="2" height="4" fill="#CAB3E1"/>
+                    <rect x="4" y="5" width="2" height="6" fill="#CAB3E1"/>
+                    <rect x="6" y="4" width="2" height="8" fill="#CAB3E1"/>
+                    <rect x="8" y="2" width="2" height="12" fill="#CAB3E1"/>
+                    <g id="sound-waves">
+                        <rect x="12" y="5" width="2" height="6" fill="#8364A2"/>
+                        <rect x="15" y="3" width="2" height="10" fill="#8364A2"/>
+                    </g>
+                </svg>
+            </div>
+
    <canvas id="spectrum" width="100" height="24" class="border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200"></canvas>
   <div id="taskbar-clock" class="bg-twisted-600 text-absolute-white px-3 py-1 border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200 min-w-20 text-center">
     00:00 00
   </div>
-</div>
-</div>
+ </div>
 
 <audio id="bg-music" loop>
   <source src="{% static 'audio/bg.mp3' %}" type="audio/mpeg">
