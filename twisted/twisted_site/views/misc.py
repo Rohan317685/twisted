@@ -21,34 +21,40 @@ s3 = boto3.client(
 
 @login_required
 def upload_file(request):
-    """
-    Makdown image upload for uploading to imgur.com
-    and represent as json to markdown editor.
-    """
-
     if request.method == "POST":
         if "file" in request.FILES:
-            image = request.FILES["file"]
+            file = request.FILES["file"]
             max_file_mb = float(request.POST.get("max_mb", 1))
 
-            image_size = image.size / (1024 * 1024)
-            if image_size > max_file_mb:
+            file_size_mb = file.size / (1024 * 1024)
+            if file_size_mb > max_file_mb:
                 return JsonResponse(
                     {"status": "error", "reason": f"File size exceeds {max_file_mb}MB!"}
                 )
 
-            response_data = file_uploader(request, image)
+            response_data = file_uploader(request, file)
             # Handle upload errors
             if response_data.get("status") == "error":
                 return JsonResponse(response_data)
+            
+            url = response_data["link"]
+            filename = response_data["name"]
+            UploadedFile.objects.create(
+                uploaded_by=request.user,
+                link=url,
+                cdn_response=response_data,
+                uploaded_thru=request.POST.get('ref', 'unknown'),
+                filesize=file.size
+            )
+            
             return JsonResponse({
                 "status": "ok",
-                "link": response_data["url"],
-                "name": response_data["filename"],
+                "link": url,
+                "name": filename,
                 "response": response_data,
             })
         return JsonResponse(
-            {"status": "error", "reason": "Invalid request: no image found"}
+            {"status": "error", "reason": "Invalid request: No file found"}
         )
     return JsonResponse(
         {"status": "error", "reason": "Invalid request: method not POST"}
@@ -58,12 +64,10 @@ def upload_file(request):
 def file_uploader(request, image):
     """
     Basic imgur uploader return as json data.
-    :param `image` is from `request.FILES['markdown-image-upload']`
-    :return json response
     """
     try:
         ext = Path(image.name).suffix.lower()
-        filename = f"{uuid4().hex}{ext}"
+        filename = f"{str(uuid4())}{ext}"
         s3.upload_fileobj(
             image,
             os.environ["R2_BUCKET"],
@@ -74,19 +78,20 @@ def file_uploader(request, image):
         )
 
         return {
-            "url": f"{os.environ['R2_PUBLIC_URL']}/{filename}",
-            "filename": filename,
+            "status": "ok",
+            "link": f"{os.environ['R2_PUBLIC_URL']}/{filename}",
+            "name": filename,
             "size": image.size,
         }
 
     except (ClientError, BotoCoreError) as e:
         return {
-                "status": "Error Occured", 
+                "status": "error", 
                 "error": str(e)
             }
 
     except Exception as e:
         return {
-            "status": "Error Occurred", 
+            "status": "error", 
             "error": f"Unknown Error Occurred: {str(e)}",
         }
