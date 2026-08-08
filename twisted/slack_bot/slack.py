@@ -1,13 +1,13 @@
 import os
 from typing import Any
-
-from slack_sdk import WebClient
+from slack_bolt import App
 
 
 class SlackBot:
 	def __init__(self, token: str | None = None, cc_group_id: str | None = None):
 		slack_token = token
-		self.client = WebClient(token=slack_token)
+		self.app = App(token=slack_token)
+		self.client = self.app.client
 		self._cc_group_id = cc_group_id
 
 	def post_message(

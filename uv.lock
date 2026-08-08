@@ -1051,6 +1051,18 @@ wheels = [
 ]
 
 [[package]]
+name = "slack-bolt"
+version = "1.30.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "slack-sdk" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e3/4f/5ba15533d66da2e7174334cc0e2805142e5390c9f4c5f31633df78b17006/slack_bolt-1.30.0.tar.gz", hash = "sha256:af38258d41f801ad9c74503090e0f39accd66c49f667f7e55c97fcdb0e51b886", size = 131180, upload-time = "2026-07-15T20:47:33.679Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2f/ee/1a7a286cf98fa3f4eeffaabc090e82f58f058ab4812aa1d7421d92c2637a/slack_bolt-1.30.0-py2.py3-none-any.whl", hash = "sha256:81f5bc46e79516d23d5e2a31dded6304dd1b8b6b72c0083f2f31d5d801e262c4", size = 235341, upload-time = "2026-07-15T20:47:32.113Z" },
+]
+
+[[package]]
 name = "slack-sdk"
 version = "3.43.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1093,7 +1105,7 @@ dependencies = [
     { name = "psycopg", extra = ["binary"] },
     { name = "python-dotenv" },
     { name = "requests" },
-    { name = "slack-sdk" },
+    { name = "slack-bolt" },
     { name = "tzdata" },
     { name = "urllib3" },
     { name = "whitenoise" },
@@ -1112,7 +1124,7 @@ requires-dist = [
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.4" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "requests", specifier = ">=2.34.2" },
-    { name = "slack-sdk", specifier = ">=3.43.0" },
+    { name = "slack-bolt", specifier = ">=1.30.0" },
     { name = "tzdata", specifier = ">=2026.3" },
     { name = "urllib3", specifier = ">=2.7.0" },
     { name = "whitenoise", specifier = ">=6.12.0" },
