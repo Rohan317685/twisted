@@ -9,7 +9,7 @@ import random
 
 from ...models import Profile
 from ... import hackatime
-from ...slack import slack_bot
+from ....slack_bot.slack import slack_bot
 
 oauth = OAuth()
 

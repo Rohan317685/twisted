@@ -57,11 +57,13 @@ INSTALLED_APPS = [
     # Your apps
     'common',
     'twisted_site',
+    'slack_bot',
     
     # 3rd party apps
     'django_cotton',
     'tailwind',
     TAILWIND_APP_NAME,
+    
 ]
 
 if DEBUG:
