@@ -6,6 +6,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from ..models import Project, UploadedFile
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 import boto3
 from pathlib import Path
 from uuid import uuid4
@@ -67,7 +68,8 @@ def file_uploader(request, image):
     """
     try:
         ext = Path(image.name).suffix.lower()
-        filename = f"{str(uuid4())}{ext}"
+        filename = f"{str(uuid4())}-{str(image.size)}-{slugify(Path(image.name).stem)}{ext}"
+        original_filename = Path(image.name).stem
         s3.upload_fileobj(
             image,
             os.environ["R2_BUCKET"],
@@ -80,7 +82,7 @@ def file_uploader(request, image):
         return {
             "status": "ok",
             "link": f"{os.environ['R2_PUBLIC_URL']}/{filename}",
-            "name": filename,
+            "name": original_filename,
             "size": image.size,
         }
 
