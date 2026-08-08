@@ -1,11 +1,11 @@
+from slack_bolt.adapter.django import SlackRequestHandler
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.decorators.http import csrf_exempt
-from slack_bolt.adapter.django import SlackEventsHandler
+from django.views.decorators.csrf import csrf_exempt
 from .slack import slack_bot
 
 # Initialize the handler
-handler = SlackEventsHandler(slack_bot.app)
+handler = SlackRequestHandler(slack_bot.app)
 
 
 @csrf_exempt
