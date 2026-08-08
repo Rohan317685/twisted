@@ -7,10 +7,16 @@
             </div>
             <div>{{ project.project_description }}</div>
         </div>
-        <div>
+        <div class="flex flex-col text-right">
             <a href="{% url 'fr.projects.settings' project.id %}">
                 <button>Settings</button>
             </a>
+            {% if project.hackatime_project_name and project.repo_url and project.time_logged > 60 %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <button>Ship project!</button>
+            </form>
+            {% endif %}
         </div>
     </div>
     <div class="mb-2">
@@ -32,9 +38,16 @@
         </div>
         {% if not project.hackatime_project_name %}
         <div class="border border-twisted-400 p-1 m-1 w-fit">
-            Hi! I noticed you dont have a hackatime project linked yet. You can link a hackatime project over at the
+            Hi! I noticed you don't have a hackatime project linked yet. You can link a hackatime project over at the
             <a href="{% url 'fr.projects.settings' project.pk %}">project settings</a>.
         </div>
+        {% else %}
+        {% if not project.repo_url %}
+        <div class="border border-twisted-400 p-1 m-1 w-fit">
+            Hi! You don't have a repo linked yet. You can link a repo over at the
+            <a href="{% url 'fr.projects.settings' project.pk %}">project settings</a>.
+        </div>
+        {% endif %}
         {% endif %}
         <div>
             <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new.hackatime' project.pk %}'}, '*')">New journal...</button>

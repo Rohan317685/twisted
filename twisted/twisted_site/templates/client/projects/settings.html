@@ -8,11 +8,11 @@
     <div class="text-xl">Project settings</div>
     <form method="post">
         {% csrf_token %}
-        <div class="field-row-stacked">
+        <div class="mt-2 field-row-stacked">
             <label for="name">Project name</label>
             <input id="name" name="name" type="text" value="{{ project.project_name }}" />
         </div>
-        <div class="field-row-stacked">
+        <div class="mt-2 field-row-stacked">
             <label for="description">Project description</label>
             <textarea id="description" name="description">{{ project.project_description }}</textarea>
         </div>
@@ -33,6 +33,10 @@
                 {% endif %}
                 {% endfor %}
             </select>
+        </div>
+        <div class="mt-2 field-row-stacked">
+            <label for="repo">Repo URL</label>
+            <input id="repo" name="repo" type="text" placeholder="https://github.com/<yournamehere>/<yourprojecthere>" value="{{ project.repo_url }}" />
         </div>
         <button type="submit" class="mt-4">Save</button>
     </form>

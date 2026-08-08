@@ -40,6 +40,7 @@ PROJECT_TYPE_CHOICES = {'software': 'Software', 'hardware': 'Hardware'}
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="projects")
 
+    
     project_name = models.CharField(max_length=50)
     project_description = models.TextField(max_length=2000)
     
@@ -49,7 +50,8 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     hackatime_project_name = models.CharField(max_length=200, blank=True, default="")
-
+    repo_url = models.CharField(max_length=200, blank=True, default="")
+    
     def __str__(self):
         return self.project_name
 

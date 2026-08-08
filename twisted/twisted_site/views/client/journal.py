@@ -100,7 +100,7 @@ class NewProjectUntrackedJournal(View):
         context["max_mins"] = UNTRACKED_MAX_LOGGABLE_MINUTES
 
         context["info"] = (
-            "logging untracked journals is generally not advised. time deflation may occur."
+            "logging untracked journals may lead to heavy time deflation. for hardware projects, consider using lapse and sync to hackatime."
         )
 
         return render(
