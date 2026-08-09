@@ -8,6 +8,7 @@ import re
 import math
 
 HACKATIME_MAX_LOGGABLE_MINUTES = 6 * 60
+IMAGE_REGEX = r'!\[([^\]]*)\]\([^)]+\)'
 
 
 class NewProjectHackatimeJournal(View):
@@ -21,6 +22,10 @@ class NewProjectHackatimeJournal(View):
             return redirect("dashboard")
 
         context["project"] = project
+
+        if project.is_shipped():
+            return redirect('fr.projects.detail', id)
+
 
         log_minutes = project.hackatime_time_unjournaled()
 
@@ -41,10 +46,16 @@ class NewProjectHackatimeJournal(View):
             project.hackatime_time_unjournaled(), HACKATIME_MAX_LOGGABLE_MINUTES
         )
 
+        if project.is_shipped():
+            return redirect('fr.projects.detail', id)
+
         content = request.POST["content"]
-        image_regex = r"\!\[.*?\]\(.*?\)"
-        image_count = len(re.findall(image_regex, content))
+        
+        image_count = len(re.findall(IMAGE_REGEX, content))
         required_image_count = math.ceil(max(1, reduced_minutes / 180))
+        
+        content_no_images = re.sub(IMAGE_REGEX, '', content)
+        content_length = len(' '.join(content_no_images.split()))
 
         if image_count < required_image_count:
             return self.get(
@@ -53,7 +64,8 @@ class NewProjectHackatimeJournal(View):
                 info=f"please add atleast {required_image_count - image_count} more image(s) to log this journal!",
                 context={"content": content},
             )
-        if len(content) < min(100, reduced_minutes):
+        
+        if content_length < min(100, reduced_minutes):
             return self.get(
                 request,
                 id,
@@ -118,6 +130,10 @@ class NewProjectUntrackedJournal(View):
         content = request.POST["content"]
         time_logged = int(request.POST["time_logged"])
 
+        
+        content_no_images = re.sub(IMAGE_REGEX, '', content)
+        content_length = len(' '.join(content_no_images.split()))
+
         if time_logged > 180:
             return self.get(
                 request,
@@ -126,7 +142,7 @@ class NewProjectUntrackedJournal(View):
                 context={"content": content},
             )
 
-        if len(content) < min(100, time_logged * 2):
+        if content_length < min(100, time_logged * 2):
             return self.get(
                 request,
                 id,
@@ -152,6 +168,9 @@ class DeleteJournal(View):
         
         if id is not None:
             journal = Journal.objects.get(id=id)
+            if journal.project.is_shipped():
+                return redirect('fr.projects.detail', journal.project.id)
+
             if journal.project.user != request.user:
                 return redirect('dashboard')
             
@@ -160,6 +179,7 @@ class DeleteJournal(View):
             
             
             context['journal'] = journal
+        
         
         return render(
             request, "client/projects/journal/delete.html", context=context
@@ -173,6 +193,9 @@ class DeleteJournal(View):
         journal = Journal.objects.get(id=id)
         print(journal)
         
+        if journal.project.is_shipped():
+            return redirect('fr.projects.detail', journal.project.id)
+
         if journal.project.user != request.user:
             return redirect('dashboard')
         

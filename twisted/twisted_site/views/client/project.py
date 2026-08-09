@@ -43,6 +43,9 @@ class ProjectSettings(View):
         project = Project.objects.get(id=id)
         context["project"] = project
 
+        if project.is_shipped():
+            return redirect('fr.projects.detail', id)
+        
         if project.user != request.user:
             return redirect("dashboard")
 
@@ -67,6 +70,9 @@ class ProjectSettings(View):
         if project.user != request.user:
             return redirect("dashboard")
 
+        if project.is_shipped():
+            return redirect('fr.projects.detail', id)
+        
         project.project_name = request.POST["name"]
         project.project_description = request.POST["description"]
         project.project_type = request.POST["type"]
@@ -83,7 +89,6 @@ class SubmitProject(View):
         project = Project.objects.get(id=id)
         if project.user != request.user:
             return redirect('dashboard')
-        
         context['project'] = project
         return render(request, 'client/projects/ship.html', context)
 
@@ -95,8 +100,9 @@ class SubmitProject(View):
         if project.user != request.user:
             return redirect('dashboard')
         
-        # ships = project.ships:
+        if project.is_shipped():
+            return self.get(request, id, context={"info": "silly! you have already shipped."})
         
-        ship = ProjectShip(project)
+        ship = ProjectShip(project=project)
         ship.save()
         return self.get(request, id, context={'success': True})

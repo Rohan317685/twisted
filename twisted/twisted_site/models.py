@@ -96,11 +96,11 @@ class Project(models.Model):
         return self.time_spent() - self.hackatime_logged(include_all_minutes=True)
     
     def is_shipped(self):
-        ships = ProjectShip.objects.filter(status)
+        ships = ProjectShip.objects.filter(project=self)
         for ship in ships:
-            if ship.status != 'approved':
+            if ship.status != 'rejected':
                 return ship
-        return None
+        return False
                 
 
 class Journal(models.Model):

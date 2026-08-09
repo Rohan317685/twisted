@@ -8,14 +8,18 @@
             <div>{{ project.project_description }}</div>
         </div>
         <div class="flex flex-col text-right">
-            {% if project.hackatime_project_name and project.repo_url and project.time_logged > 60 %}
+            {% if project.repo_url and project.time_logged > 60 %}
+            {% if not project.is_shipped %}
                 <a href="{% url 'fr.projects.ship' project.id %}">
                     <button>Submit project</button>
                 </a>
             {% endif %}
-            <a href="{% url 'fr.projects.settings' project.id %}">
-                <button>Settings</button>
-            </a>
+            {% endif %}
+            {% if not project.is_shipped %}
+                <a href="{% url 'fr.projects.settings' project.id %}">
+                    <button>Settings</button>
+                </a>
+            {% endif %}
         </div>
     </div>
     <div class="mb-2">
@@ -35,6 +39,11 @@
                 </div>
             </div>
         </div>
+        {% if project.is_shipped %}
+            <div>
+                Your project is shipped and now read-only.
+            </div>
+        {% endif %}
         {% if not project.hackatime_project_name %}
         <div class="border border-twisted-400 p-1 m-1 w-fit">
             Hi! I noticed you don't have a hackatime project linked yet. You can link a hackatime project over at the
@@ -48,9 +57,11 @@
         </div>
         {% endif %}
         {% endif %}
+        {% if not project.is_shipped %}
         <div>
             <button onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'journal: {{ project.project_name }}', 'src': '{% url 'fr.projects.journals.new.hackatime' project.pk %}'}, '*')">New journal...</button>
         </div>
+        {% endif %}
     </div>
     <div>
         {% for journal in project.journals.all|dictsortreversed:"created_at" %}
@@ -63,6 +74,7 @@
                 </div>
                 {% if project.user == request.user %}
                 <div class="flex gap-2">
+                    {% if not project.is_shipped %}
                     {% if journal.type == "untracked" %}
                     <div title="Delete" onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': 'delete journal', 'src': '{% url 'fr.projects.journals.delete' journal.pk %}'}, '*')" class="w-7 h-7 bg-twisted-800 p-1 rounded-md cursor-pointer">
                         <img draggable="false" class="w-full h-full image-render-pixelated" src="{% static 'icons/delete.png' %}" alt="">
@@ -71,6 +83,7 @@
                     <div title="Edit" class="w-7 h-7 bg-twisted-800 p-1 rounded-md cursor-pointer">
                         <img draggable="false" class="w-full h-full image-render-pixelated" src="{% static 'icons/edit.png' %}" alt="">
                     </div>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
