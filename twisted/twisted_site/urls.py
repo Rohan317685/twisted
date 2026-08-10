@@ -2,6 +2,7 @@ from .views.client.auth import LoginView, AuthCallbackView, HackatimeCallbackVie
 from django.urls import path
 from .views import client
 from .views.misc import upload_file
+from .views import admin
 
 urlpatterns = [
     path('', view=client.HomepageView.as_view(), name="homepage"),
@@ -24,4 +25,6 @@ urlpatterns = [
     path("dashboard/frame/projects/<int:id>/journals/new/hackatime/", client.NewProjectHackatimeJournal.as_view(), name="fr.projects.journals.new.hackatime"),
     path("dashboard/frame/projects/<int:id>/journals/new/untracked/", client.NewProjectUntrackedJournal.as_view(), name="fr.projects.journals.new.untracked"),
     path("dashboard/frame/journals/delete/<int:id>/", client.DeleteJournal.as_view(), name="fr.projects.journals.delete"),
+
+    path("admin/", admin.DashboardView.as_view(), name="admin.dash")
 ]

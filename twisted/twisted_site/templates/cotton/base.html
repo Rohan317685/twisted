@@ -1,0 +1,34 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% tailwind_css %}
+    <title>Admin - Twisted</title>
+    <link rel="icon" href="{% static 'favicon.png' %}" />
+</head>
+<body class="dark bg-[#09090B] text-white font-latin">
+    <div class="flex py-2 h-screen">
+        <div class="h-full">
+            <c-navlist>
+                <c-navlist.item href="/">item 1</c-navlist.item>
+                <c-navlist.item href="/">item 2</c-navlist.item>
+                <c-navlist.item href="/">item 3</c-navlist.item>
+            </c-navlist>
+        </div>
+        <div class="p-2 flex-1">
+            {{ slot }}
+        </div>
+    </div>
+
+    <!-- Cotton UI bundle first: it registers components on Alpine's alpine:init event -->
+    <script defer src="{% static 'django_cotton_ui/cotton-ui.min.js' %}"></script>
+
+    <!-- Alpine.js plugins, then Alpine core (deferred scripts run in order) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</body>
+</html>

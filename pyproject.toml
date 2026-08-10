@@ -20,4 +20,5 @@ dependencies = [
     "urllib3>=2.7.0",
     "whitenoise>=6.12.0",
     "boto3>=1.43.66",
+    "django-cotton-ui>=0.3.2",
 ]

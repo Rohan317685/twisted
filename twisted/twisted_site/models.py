@@ -32,8 +32,12 @@ class Profile(models.Model):
     hackatime_access_token = models.CharField(max_length=2000, blank=True, default="")
     hackatime_state = models.CharField(max_length=100, blank=True, default="")
     
+    is_staff = models.BooleanField(default=False)
+    dark_theme = models.BooleanField(default=True)
+    
     def __str__(self):
         return self.user.username  # ty:ignore[unresolved-attribute]
+
 
 PROJECT_TYPE_CHOICES = {'software': 'Software', 'hardware': 'Hardware'}
 
