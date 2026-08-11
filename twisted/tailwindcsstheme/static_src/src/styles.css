@@ -10,7 +10,7 @@
 * the scope of this path.
 */
 @source "../../../**/*.{html,py,js}";
-
+@source "../../../../.venv/lib/python3.13/site-packages/django_cotton_ui/templates/**/*.html";
 :root {
     /* Accent: primary buttons, links, focus ring, active states */
     --color-accent: #8442c9;

@@ -10,13 +10,13 @@
     <link rel="icon" href="{% static 'favicon.png' %}" />
 </head>
 <body class="dark bg-[#09090B] text-white font-latin">
-    <div class="flex py-2 h-screen">
-        <div class="h-full">
-            <c-navlist>
-                <c-navlist.item href="/">item 1</c-navlist.item>
-                <c-navlist.item href="/">item 2</c-navlist.item>
-                <c-navlist.item href="/">item 3</c-navlist.item>
-            </c-navlist>
+    <div class="md:flex md:py-2 h-screen">
+        <div class="md:h-full">
+            <c-sidebar>
+                <c-sidebar.item icon="analytics" href="/stats" active>Statistics</c-sidebar.item>
+                <c-sidebar.item icon="profile" href="/">Users</c-sidebar.item>
+                <c-sidebar.item href="/">item 3</c-sidebar.item>
+            </c-sidebar>
         </div>
         <div class="p-2 flex-1">
             {{ slot }}
