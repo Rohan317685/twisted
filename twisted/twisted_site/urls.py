@@ -26,5 +26,11 @@ urlpatterns = [
     path("dashboard/frame/projects/<int:id>/journals/new/untracked/", client.NewProjectUntrackedJournal.as_view(), name="fr.projects.journals.new.untracked"),
     path("dashboard/frame/journals/delete/<int:id>/", client.DeleteJournal.as_view(), name="fr.projects.journals.delete"),
 
-    path("admin/", admin.DashboardView.as_view(), name="admin.dash")
+    path("admin/", admin.DashboardView.as_view(), name="admin.dash"),
+    path("admin/users/", admin.DashboardView.as_view(), name="admin.users"),
+    path("admin/pathways/", admin.DashboardView.as_view(), name="admin.pathways"),
+    path("admin/fulfillment/", admin.DashboardView.as_view(), name="admin.fulfillment"),
+    path("admin/shop/", admin.DashboardView.as_view(), name="admin.shop"),
+    path("admin/review/", admin.DashboardView.as_view(), name="admin.review"),
+    path("admin/announcements/", admin.DashboardView.as_view(), name="admin.announcements"),
 ]
