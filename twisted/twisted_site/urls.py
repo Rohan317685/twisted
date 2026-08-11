@@ -1,8 +1,8 @@
 from .views.client.auth import LoginView, AuthCallbackView, HackatimeCallbackView, LogoutView
 from django.urls import path
 from .views import client
-from .views.misc import upload_file
 from .views import admin
+from .views.misc import upload_file
 
 urlpatterns = [
     path('', view=client.HomepageView.as_view(), name="homepage"),
@@ -27,10 +27,10 @@ urlpatterns = [
     path("dashboard/frame/journals/delete/<int:id>/", client.DeleteJournal.as_view(), name="fr.projects.journals.delete"),
 
     path("admin/", admin.DashboardView.as_view(), name="admin.dash"),
-    path("admin/users/", admin.DashboardView.as_view(), name="admin.users"),
-    path("admin/pathways/", admin.DashboardView.as_view(), name="admin.pathways"),
-    path("admin/fulfillment/", admin.DashboardView.as_view(), name="admin.fulfillment"),
-    path("admin/shop/", admin.DashboardView.as_view(), name="admin.shop"),
-    path("admin/review/", admin.DashboardView.as_view(), name="admin.review"),
-    path("admin/announcements/", admin.DashboardView.as_view(), name="admin.announcements"),
+    path("admin/users/", admin.UsersView.as_view(), name="admin.users"),
+    path("admin/pathways/", admin.PathwaysView.as_view(), name="admin.pathways"),
+    path("admin/fulfillment/", admin.FulfillmentView.as_view(), name="admin.fulfillment"),
+    path("admin/shop/", admin.ShopView.as_view(), name="admin.shop"),
+    path("admin/review/", admin.ReviewView.as_view(), name="admin.review"),
+    path("admin/announcements/", admin.AnnouncementsView.as_view(), name="admin.announcements"),
 ]

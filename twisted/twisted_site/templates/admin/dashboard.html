@@ -1,5 +1,56 @@
+{% load googlecharts %}
 <c-base>
-    <c-ui.button variant="primary">Primary Button</c-ui.button>
-<c-ui.button variant="default">Default Button</c-ui.button>
+    <c-slot name="head">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    </c-slot>
+    <c-ui.card class="bg-zinc-900 mb-4">
+        <h3 class="text-lg font-semibold mb-2">Welcome back, {{ user.profile.slack_username }}!</h3>
+        <p class="text-ink-400">
+            <c-ui.button onclick="alert('weh, you are looking at them right now >:(')">See statistics</c-ui.button>
+            <c-ui.button>Manage Users</c-ui.button>
+            <c-ui.button>Edit Pathways</c-ui.button>
+            <c-ui.button>Fulfill orders</c-ui.button>
+            <c-ui.button>Edit shop</c-ui.button>
+            <c-ui.button>Review projects</c-ui.button>
+            <c-ui.button>Announce stuff</c-ui.button>
+        </p>
+    </c-ui.card>
+    <c-ui.tabs variant="segmented">
+        <c-ui.tabs.tab name="Logged">
+            <c-ui.card class="bg-zinc-900">
+                <div class="flex flex-col md:flex-row text-center md:text-left gap-4">
+                    <div class="md:w-fit">
+                        <div class="text-center">
+                            Hours logged
+                        </div>
+                        <div class="text-center text-lg font-bold">
+                            {{ hours_logged }}h
+                        </div>
+                        <div id="hours_logged_chart" class="h-40 mx-auto md:mx-0 w-60">
+                            Loading...
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback(drawChart);
 
+                        function drawChart() {
+                            var data = google.visualization.arrayToDataTable({{ hours_logged_chart|safe }});
+
+                            var options = {
+                                vAxis: {minValue: 0}
+                            };
+
+                            var chart = new google.visualization.AreaChart(document.getElementById('hours_logged_chart'));
+                            chart.draw(data, options);
+                        }
+                    </script>
+
+                </div>
+            </c-ui.card>
+        </c-ui.tabs.tab>
+        <c-ui.tabs.tab name="Shipped">
+            <!-- Content -->
+        </c-ui.tabs.tab>
+    </c-ui.tabs>
 </c-base>

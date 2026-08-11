@@ -11,10 +11,12 @@
 */
 @source "../../../**/*.{html,py,js}";
 @source "../../../../.venv/lib/python3.13/site-packages/django_cotton_ui/templates/**/*.html";
+
+/* COTTON-STYLES start */
 :root {
     /* Accent: primary buttons, links, focus ring, active states */
-    --color-accent: #8442c9;
-    --color-accent-content: #7239ad;
+    --color-accent: var(--color-rose-500);
+    --color-accent-content: var(--color-rose-600);
     --color-accent-foreground: #ffffff;
 
     /* Corner radius, by role */
@@ -31,10 +33,11 @@
 
 .dark {
     /* Dark mode: lighter accent so it stays vivid on dark surfaces */
-    --color-accent: #9359cf;
-    --color-accent-content: #a677d8;
-    --color-accent-foreground: #ffffff;
+    --color-accent: var(--color-rose-400);
+    --color-accent-content: var(--color-rose-300);
+    --color-accent-foreground: var(--color-rose-950);
 }
+/* COTTON-STYLES end */
 
 /* latin-ext */
 @font-face {

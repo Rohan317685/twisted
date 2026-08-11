@@ -458,6 +458,12 @@ wheels = [
 ]
 
 [[package]]
+name = "django-google-charts"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/39/90/636b444eedc136912d93386c8c90a92e9a02ad4f9f75743a6d3f06bd23d0/django-google-charts-0.1.1.tar.gz", hash = "sha256:4c956bced0e10fc4fce980edc03fc1d0c071020cc0755b4a2ebd3854a776f1f8", size = 3297, upload-time = "2011-11-16T11:27:16.063Z" }
+
+[[package]]
 name = "django-jazzmin"
 version = "3.0.5"
 source = { registry = "https://pypi.org/simple" }
@@ -468,6 +474,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/15/e4/17cd62e80c4876088
 wheels = [
     { url = "https://files.pythonhosted.org/packages/23/40/892f4c922c92d0d2b8ca5f96f556c5dc04d19ea2ea717910d8bbf2dc23fc/django_jazzmin-3.0.5-py3-none-any.whl", hash = "sha256:578fb1fc0a1b7e3b8472d2692ace60b1584ccd937c3828e2c9a89bdf94067f94", size = 2581722, upload-time = "2026-06-25T21:05:50.948Z" },
 ]
+
+[[package]]
+name = "django-qsstats-magic"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/ba/4578950dd3033f23a334634ea52329a1b1287c87b9f02943181a546bb2ea/django-qsstats-magic-1.1.0.tar.gz", hash = "sha256:73268ab20805c9f2e92b8cf54c36adfe03661d90eb5d58da69a5cb4d932c2757", size = 8596, upload-time = "2019-07-23T12:39:14.561Z" }
 
 [[package]]
 name = "django-tailwind"
@@ -1113,7 +1125,9 @@ dependencies = [
     { name = "django" },
     { name = "django-cotton" },
     { name = "django-cotton-ui" },
+    { name = "django-google-charts" },
     { name = "django-jazzmin" },
+    { name = "django-qsstats-magic" },
     { name = "django-tailwind", extra = ["cookiecutter", "honcho", "reload"] },
     { name = "gunicorn" },
     { name = "psycopg", extra = ["binary"] },
@@ -1133,7 +1147,9 @@ requires-dist = [
     { name = "django", specifier = ">=6.0.7" },
     { name = "django-cotton", specifier = ">=2.7.2" },
     { name = "django-cotton-ui", specifier = ">=0.3.2" },
+    { name = "django-google-charts", specifier = ">=0.1.1" },
     { name = "django-jazzmin", specifier = ">=3.0.5" },
+    { name = "django-qsstats-magic", specifier = ">=1.1.0" },
     { name = "django-tailwind", extras = ["cookiecutter", "honcho", "reload"], specifier = ">=4.5.0" },
     { name = "gunicorn", specifier = ">=26.0.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.4" },

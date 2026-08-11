@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     'django_cotton_ui',
     'tailwind',
     TAILWIND_APP_NAME,
-    
+    'googlecharts',
 ]
 
 if DEBUG:

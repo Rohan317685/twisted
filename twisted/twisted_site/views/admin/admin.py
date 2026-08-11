@@ -14,7 +14,7 @@ class AdminView(View):
     def get_context_data(self, **kwargs) -> dict:
         context = {}
         context["sidebar_links"] = [
-            SidebarLink(name="statistics", icon="analytics", text="Statistics", href=resolve_url('admin.dash')),
+            SidebarLink(name="dashboard", icon="analytics", text="Dashboard", href=resolve_url('admin.dash')),
             SidebarLink(name="users", icon="profile", text="Users", href=resolve_url('admin.users')),
             SidebarLink(name="pathways", icon="controls", text="Pathways", href=resolve_url('admin.pathways')),
             SidebarLink(name="fulfillment", icon="list", text="Fulfillment", href=resolve_url('admin.fulfillment')),

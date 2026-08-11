@@ -1,10 +1,22 @@
 {% extends "client/osbase.html" %} {% load static %} {% block body %}
 <div class="h-full text-absolute-white">
-    <div class="p-4 flex items-center gap-3">
-        <button onclick="newWindow('Projects', '{% url 'fr.projects' %}')"
-            class="bg-twisted-400 text-absolute-white font-bold px-4 py-2 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
-            Projects
-        </button>
+    <div class="p-4 flex flex-col gap-3">
+        <div>
+            <button onclick="newWindow('Projects', '{% url 'fr.projects' %}')"
+                class="bg-twisted-400 text-absolute-white font-bold px-4 py-2 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+                Projects
+            </button>
+        </div>
+        {% if user.profile.is_staff %}
+        <div>
+            <a href="{% url 'admin.dash' %}" target="_blank">
+                <button
+                    class="bg-twisted-400 text-absolute-white font-bold px-4 py-2 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
+                    Admin
+                </button>
+            </a>
+        </div>
+    {% endif %}
     </div>
 
     <div id="windows-container"></div>

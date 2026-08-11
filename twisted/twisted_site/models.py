@@ -139,7 +139,7 @@ class ProjectShip(models.Model):
     t2_updated_at = models.DateTimeField(default=None, null=True)
     
     t1_message = models.TextField(blank=True, default="")
-    t2_message =models.TextField(blank=True, default="")
+    t2_message = models.TextField(blank=True, default="")
     
     status = models.CharField(max_length=200, choices=PROJECT_SHIP_STATUSES, default='created')
     
