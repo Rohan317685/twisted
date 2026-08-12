@@ -26,8 +26,10 @@
                         <div class="text-center text-lg font-bold">
                             {{ hours_logged }}h
                         </div>
-                        <div id="hours_logged_chart" class="h-40 mx-auto md:mx-0 w-60">
-                            Loading...
+                        <div id="hours_logged_chart" class="mx-auto md:mx-0">
+                            <div class="text-center py-4">
+                                Loading chart...
+                            </div>
                         </div>
                     </div>
                     <script type="text/javascript">
@@ -38,19 +40,62 @@
                             var data = google.visualization.arrayToDataTable({{ hours_logged_chart|safe }});
 
                             var options = {
-                                vAxis: {minValue: 0}
+                                vAxis: {minValue: 0},
+                                animation: {duration: 250, startup: true},
+                                backgroundColor: {fill: 'transparent'},
+                                theme: "maximized",
+                                width: 240,
+                                height: 160
                             };
 
                             var chart = new google.visualization.AreaChart(document.getElementById('hours_logged_chart'));
                             chart.draw(data, options);
                         }
                     </script>
-
                 </div>
             </c-ui.card>
         </c-ui.tabs.tab>
         <c-ui.tabs.tab name="Shipped">
-            <!-- Content -->
+            <c-ui.card class="bg-zinc-900">
+                <div class="flex flex-col md:flex-row text-center md:text-left gap-4">
+                    <div class="md:w-fit">
+                        <div class="text-center">
+                            Hours shipped
+                        </div>
+                        <div class="text-center text-lg font-bold">
+                            {{ hours_shipped }}h
+                        </div>
+                        <div id="hours_shipped_chart" class="mx-auto md:mx-0">
+                            <div class="text-center py-4">
+                                Loading chart...
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback(drawChart);
+
+                        function drawChart() {
+                            var data = google.visualization.arrayToDataTable({{ hours_shipped_chart|safe }});
+
+                            var options = {
+                                vAxis: {minValue: 0},
+                                animation: {duration: 250, startup: true},
+                                backgroundColor: {fill: 'transparent'},
+                                theme: "maximized",
+                                width: 240,
+                                height: 160
+                            };
+
+                            var chart = new google.visualization.AreaChart(document.getElementById('hours_shipped_chart'));
+                            chart.draw(data, options);
+                        }
+                    </script>
+                </div>
+            </c-ui.card>
+        </c-ui.tabs.tab>
+        <c-ui.tabs.tab name="Reviewed">
+            This is still WIP! (annoy @kavyansh. to fix if you see this after the YSWS has started!)
         </c-ui.tabs.tab>
     </c-ui.tabs>
 </c-base>
