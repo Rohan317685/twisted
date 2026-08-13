@@ -76,7 +76,7 @@ class ProjectSettings(View):
         project.project_name = request.POST["name"]
         project.project_description = request.POST["description"]
         project.project_type = request.POST["type"]
-        project.hackatime_project_name = request.POST["hackatime"]
+        project.hackatime_project_name = request.POST.get("hackatime", "")
         project.repo_url = request.POST["repo"]
         project.save()
         return redirect("fr.projects.detail", project.id)
