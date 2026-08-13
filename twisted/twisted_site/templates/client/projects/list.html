@@ -10,7 +10,8 @@
     >
     <div class="flex gap-4 w-full flex-wrap">
         {% for project in projects %}
-        <div class="w-16 cursor-pointer" onclick="window.parent.postMessage({'type': 'internal', 'action': 'open', 'title': '{{ project.project_name }}', 'src': '{% url 'fr.projects.detail' project.id %}'}, '*')">
+        <input type="hidden" value="{{ project.project_name }}" id="project-{{ project.id }}">
+        <div class="w-16 cursor-pointer" onclick="createWindow(document.getElementById('project-{{ project.id }}').value, '{% url 'fr.projects.detail' project.id %}')">
             <img src="{% static 'images/directory.png' %}" class="w-full">
             <div class="w-full text-center text-wrap wrap-anywhere" style="text-align: center;">
                 {{ project.project_name }}
