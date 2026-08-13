@@ -1,7 +1,7 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.shortcuts import render, redirect
-from ...models import Project
+from ...models import Project, PROJECT_TYPE_CHOICES
 
 
 # Create your views here.
@@ -39,6 +39,9 @@ class CreateProject(View):
         project_name = request.POST["name"]
         project_description = request.POST["description"]
         project_type = request.POST["type"]
+
+        if project_type not in PROJECT_TYPE_CHOICES:
+            return HttpResponse("naughty! you arent supposed to do this!")
 
         Project.objects.create(
             user=request.user,
