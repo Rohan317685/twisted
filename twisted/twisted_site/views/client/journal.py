@@ -134,14 +134,22 @@ class NewProjectUntrackedJournal(View):
         content_no_images = re.sub(IMAGE_REGEX, '', content)
         content_length = len(' '.join(content_no_images.split()))
 
-        if time_logged > 180:
+        if time_logged > UNTRACKED_MAX_LOGGABLE_MINUTES:
             return self.get(
                 request,
                 id,
-                info="Time logged cannot be more than 180 minutes!",
+                info=f"Time logged cannot be more than {UNTRACKED_MAX_LOGGABLE_MINUTES} minutes!",
                 context={"content": content},
             )
 
+        if time_logged < 0:
+            return self.get(
+                request,
+                id,
+                info="I dont understand, why do you wanna lose time :hs:",
+                context={"content": content},
+            )
+        
         if content_length < min(100, time_logged * 2):
             return self.get(
                 request,
