@@ -110,6 +110,7 @@ button {
 }
 
 @utility no-spinner {
+  appearance: textfield;
   -moz-appearance: textfield;
   
   &::-webkit-outer-spin-button,
