@@ -64,12 +64,12 @@ class NewProjectHackatimeJournal(View):
                 info=f"please add atleast {required_image_count - image_count} more image(s) to log this journal!",
                 context={"content": content},
             )
-        
-        if content_length < min(100, reduced_minutes):
+        required_content_length = reduced_minutes // 3
+        if content_length < min(100, required_content_length):
             return self.get(
                 request,
                 id,
-                info=f"Content length must be more than 60 characters per hour!<br>({len(content)} of {reduced_minutes} required)",
+                info=f"Content length must be more than 20 characters per hour!<br>({content_length} of {required_content_length} required)",
                 context={"content": content},
             )
 
