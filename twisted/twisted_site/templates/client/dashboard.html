@@ -159,7 +159,13 @@
         const taskBtn = document.createElement('button');
         taskBtn.dataset.winId = id;
         taskBtn.className = "flex items-center gap-1 !bg-twisted-600 !text-absolute-white text-sm !px-2 !py-1 !border-2 !border-t-twisted-200 !border-l-twisted-200 !border-r-dark-black !border-b-dark-black max-w-40";
-        taskBtn.innerHTML = '<img src="{% static "images/round-square.jpg" %}" class="w-4 h-4 object-cover shrink-0"><span class="truncate">' + title + '</span>';
+        const taskIcon = document.createElement('img');
+        taskIcon.src = '{% static "images/round-square.jpg" %}';
+        taskIcon.className = 'w-4 h-4 object-cover shrink-0';
+        const taskTitle = document.createElement('span');
+        taskTitle.className = 'truncate';
+        taskTitle.textContent = title;
+        taskBtn.append(taskIcon, taskTitle);
         taskBtn.onclick = () => focusWindow(id);
         document.getElementById('taskbar-windows').appendChild(taskBtn);
  
