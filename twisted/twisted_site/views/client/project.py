@@ -19,12 +19,11 @@ class ProjectDetail(View):
         context["profile"] = profile
 
         project = Project.objects.get(id=id)
-        context["project"] = project
+        if project.user != request.user:
+            return redirect("dashboard")
 
-        if project.user == request.user:
-            context["owner"] = True
-        else:
-            context["owner"] = False
+        context["project"] = project
+        context["owner"] = True
 
         return render(
             request,

@@ -25,7 +25,8 @@ def upload_file(request):
     if request.method == "POST":
         if "file" in request.FILES:
             file = request.FILES["file"]
-            max_file_mb = float(request.POST.get("max_mb", 1))
+            # The size limit is a server-side policy; never let the client raise it.
+            max_file_mb = 1
 
             file_size_mb = file.size / (1024 * 1024)
             if file_size_mb > max_file_mb:
