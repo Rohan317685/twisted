@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     'django_cotton_ui',
     'tailwind',
     TAILWIND_APP_NAME,
-    'googlecharts',
+    'django_htmx',
 ]
 
 if DEBUG:
@@ -80,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'mysite.middleware.TimezoneMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 if DEBUG:

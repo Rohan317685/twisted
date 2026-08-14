@@ -25,6 +25,7 @@ class UploadedFile(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     verification_status = models.CharField(max_length=64, blank=True, default="")
+    ysws_eligible = models.BooleanField(default=False)
     slack_id = models.CharField(max_length=64, blank=True, default="")
     slack_username = models.CharField(max_length=64, blank=True, default="")
     slack_pfp_url = models.CharField(max_length=200, blank=True, default="")
@@ -34,6 +35,25 @@ class Profile(models.Model):
     
     is_staff = models.BooleanField(default=False)
     dark_theme = models.BooleanField(default=True)
+    
+    def shipped_projects(self):
+        shipped_projects = []
+        for project in self.user.projects.all():
+            if project.is_shipped():
+                shipped_projects.append(project)
+        return shipped_projects
+
+    def time_logged(self):
+        time_logged = 0
+        for project in self.user.projects.all():
+            time_logged += project.time_logged()
+        return time_logged
+
+    def time_shipped(self):
+        time_shipped = 0
+        for project in self.shipped_projects():
+            time_shipped += project.time_logged()
+        return time_shipped
     
     def __str__(self):
         return self.user.username  # ty:ignore[unresolved-attribute]

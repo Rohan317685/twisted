@@ -23,4 +23,5 @@ dependencies = [
     "django-cotton-ui>=0.3.2",
     "django-google-charts>=0.1.1",
     "django-qsstats-magic>=1.1.0",
+    "django-htmx>=1.29.0",
 ]

@@ -49,20 +49,20 @@ class AuthCallbackView(View):
         clean_sub = sub.replace("!", "_")
         slack_id = userinfo.get("slack_id", "")
         verification_status = userinfo.get("verification_status", "")
-
+        ysws_eligible = userinfo.get("ysws_eligible", False)
         user_model = get_user_model()
         user, created = user_model.objects.get_or_create(
             username=clean_sub,
             defaults={
                 "email": email,
                 "first_name": userinfo.get("given_name", ""),
-                "last_name": userinfo.get("family_name", "")
+                "last_name": userinfo.get("family_name", ""),
             },
         )  
 
         if slack_id:
             try:
-                slack_user = slack_bot.users_info(user=slack_id)["user"]  # ty:ignore[not-subscriptable]
+                slack_user = slack_bot.users_info(user=slack_id)["user"]
                 slack_profile = slack_user["profile"]
 
                 display_name = (
@@ -77,12 +77,12 @@ class AuthCallbackView(View):
                 avatar_url = os.environ["DEFAULT_PFP"]
 
         profile, created = Profile.objects.get_or_create(user=user)  # ty:ignore[unresolved-attribute]
-        if created:
-            profile.verification_status = verification_status
-            profile.slack_id = slack_id
-            profile.slack_username = display_name
-            profile.slack_pfp_url = avatar_url
-            profile.save()
+        profile.verification_status = verification_status
+        profile.slack_id = slack_id
+        profile.slack_username = display_name
+        profile.slack_pfp_url = avatar_url
+        profile.ysws_eligible = ysws_eligible
+        profile.save()
 
         login(request, user)
         

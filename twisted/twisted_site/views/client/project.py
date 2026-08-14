@@ -89,6 +89,11 @@ class SubmitProject(View):
         project = Project.objects.get(id=id)
         if project.user != request.user:
             return redirect('dashboard')
+        
+        if not project.user.profile.ysws_eligible:
+            context["info"] = "You are not YSWS eligible yet! Please get IDVd! Get help with it at #identity-help! (if you think this is a mistake, please ask in #twisted-help)"
+        
+        
         context['project'] = project
         return render(request, 'client/projects/ship.html', context)
 
@@ -102,6 +107,9 @@ class SubmitProject(View):
         
         if project.is_shipped():
             return self.get(request, id, context={"info": "silly! you have already shipped."})
+        
+        if not project.user.profile.ysws_eligible:
+            return self.get(request, id)
         
         ship = ProjectShip(project=project)
         ship.save()
