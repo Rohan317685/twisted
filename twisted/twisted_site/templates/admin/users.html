@@ -6,12 +6,13 @@
                 type="search"
                 name="search"
                 hx-get="{% url 'admin.users' %}"
-                hx-trigger="input changed delay:100ms, keyup[key=='Enter'], load"
+                hx-trigger="input changed delay:100ms, keyup[key=='Enter']"
                 hx-target="#container"
                 hx-select="#search-results"
                 hx-indicator=".loading-indicator"
                 placeholder="Search Users..."
                 autocomplete="off"
+                value="{{ request.GET.search }}"
             >
                 <c-slot name="left_addon">
                     <svg
