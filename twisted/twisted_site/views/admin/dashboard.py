@@ -12,6 +12,7 @@ class DashboardView(AdminView):
         hours_logged = 0
         hours_logged_chart = {}
         logged_project_type = {"Software": 0, "Hardware": 0}
+        shipped_project_type = {"Software": 0, "Hardware": 0}
         hours_shipped = 0
         hours_shipped_chart = {}
         for journal in Journal.objects.all().prefetch_related('project'):
@@ -26,6 +27,7 @@ class DashboardView(AdminView):
             if journal.project.is_shipped():
                 hours_shipped += hours
                 hours_shipped_chart[date] = hours_shipped_chart.get(date, 0) + hours
+                shipped_project_type[journal.project.get_project_type_display()] += hours
 
         context['hours_logged'] = round(hours_logged, 2)
         context['hours_logged_chart'] = json.dumps([['Date', 'Hours']] + list(hours_logged_chart.items()))
@@ -33,6 +35,7 @@ class DashboardView(AdminView):
         
         context['hours_shipped'] = round(hours_shipped, 2)
         context['hours_shipped_chart'] = json.dumps([['Date', 'Hours']] + list(hours_shipped_chart.items()))
+        context['shipped_project_type'] = json.dumps([['Type', 'Hours']] + list(shipped_project_type.items()))
         
         
         return render(request, "admin/dashboard.html", context=context)
