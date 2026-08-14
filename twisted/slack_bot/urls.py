@@ -4,5 +4,5 @@ from . import views
 app_name = "slack_bot"
 
 urlpatterns = [
-    path("events", views.slack_events, name="events"),
+    path("/slack/events", views.slack_events, name="events"),
 ]
