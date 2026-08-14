@@ -1,4 +1,5 @@
 import os
+import threading
 from typing import Any
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
@@ -18,6 +19,7 @@ class SlackBot:
 		slack_token = token
 		self.app = App(token=slack_token, signing_secret=signing_secret)
 		self.socket_mode_handler: SocketModeHandler | None = None
+		self.socket_thread: threading.Thread | None = None
 		if self.slack_mode == "socket":
 			if not self.app_token:
 				raise ValueError("SLACK_APP_TOKEN must be set when SLACK_MODE=socket")
@@ -27,7 +29,12 @@ class SlackBot:
 
 	def start(self):
 		if self.socket_mode_handler is not None:
-			self.socket_mode_handler.start()
+			self.socket_thread = threading.Thread(
+				target=self.socket_mode_handler.start,
+				name="slack-socket-mode",
+				daemon=True,
+			)
+			self.socket_thread.start()
 
 	def post_message(
 		self,
