@@ -28,6 +28,7 @@ urlpatterns = [
 
     path("admin/", admin.DashboardView.as_view(), name="admin.dash"),
     path("admin/users/", admin.UsersView.as_view(), name="admin.users"),
+    path("admin/users/<int:id>/", admin.UserDetailView.as_view(), name="admin.users.detail"),
     path("admin/pathways/", admin.PathwaysView.as_view(), name="admin.pathways"),
     path("admin/fulfillment/", admin.FulfillmentView.as_view(), name="admin.fulfillment"),
     path("admin/shop/", admin.ShopView.as_view(), name="admin.shop"),

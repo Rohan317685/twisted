@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     {% htmx_script %}
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" 
         integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
@@ -23,7 +23,7 @@
                 {% endfor %}
             </c-sidebar>
         </div>
-        <div class="p-2 flex-1">
+        <div class="p-2 flex-1 overflow-y-auto">
             {{ slot }}
         </div>
     </div>

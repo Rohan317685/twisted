@@ -9,7 +9,7 @@
                 hx-trigger="input changed delay:100ms, keyup[key=='Enter']"
                 hx-target="#container"
                 hx-select="#search-results"
-                hx-indicator=".loading-indicator"
+                hx-indicator=".htmx-indicator"
                 placeholder="Search Users..."
                 autocomplete="off"
                 value="{{ request.GET.search }}"
@@ -34,7 +34,7 @@
                 </c-slot>
             </c-ui.input>
         </div>
-        <div class="my-auto loading-indicator">
+        <div class="my-auto htmx-indicator">
             <c-ui.spinner />
         </div>
     </div>
@@ -42,33 +42,37 @@
         <div id="search-results" class="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {% for user in users %}
                 <c-ui.card class="bg-ink-900">
-                    <div class="flex gap-2">
-                        <c-ui.avatar size="md" src="{{ user.profile.slack_pfp_url }}" />
-                        <div>
-                            <h3 class="text-lg font-semibold mb-1">
-                                @{{ user.profile.slack_username }}
-                                <c-ui.badge size="sm">{{ user.profile.slack_id|default:"user not found" }}</c-ui.badge>
-                            </h3>
-                            {% if user.profile %}
+                    <a href="{% url 'admin.users.detail' user.id %}">
+                        <div class="flex gap-2">
+                            <c-ui.avatar size="md" src="{{ user.profile.slack_pfp_url }}" />
                             <div>
-                                {% if user.profile.is_staff %}
-                                <c-ui.badge size="sm" color="purple">Staff</c-ui.badge>
+                                <h3 class="text-lg font-semibold mb-1">
+                                    @{{ user.profile.slack_username }}
+                                    <c-ui.badge size="sm">{{ user.profile.slack_id|default:"user not found" }}</c-ui.badge>
+                                </h3>
+                                {% if user.profile %}
+                                <div>
+                                    {% if user.profile.is_staff %}
+                                    <c-ui.badge size="sm" color="purple">Staff</c-ui.badge>
+                                    {% endif %}
+                                    <c-ui.badge size="sm" color="{{ user.profile.ysws_eligible|yesno:'green,red' }}"
+                                        >{{ user.profile.ysws_eligible|yesno:"YSWS eligible,Not YSWS eligible" }}</c-ui.badge
+                                    >
+                                </div>
+                                <div class="text-sm">
+                                    <div>
+                                        <p>{{ user.projects.count }} projects created</p>
+                                        <p>{{ user.profile.shipped_projects|length }} projects shipped</p>
+                                    </div>
+                                    <div class="mt-2">
+                                        <p>{{ user.profile.time_logged|divide:60|floatformat:2 }}h logged</p>
+                                        <p>{{ user.profile.time_shipped|divide:60|floatformat:2 }}h shipped</p>
+                                    </div>
+                                </div>
                                 {% endif %}
-                                <c-ui.badge size="sm" color="{{ user.profile.ysws_eligible|yesno:'green,red' }}"
-                                    >{{ user.profile.ysws_eligible|yesno:"YSWS eligible,Not YSWS eligible" }}</c-ui.badge
-                                >
                             </div>
-                            <div>
-                                <p>{{ user.projects.count }} projects created</p>
-                                <p>{{ user.profile.shipped_projects|length }} projects shipped</p>
-                            </div>
-                            <div class="mt-2">
-                                <p>{{ user.profile.time_logged|divide:60|floatformat:2 }}h logged</p>
-                                <p>{{ user.profile.time_shipped|divide:60|floatformat:2 }}h shipped</p>
-                            </div>
-                            {% endif %}
                         </div>
-                    </div>
+                    </a>
                 </c-ui.card>
             {% endfor %}
         </div>

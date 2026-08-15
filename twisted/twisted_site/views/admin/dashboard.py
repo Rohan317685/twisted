@@ -1,3 +1,4 @@
+from django.template.response import TemplateResponse
 from .admin import AdminView
 from django.shortcuts import render, redirect
 from ...models import Journal, Project, ProjectShip
@@ -5,8 +6,7 @@ import json
 # Create your views here.
 class DashboardView(AdminView):
     def get(self, request):
-        context = self.get_context_data()
-        context['page'] = 'dashboard'
+        context = self.get_context_data(page='dashboard')
         if self.request.user.is_anonymous:
             return redirect('homepage')
         hours_logged = 0
@@ -38,4 +38,4 @@ class DashboardView(AdminView):
         context['shipped_project_type'] = json.dumps([['Type', 'Hours']] + list(shipped_project_type.items()))
         
         
-        return render(request, "admin/dashboard.html", context=context)
+        return TemplateResponse(request, "admin/dashboard.html", context=context)

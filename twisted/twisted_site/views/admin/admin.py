@@ -11,8 +11,10 @@ class SidebarLink:
 
 # Create your views here.
 class AdminView(View):
-    def get_context_data(self, **kwargs) -> dict:
+    def get_context_data(self, page, subpage=None) -> dict:
         context = {}
+        context['page'] = page
+        context['subpage'] = subpage
         context["sidebar_links"] = [
             SidebarLink(name="dashboard", icon="analytics", text="Dashboard", href=resolve_url('admin.dash')),
             SidebarLink(name="users", icon="profile", text="Users", href=resolve_url('admin.users')),
@@ -31,4 +33,5 @@ class AdminView(View):
             return redirect('homepage')
         if not request.user.profile.is_staff:
             return redirect('dashboard')
-        return super().dispatch(request, *args, **kwargs)
+        response = super().dispatch(request, *args, **kwargs)
+        return response

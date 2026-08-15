@@ -6,7 +6,9 @@
         <h3 class="text-lg font-semibold mb-2">Welcome back, {{ user.profile.slack_username }}!</h3>
         <p class="text-ink-400">
             <c-ui.button onclick="alert('weh, you are looking at them right now >:(')">See statistics</c-ui.button>
-            <c-ui.button>Manage Users</c-ui.button>
+            <a href="{% url 'admin.users' %}">
+                <c-ui.button>Manage Users</c-ui.button>
+            </a>
             <c-ui.button>Edit Pathways</c-ui.button>
             <c-ui.button>Fulfill orders</c-ui.button>
             <c-ui.button>Edit shop</c-ui.button>

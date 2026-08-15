@@ -122,10 +122,10 @@ class Project(models.Model):
     def is_shipped(self):
         ships = ProjectShip.objects.filter(project=self)
         for ship in ships:
-            if ship.status != 'rejected':
+            if ship.status not in ['rejected', 'requested_changes']:
                 return ship
         return False
-                
+
 
 class Journal(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT, related_name="journals")
@@ -144,8 +144,9 @@ class Journal(models.Model):
 
 
 PROJECT_SHIP_STATUSES = {
-    'created': 'Newly created',
+    'created': 'Awaiting review',
     'rejected': 'Rejected ship',
+    'requested_changes': 'Requested Changes',
     'reqchecked': 'Checked by T1',
     'approved': 'Approved by T2'
 }

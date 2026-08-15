@@ -1,5 +1,5 @@
 from .dashboard import DashboardView
-from .users import UsersView
+from .users import UsersView, UserDetailView
 from .pathways import PathwaysView
 from .fulfillment import FulfillmentView
 from .shop import ShopView
