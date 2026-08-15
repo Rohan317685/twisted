@@ -34,7 +34,7 @@ class Profile(models.Model):
     hackatime_state = models.CharField(max_length=100, blank=True, default="")
     
     is_staff = models.BooleanField(default=False)
-    dark_theme = models.BooleanField(default=True)
+    is_allowed = models.BooleanField(default=False)
     
     def shipped_projects(self):
         shipped_projects = []
@@ -64,7 +64,6 @@ PROJECT_TYPE_CHOICES = {'software': 'Software', 'hardware': 'Hardware'}
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="projects")
 
-    
     project_name = models.CharField(max_length=50)
     project_description = models.TextField(max_length=2000)
     

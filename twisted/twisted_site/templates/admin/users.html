@@ -55,6 +55,9 @@
                                     {% if user.profile.is_staff %}
                                     <c-ui.badge size="sm" color="purple">Staff</c-ui.badge>
                                     {% endif %}
+                                    {% if user.profile.is_allowed %}
+                                    <c-ui.badge size="sm" color="purple">Allowed</c-ui.badge>
+                                    {% endif %}
                                     <c-ui.badge size="sm" color="{{ user.profile.ysws_eligible|yesno:'green,red' }}"
                                         >{{ user.profile.ysws_eligible|yesno:"YSWS eligible,Not YSWS eligible" }}</c-ui.badge
                                     >
@@ -76,5 +79,13 @@
                 </c-ui.card>
             {% endfor %}
         </div>
+    </div>
+    <div class="mt-100">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="logoutall">
+            hehe click this funny button to log everyone out:
+            <c-ui.button type="submit" variant="danger">Log everyone out</c-ui.button>
+        </form>
     </div>
 </c-base>

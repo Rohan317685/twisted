@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("", include("twisted_site.urls")),
-    path("_slackbot/", include("slack_bot.urls")),
+    path("", include("slack_bot.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

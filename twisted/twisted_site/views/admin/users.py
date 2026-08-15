@@ -1,9 +1,12 @@
+from django.contrib.sessions.models import Session
 from django.template.response import TemplateResponse
 from django.http import HttpResponse
 from .admin import AdminView
 from django.shortcuts import render, redirect
 from ...models import User, Profile
 from django.db.models import Q
+import os
+import json
 
 # Create your views here.
 class UsersView(AdminView):
@@ -23,10 +26,28 @@ class UsersView(AdminView):
             context['users'] = User.objects.all().order_by('profile__slack_username')
         return TemplateResponse(request, "admin/users.html", context)
 
+    def post(self, request):
+        if request.POST.get('action') == 'logoutall':
+            Session.objects.all().delete()
+        
+        return redirect(self.request.path)
+    
 class UserDetailView(AdminView):
     def get(self, request, id):
         context = self.get_context_data(page='users', subpage='detail')
         user = User.objects.get(id=id)
         context['user'] = user
-        
+        context['login_maybe'] = os.environ.get("LOGIN_ENABLED") == 'maybe'
         return TemplateResponse(request, "admin/user.html", context)
+    
+    def post(self, request, id):
+        user = User.objects.get(id=id)
+        if request.POST.get('action') == 'toggle_is_allowed':
+            prof = user.profile
+            prof.is_allowed = not prof.is_allowed
+            prof.save()
+            resp = redirect(self.request.path)
+            resp["HX-Trigger"] = json.dumps({
+                "toast": {"message": f"Set is_allowed to {prof.is_allowed}", "variant": "success"}
+            })
+            return resp

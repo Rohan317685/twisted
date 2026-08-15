@@ -35,7 +35,7 @@ class LoginView(View):
 class AuthCallbackView(View):
     def get(self, request):
         if os.environ.get("LOGIN_ENABLED") == 'false':
-            return JsonResponse("not allowed!")
+            return JsonResponse({"error": "Not allowed! DM @kavyansh. if this is a mistake!"})
         
         token = oauth.hca.authorize_access_token(request)
         
@@ -84,6 +84,10 @@ class AuthCallbackView(View):
         profile.ysws_eligible = ysws_eligible
         profile.save()
 
+        if os.environ.get("LOGIN_ENABLED") == 'maybe':
+            if not profile.is_allowed:
+                return JsonResponse({"error": "Not allowed! DM @kavyansh. if this is a mistake!"})
+        
         login(request, user)
         
         if not profile.hackatime_access_token:

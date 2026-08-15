@@ -16,6 +16,9 @@
                     {% if user.profile.is_staff %}
                     <c-ui.badge size="sm" color="purple">Staff</c-ui.badge>
                     {% endif %}
+                    {% if login_maybe %}
+                    <c-ui.badge size="sm" color="{{ user.profile.is_allowed|yesno:'green,red' }}">{{ user.profile.is_allowed|yesno:"Login allowed,Login disallowed" }}</c-ui.badge>
+                    {% endif %}
                     <c-ui.badge size="sm" color="{{ user.profile.ysws_eligible|yesno:'green,red' }}"
                         >{{ user.profile.ysws_eligible|yesno:"YSWS eligible,Not YSWS eligible" }}</c-ui.badge
                     >
@@ -58,4 +61,13 @@
         </c-ui.card>
         {% endif %}
     </div>
+    {% if login_maybe %}
+    <div class="mt-4">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="toggle_is_allowed">
+            <c-ui.button type="submit">Toggle allowed state</c-ui.button>
+        </form>
+    </div>
+    {% endif %}
 </c-base>
