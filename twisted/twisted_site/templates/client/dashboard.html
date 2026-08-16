@@ -1,25 +1,26 @@
 {% extends "client/osbase.html" %} {% load static %} {% block body %}
 <div class="h-full text-absolute-white">
     <div class="p-4 flex flex-col gap-3">
-        <div>
-            <button
-                onclick="newWindow('Projects', '{% url 'fr.projects' %}')"
-                class="bg-twisted-400 text-absolute-white font-bold px-4 py-2 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200"
-            >
-                Projects
-            </button>
-        </div>
         {% if user.profile.is_staff %}
-        <div>
+        <div class="font-vintage w-fit cursor-pointer" onclick="newWindow('Projects', '{% url 'fr.projects' %}')">
             <a href="{% url 'admin.dash' %}" target="_blank">
-                <button
-                    class="bg-twisted-400 text-absolute-white font-bold px-4 py-2 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200"
-                >
-                    Admin
-                </button>
+                <img
+                    src="{% static 'images/round-square.jpg' %}"
+                    alt=""
+                    class="size-20"
+                />
+                <span class="text-white block text-center">Admin</span>
             </a>
         </div>
         {% endif %}
+        <div class="font-vintage w-fit cursor-pointer" onclick="newWindow('Projects', '{% url 'fr.projects' %}')">
+            <img
+                src="{% static 'images/round-square.jpg' %}"
+                alt=""
+                class="size-20"
+            />
+            <span class="block text-center">Projects</span>
+        </div>
     </div>
 
     <div id="windows-container"></div>
@@ -272,7 +273,7 @@
             fullscreenWindow(realWin);
         });
         realWin.querySelector(".reload-button").addEventListener("mouseup", () => {
-            frame = realWin.querySelector('.src-frame');
+            frame = realWin.querySelector(".src-frame");
             frame.src = frame.src;
         });
         realWin.querySelector(".close-button").addEventListener("mouseup", () => {
