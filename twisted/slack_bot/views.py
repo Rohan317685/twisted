@@ -24,10 +24,10 @@ def slack_events(request):
 
 
 @slack_bot.app.event("app_mention")
-def handle_app_mention(body, say, logger):
+async def handle_app_mention(body, say, logger):
     """Handle when the bot is mentioned in a message"""
     logger.debug(f"App mention event: {body}")
-    say(f"Thanks for the mention! <@{body['event']['user']}>")
+    await say(f"Thanks for the mention! <@{body['event']['user']}>")
 
 
 @slack_bot.app.event("message")
@@ -40,13 +40,13 @@ def handle_message(body, logger):
 
 
 @slack_bot.app.command("/hellotwisted")
-def handle_hello_command(ack, respond, command):
+async def handle_hello_command(ack, respond, command):
     """
     Slash command: /hellotwisted
     Responds with a greeting and user information
     """
-    ack()
-    respond(
+    await ack()
+    await respond(
         text=f"Hello <@{command['user_id']}>! 👋",
         blocks=[
             {
