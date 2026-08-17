@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'tailwind',
     TAILWIND_APP_NAME,
     'django_htmx',
+    'django_extensions',
 ]
 
 if DEBUG:

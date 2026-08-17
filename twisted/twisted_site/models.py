@@ -165,3 +165,13 @@ class ProjectShip(models.Model):
     
     def __str__(self):
         return f"Ship created at {self.created_at} ({PROJECT_SHIP_STATUSES.get(str(self.status), self.status)})"
+
+class Pathway(models.Model):
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    
+    name = models.CharField(max_length=200)
+    min_mins = models.IntegerField(default=300)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

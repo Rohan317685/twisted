@@ -1,0 +1,29 @@
+{% extends "client/osbase.html" %} {% load static time_filters humanize %} {% block body %}
+<div class="bg-surface flex flex-col w-full h-full">
+    <div class="flex-1 sunken-panel font-vintage overflow-y-scroll p-4">
+        <div class="text-center">
+            <div class="text-xl">
+                CURRENT PATHWAY
+            </div>
+            <div class="text-3xl font-bold">
+                {{ current_pathway.name|default:"none! please dm @kavyansh." }}
+            </div>
+            <div>
+                {{ current_mins|minutes_to_hours_minutes }}/{{ current_pathway.min_mins|minutes_to_hours_minutes }} required
+            </div>
+            <div class="text-xl">
+                <div>
+                    Started {{ current_pathway.start|naturaltime }}
+                </div>
+                <div>
+                    Ends {{ current_pathway.end|naturaltime }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sticky status-field-border font-vintage">
+        <div class="mx-1">{{ pathways|length }} pathway{{ pathways|length|pluralize }}</div>
+    </div>
+</div>
+
+{% endblock body %}

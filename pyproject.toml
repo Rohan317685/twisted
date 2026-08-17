@@ -24,4 +24,5 @@ dependencies = [
     "django-google-charts>=0.1.1",
     "django-qsstats-magic>=1.1.0",
     "django-htmx>=1.29.0",
+    "django-extensions>=4.1",
 ]

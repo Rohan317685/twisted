@@ -1,8 +1,8 @@
 {% extends "client/osbase.html" %} {% load static %} {% block body %}
 <div class="h-full text-absolute-white">
-    <div class="p-4 flex flex-col gap-3">
+    <div class="p-4 flex flex-col flex-wrap content-start gap-3 w-full h-full overflow-y-hidden">
         {% if user.profile.is_staff %}
-        <div class="font-vintage w-fit cursor-pointer" onclick="newWindow('Projects', '{% url 'fr.projects' %}')">
+        <div class="font-vintage w-fit cursor-pointer">
             <a href="{% url 'admin.dash' %}" target="_blank">
                 <img
                     src="{% static 'images/round-square.jpg' %}"
@@ -20,6 +20,14 @@
                 class="size-20"
             />
             <span class="block text-center">Projects</span>
+        </div>
+        <div class="font-vintage w-fit cursor-pointer" onclick="newWindow('Pathways', '{% url 'fr.pathways' %}')">
+            <img
+            src="{% static 'images/round-square.jpg' %}"
+            alt=""
+            class="size-20"
+            />
+            <span class="block text-center">Pathways</span>
         </div>
     </div>
 
@@ -39,7 +47,7 @@
 
             <div
                 id="start-menu"
-                style="display: none; position: fixed; bottom: 48px; left: 4px; width: 520px"
+                style="display: none; position: fixed; bottom: 36px; left: 4px; width: 520px"
                 class="z-[10000] bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg"
             >
                 <div class="flex">
@@ -199,7 +207,7 @@
             </div>
         </div>
         <div class="window-body h-full flex-1">
-            <iframe class="w-full h-full src-frame" src="about:blank" frameborder="0"></iframe>
+            <iframe class="w-full h-full src-frame select-none" src="about:blank" frameborder="0"></iframe>
         </div>
     </div>
 </template>
