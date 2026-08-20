@@ -24,10 +24,10 @@ def slack_events(request):
 
 
 @slack_bot.app.event("app_mention")
-async def handle_app_mention(body, say, logger):
+def handle_app_mention(body, say, logger):
     """Handle when the bot is mentioned in a message"""
     logger.debug(f"App mention event: {body}")
-    await say(f"Thanks for the mention! <@{body['event']['user']}>")
+    say(f"Thanks for the mention! <@{body['event']['user']}>")
 
 
 @slack_bot.app.event("message")
@@ -39,31 +39,42 @@ def handle_message(body, logger):
 # ==================== Slash Commands ====================
 
 
-@slack_bot.app.command("/hellotwisted")
-async def handle_hello_command(ack, respond, command):
-    """
-    Slash command: /hellotwisted
-    Responds with a greeting and user information
-    """
-    await ack()
-    await respond(
-        text=f"Hello <@{command['user_id']}>! 👋",
-        blocks=[
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f"Hello <@{command['user_id']}> from the Twisted Slack Bot! 👋",
-                },
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {"type": "mrkdwn", "text": f"*User:*\n<@{command['user_id']}>"},
-                    {"type": "mrkdwn", "text": f"*Channel:*\n<#{command['channel_id']}>"},
-                ],
-            },
-        ],
-    )
+# @slack_bot.app.command("/hellotwisted")
+# def handle_hello_command(ack, respond, command):
+#     """
+#     Slash command: /hellotwisted
+#     Responds with a greeting and user information
+#     """
+#     ack()
+#     respond(
+#         text=f"Hello <@{command['user_id']}>! 👋",
+#         blocks=[
+#             {
+#                 "type": "section",
+#                 "text": {
+#                     "type": "mrkdwn",
+#                     "text": f"Hello <@{command['user_id']}> from the Twisted Slack Bot! 👋",
+#                 },
+#             },
+#             {
+#                 "type": "section",
+#                 "fields": [
+#                     {"type": "mrkdwn", "text": f"*User:*\n<@{command['user_id']}>"},
+#                     {"type": "mrkdwn", "text": f"*Channel:*\n<#{command['channel_id']}>"},
+#                 ],
+#             },
+#         ],
+#     )
 
 
+def ack_short_handler(ack):
+    ack()
+
+def hellotwistedcommand(respond, body):
+    user = body["user"]["id"]
+    respond(text=f"Hello <@{user}> from the Twisted Slack Bot! 👋")
+
+slack_bot.command("/hellotwisted")(
+    ack=ack_short_handler,
+    lazy=[hellotwistedcommand]
+)
