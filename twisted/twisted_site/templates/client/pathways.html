@@ -1,29 +1,118 @@
-{% extends "client/osbase.html" %} {% load static time_filters humanize %} {% block body %}
+{% extends "client/osbase.html" %} {% load static time_filters humanizelib maths mathfilters %} {% block body %}
 <div class="bg-surface flex flex-col w-full h-full">
     <div class="flex-1 sunken-panel font-vintage overflow-y-scroll p-4">
-        <div class="text-center">
-            <div class="text-xl">
-                CURRENT PATHWAY
-            </div>
-            <div class="text-3xl font-bold">
-                {{ current_pathway.name|default:"none! please dm @kavyansh." }}
+        {% if not pathways %}
+        <div>
+            <div>
+                No pathways yet! :(
             </div>
             <div>
-                {{ current_mins|minutes_to_hours_minutes }}/{{ current_pathway.min_mins|minutes_to_hours_minutes }} required
+                Come check later
             </div>
+        </div>
+        {% endif %}
+        {% if current_pathways %}
+        <div class="text-center">
             <div class="text-xl">
-                <div>
-                    Started {{ current_pathway.start|naturaltime }}
+                Current pathway{{ current_pathways|pluralize }}
+            </div>
+            <div>
+                {% for pathway_info in current_pathways %}
+                <div class="mt-2">
+                    <div class="text-3xl font-bold">
+                        {{ pathway_info.pathway.name|default:"none! please dm @kavyansh." }}
+                    </div>
+                    <div class="text-xl">
+                        {{ pathway_info.minutes_spent|minutes_to_hours_minutes }}/{{ pathway_info.pathway.min_mins|minutes_to_hours_minutes }} completed
+                    </div>
+                    <div class="text-md flex w-fit mx-auto gap-2">
+                        <div>
+                            Started
+                            <span class="underline decoration-dotted" title="{{ pathway_info.pathway.start }}">
+                                {{ pathway_info.pathway.start|naturaltime }}
+                            </span>
+                        </div>
+                        &bullet;
+                        <div>
+                            Ends
+                            <span class="underline decoration-dotted" title="{{ pathway_info.pathway.end }}">
+                                {{ pathway_info.pathway.end|naturaltime }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    Ends {{ current_pathway.end|naturaltime }}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div class="{% if past_pathways and future_pathways %}grid grid-cols-2{% endif %} mt-4 gap-2">
+            {% if past_pathways %}
+            <div>
+                <h1 class="text-center font-black text-xl!">
+                    Past pathways
+                </h1>
+                <div class="grid gap-2">
+                    {% for pathway_info in past_pathways %}
+                    <div class="border {% if pathway_info.unlocked %}bg-lime-800 border-lime-600{% else %}bg-twisted-800 border-twisted-600{% endif %} p-1">
+                        <div class="flex gap-2">
+                            <h2 class="flex-1 font-bold text-lg!">{{ pathway_info.pathway.name }}</h2>
+                            <p>{{ pathway_info.pathway.end|sub:pathway_info.pathway.start|naturaldelta }} long</p>
+                        </div>
+                        <div>
+                            started
+                            <span
+                                class="underline decoration-dotted"
+                                title="{{ pathway_info.pathway.start }}">
+                                {{ pathway_info.pathway.start|naturalday }}</span>
+                            and ended
+                            <span
+                                class="underline decoration-dotted"
+                                title="{{ pathway_info.pathway.end }}"
+                            >{{ pathway_info.pathway.end|naturalday }}</span>
+                            </title>
+                        </div>
+                        <div>
+                            {{ pathway_info.minutes_spent|minutes_to_hours_minutes }}/{{ pathway_info.pathway.min_mins|minutes_to_hours_minutes }} spent
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
+            {% if future_pathways %}
+            <div>
+                <h1 class="text-center font-bold text-xl!">
+                    Future pathways
+                </h1>
+                <div class="grid gap-2">
+                    {% for pathway_info in future_pathways %}
+                    <div class="bg-twisted-800 border border-twisted-600 p-1">
+                        <div class="flex gap-2">
+                            <h2 class="flex-1 font-bold text-lg!">{{ pathway_info.pathway.name }}</h2>
+                            <p>{{ pathway_info.pathway.end|sub:pathway_info.pathway.start|naturaldelta }} long</p>
+                        </div>
+                        <div>
+                            starts
+                            <span
+                                class="underline decoration-dotted"
+                                title="{{ pathway_info.pathway.start }}">
+                                {{ pathway_info.pathway.start|naturalday }}</span>
+                            and ends
+                            <span
+                                class="underline decoration-dotted"
+                                title="{{ pathway_info.pathway.end }}"
+                            >{{ pathway_info.pathway.end|naturalday }}</span>
+                            </title>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="sticky status-field-border font-vintage">
         <div class="mx-1">{{ pathways|length }} pathway{{ pathways|length|pluralize }}</div>
     </div>
 </div>
-
 {% endblock body %}
