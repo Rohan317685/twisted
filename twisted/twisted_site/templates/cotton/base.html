@@ -15,7 +15,7 @@
     {{ head }}
 </head>
 <body class="dark bg-[#09090B] text-white font-latin" hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
-    <div class="md:flex md:py-2 h-screen">
+    <div class="flex flex-col md:flex-row md:py-2 h-screen">
         <div class="md:h-full">
             <c-sidebar>
                 {% for link in sidebar_links %}

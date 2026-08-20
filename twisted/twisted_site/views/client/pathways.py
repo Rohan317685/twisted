@@ -13,46 +13,26 @@ class PathwaysView(View):
 
         profile = request.user.profile
         pathways = Pathway.objects.order_by("start").all()
-        pathways_reversed = Pathway.objects.order_by("-start").all()
 
         current_pathways = []
-        for pathway in pathways:
-            if not pathway.in_progress():
-                continue
-            minutes_spent = pathway.mins_spent(request.user)
-            current_pathways.append(
-                {
-                    "pathway": pathway,
-                    "minutes_spent": minutes_spent,
-                    "unlocked": minutes_spent > pathway.min_mins,
-                }
-            )
-
         past_pathways = []
-        for pathway in pathways_reversed:
-            if not pathway.ended():
-                continue
-            minutes_spent = pathway.mins_spent(request.user)
-            past_pathways.append(
-                {
-                    "pathway": pathway,
-                    "minutes_spent": minutes_spent,
-                    "unlocked": minutes_spent > pathway.min_mins,
-                }
-            )
-
         future_pathways = []
+
         for pathway in pathways:
-            if not pathway.didnt_start():
-                continue
-            minutes_spent = 0
-            future_pathways.append(
-                {
-                    "pathway": pathway,
-                    "minutes_spent": minutes_spent,
-                    "unlocked": minutes_spent > pathway.min_mins,
-                }
-            )
+            minutes_spent = pathway.mins_spent(request.user)
+            pathway_info = {
+                "pathway": pathway,
+                "minutes_spent": minutes_spent,
+                "unlocked": minutes_spent > pathway.min_mins,
+            }
+            if pathway.in_progress():
+                current_pathways.append(pathway_info)
+            if pathway.ended():
+                past_pathways.append(pathway_info)
+            if pathway.didnt_start():
+                future_pathways.append(pathway_info)
+
+        past_pathways.reverse()
 
         return render(
             request,

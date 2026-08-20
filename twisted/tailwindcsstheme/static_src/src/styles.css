@@ -15,8 +15,8 @@
 /* COTTON-STYLES start */
 :root {
     /* Accent: primary buttons, links, focus ring, active states */
-    --color-accent: var(--color-rose-500);
-    --color-accent-content: var(--color-rose-600);
+    --color-accent: var(--color-violet-500);
+    --color-accent-content: var(--color-violet-600);
     --color-accent-foreground: #ffffff;
 
     /* Corner radius, by role */
@@ -33,9 +33,9 @@
 
 .dark {
     /* Dark mode: lighter accent so it stays vivid on dark surfaces */
-    --color-accent: var(--color-rose-400);
-    --color-accent-content: var(--color-rose-300);
-    --color-accent-foreground: var(--color-rose-950);
+    --color-accent: var(--color-violet-400);
+    --color-accent-content: var(--color-violet-300);
+    --color-accent-foreground: var(--color-violet-950);
 }
 /* COTTON-STYLES end */
 

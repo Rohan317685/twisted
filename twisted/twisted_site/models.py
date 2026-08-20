@@ -195,6 +195,14 @@ class Pathway(models.Model):
     def in_progress(self):
         return not self.ended() and not self.didnt_start()
 
+    def status(self):
+        if self.ended():
+            return 'ended'
+        if self.didnt_start():
+            return 'awaiting'
+        if self.in_progress():
+            return 'in progress'
+    
     def mins_spent(self, user: User):
         pathways = Pathway.objects.order_by('start').values('id', 'start', 'end', 'min_mins')
         if not pathways:
@@ -224,12 +232,76 @@ class Pathway(models.Model):
                     continue
 
                 mins_needed = mins_required - mins_completed
-                mins_donated = min(j_mins, mins_needed)
+                mins_donated = min(mins_remaining, mins_needed)
 
                 mins_remaining -= mins_donated
                 pathway_totals[p_id] = mins_completed + mins_donated
 
-        return pathway_totals.get(self.id, 0)
+        return pathway_totals[self.id]
+    
+    def mins_spent_per_participant(self) -> dict[int, int]:
+        """
+        Calculates the minutes spent on this specific pathway for all participants.
 
+        Returns:
+            dict: {user_id: mins_spent}
+        """
+        # Fetch all pathways to accurately model the sequential time donation
+        pathways = list(Pathway.objects.order_by('start').values('id', 'start', 'end', 'min_mins'))
+        if not pathways:
+            return {}
+
+        # Fetch journals from all users that fit within this pathway's active time frame
+        journals = Journal.objects.filter(
+            created_at__gte=self.start,
+            created_at__lte=self.end,
+            reduced_minutes__gt=0
+        ).order_by('project__user_id', 'created_at').values_list(
+            'project__user_id', 'created_at', 'reduced_minutes'
+        )
+
+        user_pathway_totals = {}
+
+        for user_id, j_created, j_mins in journals:
+            if user_id not in user_pathway_totals:
+                user_pathway_totals[user_id] = {p['id']: 0 for p in pathways}
+
+            pathway_totals = user_pathway_totals[user_id]
+            mins_remaining = j_mins
+
+            for pathway in pathways:
+                if mins_remaining <= 0:
+                    break
+
+                if pathway['start'] > j_created or pathway['end'] < j_created:
+                    continue
+
+                p_id = pathway['id']
+                mins_completed = pathway_totals[p_id]
+                mins_required = pathway['min_mins']
+
+                if mins_completed >= mins_required:
+                    continue
+
+                mins_needed = mins_required - mins_completed
+                mins_donated = min(mins_remaining, mins_needed)
+
+                mins_remaining -= mins_donated
+                pathway_totals[p_id] += mins_donated
+
+        # Extract only this pathway's result for each participant
+        return {
+            user_id: totals.get(self.id, 0)
+            for user_id, totals in user_pathway_totals.items()
+        }
+    
+    def qualified_participants(self):
+        per_part = self.mins_spent_per_participant()
+        qualified = []
+        for userid, mins in per_part.items():
+            if mins >= self.min_mins:
+                qualified.append(User.objects.get(id=userid))
+        return qualified
+    
     def __str__(self):
         return self.name
