@@ -74,7 +74,7 @@ def hellotwistedcommand(respond, body):
     user = body["user"]["id"]
     respond(text=f"Hello <@{user}> from the Twisted Slack Bot! 👋")
 
-slack_bot.command("/hellotwisted")(
+slack_bot.app.command("/hellotwisted")(
     ack=ack_short_handler,
     lazy=[hellotwistedcommand]
 )
