@@ -1,118 +1,121 @@
 @import "tailwindcss";
 @import "./cotton-ui.sources.css";
-/* @plugin "@tailwindcss/typography"; */
 
-/**
-* A catch-all path to Django template files, JavaScript, and Python files
-* that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
-*
-* If your final CSS file is not being updated after code changes, you may want to broaden or narrow
-* the scope of this path.
-*/
 @source "../../../**/*.{html,py,js}";
 @source "../../../../.venv/lib/python3.13/site-packages/django_cotton_ui/templates/**/*.html";
 
-/* COTTON-STYLES start */
-:root {
-    /* Accent: primary buttons, links, focus ring, active states */
-    --color-accent: var(--color-violet-500);
-    --color-accent-content: var(--color-violet-600);
-    --color-accent-foreground: #ffffff;
-
-    /* Corner radius, by role */
-    --radius-control: 0.375rem;
-    --radius-box: 0.5rem;
-
-    /* Form controls */
-    --focus-ring-width: 3px;
-    --shadow-input: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-
-    /* Structural surfaces */
-    --shadow-box: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-}
-
-.dark {
-    /* Dark mode: lighter accent so it stays vivid on dark surfaces */
-    --color-accent: var(--color-violet-400);
-    --color-accent-content: var(--color-violet-300);
-    --color-accent-foreground: var(--color-violet-950);
-}
-/* COTTON-STYLES end */
-
-/* latin-ext */
 @font-face {
-  font-family: 'Figtree';
+  font-family: "Figtree";
   font-style: normal;
   font-weight: 300 900;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/figtree/v9/_Xms-HUzqDCFdgfMm4q9DbZs.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url(https://fonts.gstatic.com/s/figtree/v9/_Xms-HUzqDCFdgfMm4S9DbZs.woff2) format("woff2");
 }
-/* latin */
+
 @font-face {
-  font-family: 'Figtree';
+  font-family: "Pirkkala";
+  src: url("/static/fonts/pirkkala.ttf") format("truetype");
+  font-weight: 200;
   font-style: normal;
-  font-weight: 300 900;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/figtree/v9/_Xms-HUzqDCFdgfMm4S9DQ.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-button {
-    cursor: pointer;
 }
 
 @font-face {
-  font-family: "Pixelated MS Sans Serif";
-  src: url("/static/fonts/ms_sans_serif.woff") format("woff");
-  src: url("/static/fonts/ms_sans_serif.woff2") format("woff2");
-  font-weight: normal;
+  font-family: "Piedra";
+  src: url("/static/fonts/Piedra-Regular.ttf") format("truetype");
+  font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Pixelated MS Sans Serif";
-  src: url("/static/fonts/ms_sans_serif_bold.woff") format("woff");
-  src: url("/static/fonts/ms_sans_serif_bold.woff2") format("woff2");
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Pirkalla';
-  src: url('/static/fonts/pirkkala.ttf') format('truetype');
+  font-family: "VT323";
+  src: url("/static/fonts/VT323.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @theme {
-  --font-vintage: "Pirkalla", monospace, sans-serif;
+  --font-vintage: "Pirkkala", sans-serif;
   --font-latin: "Figtree", sans-serif;
 
-  --color-absolute-white: #FAFAFA;
-  --color-fair-gray: #A1A1A1;
-  --color-dark-black: #050505;
+  --color-background: #24102F;
+  --color-foreground: #FAF7FF;
 
-  --color-twisted-200: #CAB3E1;
-  --color-twisted-400: #8364A2;
-  --color-twisted-600: #5A4471;
-  --color-twisted-800: #36214B;
-  --color-twisted-999: #29153D;
+  --color-card: #1B0D25;
+  --color-card-foreground: #FAF7FF;
 
-  --color-surface: #1E072F;
-  --color-dark: #261F2D;
+  --color-popover: #48245C;
+  --color-popover-foreground: #FFFFFF;
+
+  --color-primary: #B96CFF;
+  --color-primary-foreground: #190B24;
+
+  --color-secondary: #5B2E73;
+  --color-secondary-foreground: #F1DFFF;
+
+  --color-accent: #E0A7FF;
+  --color-accent-foreground: #24102F;
+
+  --color-muted: #432252;
+  --color-muted-foreground: #C9B8D3;
+
+  --color-subtle: #806A8D;
+  --color-subtle-foreground: #E2D8E8;
+
+  --color-border: #654078;
+  --color-input: #75488A;
+  --color-ring: #C27AFF;
+
+  --color-success: #4ADE80;
+  --color-success-foreground: #092414;
+
+  --color-warning: #FACC15;
+  --color-warning-foreground: #2A2105;
+
+  --color-destructive: #FF6B7A;
+  --color-destructive-foreground: #2A080D;
+
+  --color-twisted-200: #E0A7FF;
+  --color-twisted-400: #B96CFF;
+  --color-twisted-600: #8C3ED1;
+  --color-twisted-800: #61268F;
+  --color-twisted-999: #3A1750;
+
+  --color-absolute-white: #FFFFFF;
+  --color-fair-gray: #B8ADBF;
+  --color-dark-black: #120817;
+
+  --color-surface: #2E153C;
+  --color-dark: #1B0D25;
+}
+
+button {
+  cursor: pointer;
 }
 
 @keyframes flag-wave {
-  0%, 100% { transform: rotate(-2deg); }
-  50% { transform: rotate(2deg); }
+
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.flag-wave {
+  transform-origin: top center;
+  animation: flag-wave 4s ease-in-out infinite;
 }
 
 @utility no-spinner {
   appearance: textfield;
   -moz-appearance: textfield;
-  
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -123,34 +126,4 @@ button {
 @utility image-render-pixelated {
   image-rendering: crisp-edges;
   image-rendering: pixelated;
-}
-
-.flag-wave {
-  transform-origin: top center;
-  animation: flag-wave 4s ease-in-out infinite;
-}
-
-.scrollbar-win9x::-webkit-scrollbar {
-  width: 16px;
-}
-
-.scrollbar-win9x::-webkit-scrollbar-track {
-  background-color: #c0c0c0;
-  border-left: 2px solid #dfdfdf;
-}
-
-.scrollbar-win9x::-webkit-scrollbar-thumb {
-  background-color: #c0c0c0;
-  border-top: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  border-right: 2px solid #0a0a0a;
-  border-bottom: 2px solid #0a0a0a;
-}
-
-.scrollbar-win9x::-webkit-scrollbar-thumb:focus {
-  background-color: #FFFFFF;
-  border-top: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  border-right: 2px solid #0a0a0a;
-  border-bottom: 2px solid #0a0a0a;
 }
