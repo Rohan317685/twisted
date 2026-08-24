@@ -16,6 +16,17 @@
 </head>
 <body class="dark bg-[#09090B] text-white font-latin" hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
     <c-ui.toast.container />
+    {% if error %}
+        <div id="errorMessage" data-message="{{ error|default:'no error found!' }}">
+            <script>
+                message = document.querySelector('#errorMessage').dataset.message
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('toast', { detail: { message: message, variant: 'error' }}))
+                }, 100)
+            </script>
+        </div>
+    {% endif %}
+
     <div class="flex flex-col md:flex-row md:py-2 h-screen">
         <div class="md:h-full">
             <c-sidebar>
@@ -36,5 +47,21 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div id="djangomessage{{ forloop.counter }}" data-message="{{ message }}">
+            <script>
+                window.addEventListener('load', (event) => {
+                    message = document.querySelector('#djangomessage{{ forloop.counter }}').dataset.message
+                    setTimeout(() => {
+                        console.log("sending message "+message+"...")
+                        window.dispatchEvent(new CustomEvent('toast', { detail: { message: message, variant: '{{ message.tags }}' }}))
+                    }, 100)
+                })
+            </script>
+        </div>
+    {% endfor %}
+    {% endif %}
 </body>
 </html>

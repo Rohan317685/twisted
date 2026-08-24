@@ -41,18 +41,4 @@
             </div>
         </form>
     </div>
-    <script>
-            htmx.logAll();
-    </script>
-
-    {% if error %}
-        <div id="errorMessage" data-message="{{ error|default:'no error found!' }}">
-            <script>
-                message = document.querySelector('#errorMessage').dataset.message
-                setTimeout(() => {
-                    window.dispatchEvent(new CustomEvent('toast', { detail: { message: message, variant: 'error' }}))
-                }, 100)
-            </script>
-        </div>
-    {% endif %}
 </c-base>

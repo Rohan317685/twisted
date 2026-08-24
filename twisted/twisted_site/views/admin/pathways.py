@@ -3,7 +3,7 @@ from .admin import AdminView
 from django.shortcuts import render, redirect
 from ...models import Pathway
 from django.utils import timezone
-
+from django.contrib import messages
 
 # Create your views here.
 class PathwayListView(AdminView):
@@ -30,6 +30,7 @@ class PathwayListView(AdminView):
         context["past_pathways"] = past_pathways
         context["future_pathways"] = future_pathways
 
+        
         return render(request, "admin/pathways/list.html", context=context)
 
 
@@ -39,7 +40,7 @@ class PathwayCreateView(AdminView):
         context.update(extracontext)
         
         if error:
-            context['error'] = error
+            messages.error(request, error)
         
         return render(request, "admin/pathways/create.html", context=context)
 
@@ -63,35 +64,45 @@ class PathwayCreateView(AdminView):
             'min_mins': min_mins,
         }
         
-        if not pathway_name:
-            return self.get(request, "No pathway name typed!", errcontext)
-        
-        if not start_date:
-            return self.get(request, "No start date selected!", errcontext)
-        
-        if not start_time:
-            return self.get(request, "No start time selected!", errcontext)
-        
-        if not end_date:
-            return self.get(request, "No end date selected!", errcontext)
-        
-        if not end_time:
-            return self.get(request, "No end time selected!", errcontext)
-        
-        if not min_mins:
-            return self.get(request, "No minimum minutes selected!", errcontext)
+        if "form validation":
+            if not pathway_name:
+                return self.get(request, "No pathway name typed!", errcontext)
+            
+            if not start_date:
+                return self.get(request, "No start date selected!", errcontext)
+            
+            if not start_time:
+                return self.get(request, "No start time selected!", errcontext)
+            
+            if not end_date:
+                return self.get(request, "No end date selected!", errcontext)
+            
+            if not end_time:
+                return self.get(request, "No end time selected!", errcontext)
+            
+            if not min_mins:
+                return self.get(request, "Minimum minutes must be greater than zero!", errcontext)
         
         current_tz_offset = timezone.datetime.now(timezone.get_current_timezone()).strftime('%z')
+        
         start = timezone.datetime.strptime(
             f"{start_date} {start_time} {current_tz_offset}", "%Y-%m-%d %H:%M %z"
         )
+        
         end = timezone.datetime.strptime(
             f"{end_date} {end_time} {current_tz_offset}", "%Y-%m-%d %H:%M %z"
         )
-
-        return HttpResponse(
-            f"{pathway_name=}<br>{start.isoformat()=}<br>{end.isoformat()=}<br>{min_mins=}"
+        
+        Pathway.objects.create(
+            start=start,
+            end=end,
+            name=pathway_name,
+            min_mins=min_mins
         )
+        
+        messages.success(request, f"Successfully created Pathway for \"{pathway_name}\"!")
+
+        return redirect('admin.pathways')
 
 
 class PathwayDetailView(AdminView):
