@@ -31,3 +31,43 @@
   margin: 0 !important;
   padding: 4px !important;
 }
+
+.resize-handle {
+  position: absolute;
+  z-index: 10;
+}
+
+.resize-n,
+.resize-s {
+  left: 8px;
+  right: 8px;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+.resize-n { top: 0; }
+.resize-s { bottom: 0; }
+
+.resize-e,
+.resize-w {
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  cursor: ew-resize;
+}
+
+.resize-e { right: 0; }
+.resize-w { left: 0; }
+
+.resize-ne,
+.resize-nw,
+.resize-se,
+.resize-sw {
+  width: 8px;
+  height: 8px;
+}
+
+.resize-ne { top: 0; right: 0; cursor: ne-resize; }
+.resize-nw { top: 0; left: 0; cursor: nw-resize; }
+.resize-se { bottom: 0; right: 0; cursor: se-resize; }
+.resize-sw { bottom: 0; left: 0; cursor: sw-resize; }
