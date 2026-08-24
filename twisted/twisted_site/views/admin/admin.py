@@ -1,6 +1,9 @@
 from django.views import View
 from django.shortcuts import render, redirect, resolve_url
 from dataclasses import dataclass
+import json
+from typing import Literal
+from django_htmx.http import trigger_client_event
 
 @dataclass
 class SidebarLink:
