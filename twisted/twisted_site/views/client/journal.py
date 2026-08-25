@@ -85,7 +85,7 @@ class NewProjectHackatimeJournal(View):
         return self.get(request, id, context={"success": True})
 
 
-UNTRACKED_MAX_LOGGABLE_MINUTES = 180
+UNTRACKED_MAX_LOGGABLE_MINUTES = 60
 
 class NewProjectUntrackedJournal(View):
     def get(self, request, id, info=None, context={}):

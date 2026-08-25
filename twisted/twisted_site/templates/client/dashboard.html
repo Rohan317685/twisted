@@ -156,8 +156,8 @@
             const data = event.data;
             if (data.type != "internal") return;
             if (data.action == "open") {
-                let w = 400,
-                    h = 400;
+                let w = 600,
+                    h = 600;
                 if (data.width) w = data.width;
                 if (data.height) h = data.height;
                 newWindow(data.title, data.src, w, h);

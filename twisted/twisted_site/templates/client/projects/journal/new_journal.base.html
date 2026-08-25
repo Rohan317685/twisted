@@ -18,7 +18,7 @@
 }
 </script>
 
-<div class="bg-surface text-foreground flex flex-col w-full h-full font-vintage overflow-hidden">
+<div class="bg-surface text-foreground flex flex-col w-full h-full font-vintage">
 
     {% if not success %}
 
@@ -31,13 +31,10 @@
         </div>
     </div>
 
-    <div class="flex-1 min-h-0 overflow-y-auto p-3">
+    <div class="flex flex-col flex-1 min-h-0 overflow-y-auto p-3">
 
+        {% if project.project_type == 'hardware' %}
         <div class="mb-3">
-            <div class="text-sm font-bold mb-1">
-                Journal
-            </div>
-
             <div class="flex flex-wrap gap-2">
                 {% block links %}
 
@@ -48,41 +45,33 @@
                     </button>
                 </a>
 
-                {% if project.project_type == 'hardware' %}
                 <a href="{% url 'fr.projects.journals.new.untracked' project.id %}">
                     <button type="button"
                         class="px-3 py-1.5 bg-secondary text-secondary-foreground border border-border hover:bg-primary hover:text-primary-foreground">
                         Untracked
                     </button>
                 </a>
-                {% endif %}
-
+                
                 {% endblock links %}
             </div>
         </div>
+        {% endif %}
 
         {% if info %}
         <div class="mb-3 border border-warning bg-warning/30 px-3 py-2">
-            <div class="text-xs font-bold text-warning mb-1">
-                huh?
-            </div>
             <div class="text-sm ">
                 {{ info|safe }}
             </div>
         </div>
         {% endif %}
 
+        {% block journal_log_message %}
         <div class="mb-3 border border-border bg-background px-3 py-2">
-            <span class="font-bold">
-                Time:
-            </span>
-
-            {% block journal_log_message %}
             This journal will log {{ log_minutes|minutes_to_hours_minutes }}.
-            {% endblock journal_log_message %}
         </div>
-
-        <form method="post" class="h-full min-h-0 flex flex-col">
+        {% endblock journal_log_message %}
+        
+        <form method="post" class="flex-1 min-h-0 flex flex-col">
             {% csrf_token %}
 
             {% block form %}
@@ -90,7 +79,7 @@
             {% block preform %}
             {% endblock preform %}
 
-            <div class="flex-1 max-h-70 border border-border bg-card">
+            <div class="flex-1 border border-border bg-card">
                 <c-mdedit class="h-full overflow-auto "></c-mdedit>
             </div>
 
