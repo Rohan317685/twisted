@@ -165,7 +165,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 CSRF_COOKIE_HTTPONLY = False
-NPM_BIN_PATH = os.environ.get("NPM_BIN_PATH", "npm")
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 # Jazzmin Settings
 JAZZMIN_SETTINGS = {
