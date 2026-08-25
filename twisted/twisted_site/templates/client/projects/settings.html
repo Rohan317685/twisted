@@ -1,45 +1,119 @@
-{% extends "client/osbase.html" %} {% load static time_filters maths %} {% block body %}
-<div class="bg-surface flex flex-col w-full h-full font-vintage">
-    <div>
+{% extends "client/osbase.html" %}
+{% load static time_filters maths %}
+
+{% block body %}
+<div class="bg-surface text-foreground flex flex-col w-full h-full font-vintage overflow-y-auto">
+    <div class="flex items-center justify-between p-2 border-b border-border bg-card scrollbar-thin">
         <a href="{% url 'fr.projects.detail' project.id %}">
-            <button>Go back</button>
+            <button type="button"
+                class="px-3 py-1 bg-secondary text-secondary-foreground border border-border hover:bg-primary hover:text-primary-foreground">
+                ← Go back
+            </button>
         </a>
+
+        <div class="text-lg font-bold">
+            Project settings
+        </div>
     </div>
-    <div class="text-xl">Project settings</div>
-    <form method="post">
+
+    <form method="post" class="p-4 space-y-3">
         {% csrf_token %}
-        <div class="mt-2 field-row-stacked">
-            <label for="name">Project name</label>
-            <input id="name" name="name" type="text" value="{{ project.project_name }}" />
+
+        <div class="flex flex-col gap-1">
+            <label for="name" class="font-bold">
+                Project name
+            </label>
+
+            <input id="name" name="name" required type="text" value="{{ project.project_name }}"
+                class="w-full bg-card text-card-foreground border border-border px-2 py-1 focus:outline-none focus:ring-1 focus:ring-ring" />
         </div>
-        <div class="mt-2 field-row-stacked">
-            <label for="description">Project description</label>
-            <textarea id="description" name="description">{{ project.project_description }}</textarea>
+
+        <div class="flex flex-col gap-1">
+            <label for="description" class="font-bold">
+                Project description
+            </label>
+
+            <textarea id="description" required name="description" rows="4"
+                class="w-full bg-card text-card-foreground border border-border px-2 py-1 resize-y focus:outline-none focus:ring-1 focus:ring-ring">{{ project.project_description }}</textarea>
         </div>
-        <div class="mt-2 field-row-stacked">
-            <label for="type">Project type</label>
-            <select id="type" name="type" required>
-                <option {% if project.project_type == 'software' %}selected{% endif %} value="software">Software</option>
-                <option {% if project.project_type == 'hardware' %}selected{% endif %} value="hardware">Hardware</option>
+
+        <div class="flex flex-col gap-1">
+            <label for="type" class="font-bold">
+                Project type
+            </label>
+
+            <select id="type" name="type" required
+                class="w-full bg-card text-card-foreground border border-border px-2 py-1">
+
+                {% if project.project_type == "software" %}
+                <option value="software" selected>
+                    Software
+                </option>
+                <option value="hardware" class="text-muted-foreground">
+                    Hardware
+                </option>
+                {% else %}
+                <option value="software" class="text-muted-foreground">
+                    Software
+                </option>
+                <option value="hardware" selected>
+                    Hardware
+                </option>
+                {% endif %}
+
             </select>
         </div>
-        <div class="mt-2 field-row-stacked">
-            <label for="hackatime">Hackatime project</label>
-            <select id="hackatime" name="hackatime">
-                <option value="" disabled hidden {% if not project.hackatime_project_name %}selected{% endif %}>Select a project</option>
-                {% for project in hackatime_projects %}
-                {% if project.total_seconds > 300 %}
-                <option value="{{ project.name }}" {% if project.hackatime_project_name == project.name %}selected{% endif %}> {{ project.name }} ({{ project.total_seconds|divide:60|minutes_to_hours_minutes }}) </option>
+
+        <div class="flex flex-col gap-1">
+            <label for="hackatime" class="font-bold">
+                Hackatime project
+            </label>
+
+            <select id="hackatime" name="hackatime"
+                class="w-full bg-card text-card-foreground border border-border px-2 py-1">
+
+                {% if not project.hackatime_project_name %}
+                <option value="" disabled selected hidden class="text-muted-foreground">
+                    Select a project
+                </option>
+                {% endif %}
+
+                {% for hack_project in hackatime_projects %}
+                {% if hack_project.total_seconds > 300 %}
+                {% if project.hackatime_project_name == hack_project.name %}
+                <option value="{{ hack_project.name }}" selected>
+                    {{ hack_project.name }}
+                    ({{ hack_project.total_seconds|divide:60|minutes_to_hours_minutes }})
+                </option>
+                {% else %}
+                <option value="{{ hack_project.name }}">
+                    {{ hack_project.name }}
+                    ({{ hack_project.total_seconds|divide:60|minutes_to_hours_minutes }})
+                </option>
+                {% endif %}
                 {% endif %}
                 {% endfor %}
+
             </select>
         </div>
-        <div class="mt-2 field-row-stacked">
-            <label for="repo">Repo URL</label>
-            <input id="repo" name="repo" type="text" placeholder="https://github.com/<yournamehere>/<yourprojecthere>" value="{{ project.repo_url }}" />
+
+        <div class="flex flex-col gap-1">
+            <label for="repo" class="font-bold">
+                Repo URL
+            </label>
+
+            <input id="repo" name="repo" type="text" placeholder="https://github.com/username/project"
+                value="{{ project.repo_url }}"
+                class="w-full bg-card text-card-foreground border border-border px-2 py-1 focus:outline-none focus:ring-1 focus:ring-ring" />
         </div>
-        <button type="submit" class="mt-4">Save</button>
+
+        <div class="pt-2">
+            <button type="submit"
+                class="px-4 py-2 bg-primary text-primary-foreground border-2 border-border hover:bg-primary/80">
+                Save changes?
+            </button>
+        </div>
+
     </form>
 </div>
-
 {% endblock body %}
