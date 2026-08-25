@@ -16,7 +16,7 @@
     <div class="sunken-panel min-h-0 flex-1 overflow-y-auto bg-background p-3">
 
         {% if projects %}
-        <div class="flex flex-wrap content-start gap-4">
+        <div class="flex flex-wrap content-start gap-2">
 
             {% for project in projects %}
             <input type="hidden" value="{{ project.project_name }}" id="project-{{ project.id }}">
@@ -24,12 +24,12 @@
             <div class="group flex w-24 cursor-pointer flex-col items-center p-2 select-none hover:bg-secondary"
                 data-project-id="{{ project.id }}" data-project-url="{% url 'fr.projects.detail' project.id %}">
                 <div
-                    class="flex h-16 w-16 items-center justify-center border border-transparent p-1 group-hover:border-border group-hover:bg-card">
+                    class="flex h-16 w-16 items-center justify-center border border-transparent p-1">
                     <img src="{% static 'images/directory.png' %}" alt="" class="h-full w-full object-contain">
                 </div>
 
                 <div
-                    class="mt-1 w-full wrap-break-word text-center text-sm leading-tight text-foreground group-hover:text-primary-foreground">
+                    class="mt-1 w-full wrap-break-word text-center text-sm leading-tight text-foreground group-hover:text-secondary-foreground">
                     {{ project.project_name }}
                 </div>
             </div>
