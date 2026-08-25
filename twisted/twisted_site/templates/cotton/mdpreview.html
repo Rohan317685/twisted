@@ -1,11 +1,12 @@
 <div class="{{ class }}">
-    <div class="w-full previewdiv zoom-100 [&_h1,h2,h3,h4,h5,h6]:zoom-40 [&_ul,ol]:list-outside [&_ul,ol]:pl-5 [&_ul]:list-disc [&_ol]:list-decimal *:my-1">
+    <div
+        class="w-full previewdiv max-w-full wrap-break-word text-foreground [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-bold [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-2 [&_a]:underline [&_a]:text-primary [&_img]:max-w-full">
     </div>
-    <textarea class="textbox">{{ slot }}</textarea>
+    <textarea class="textbox hidden">{{ slot }}</textarea>
     <script>
         function rendermarkdown() {
             elem = document.currentScript.parentElement.querySelector('.textbox')
-            content = elem.value;
+            content = elem.value.trim();
             elem.classList.add('hidden')
             parsed = DOMPurify.sanitize(marked.parse(content));
             elem.parentElement.querySelector('.previewdiv');

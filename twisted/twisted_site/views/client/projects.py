@@ -50,8 +50,4 @@ class CreateProject(View):
             project_type=project_type,
         )
 
-        return render(
-            request,
-            "client/projects/create.html",
-            {"complete": True},
-        )
+        return redirect('fr.projects')
