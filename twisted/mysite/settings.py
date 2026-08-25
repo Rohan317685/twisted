@@ -164,7 +164,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 CSRF_COOKIE_HTTPONLY = False
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+NPM_BIN_PATH = os.environ.get("NPM_BIN_PATH", "npm")
 
 # Django Messages Framework
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
