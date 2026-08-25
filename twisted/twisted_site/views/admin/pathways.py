@@ -108,4 +108,5 @@ class PathwayCreateView(AdminView):
 class PathwayDetailView(AdminView):
     def get(self, request, id):
         context = self.get_context_data(page="pathways", subpage="detail")
+        context['pathway'] = Pathway.objects.get(id=id)
         return render(request, "admin/pathways/detail.html", context=context)
