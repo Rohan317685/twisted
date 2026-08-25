@@ -181,3 +181,7 @@ progress::-webkit-progress-bar {
 ::-webkit-scrollbar-corner {
   background: #1E072F;
 }
+
+@utility no-scrollbar {
+  @apply [scrollbar-none] [&::-webkit-scrollbar]:hidden;
+}

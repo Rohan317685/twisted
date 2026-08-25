@@ -18,8 +18,8 @@
         </div>
         {% if not pathway.didnt_start %}
         <div>
-            <p class="text-ink-400">Qualified count</p>
-            <p title="local time">{{ pathway.qualified_participants|length }}</p>
+            <p class="text-ink-400">Qualified</p>
+            <p title="local time">{{ pathway.qualified_participants|length }} participant{{ pathway.qualified_participants|pluralize }}</p>
             {% if pathway.qualified_participants %}
             <p class="mt-2">
                 <c-ui.avatar.group>

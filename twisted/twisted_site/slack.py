@@ -1,134 +1,187 @@
 import os
-import threading
 from typing import Any
-from slack_bolt import App
-from slack_bolt.adapter.socket_mode import SocketModeHandler
+
+from slack_sdk import WebClient
 
 
 class SlackBot:
-	def __init__(
-		self,
-		token: str | None = None,
-		signing_secret: str | None = None,
-		cc_group_id: str | None = None,
-		app_token: str | None = None,
-		slack_mode: str | None = None,
-	):
-		self.slack_mode = (slack_mode or os.getenv("SLACK_MODE", "https")).lower()
-		self.app_token = app_token or os.getenv("SLACK_APP_TOKEN")
-		slack_token = token
-		self.app = App(token=slack_token, signing_secret=signing_secret)
-		self.socket_mode_handler: SocketModeHandler | None = None
-		self.socket_thread: threading.Thread | None = None
-		if self.slack_mode == "socket":
-			if not self.app_token:
-				raise ValueError("SLACK_APP_TOKEN must be set when SLACK_MODE=socket")
-			self.socket_mode_handler = SocketModeHandler(self.app, self.app_token)
-		self.client = self.app.client
-		self._cc_group_id = cc_group_id
+    def __init__(
+        self,
+        token: str | None = None,
+        cc_group_id: str | None = None,
+    ):
+        self.token = token or os.getenv("SLACK_TOKEN")
 
-	def start(self):
-		if self.socket_mode_handler is not None:
-			self.socket_thread = threading.Thread(
-				target=self.socket_mode_handler.start,
-				name="slack-socket-mode",
-				daemon=True,
-			)
-			self.socket_thread.start()
+        if not self.token:
+            raise ValueError("SLACK_TOKEN must be set")
 
-	def post_message(
-		self,
-		*,
-		channel: str,
-		text: str,
-		blocks: list[dict[str, Any]] | None = None,
-		**kwargs: Any,
-	):
-		payload: dict[str, Any] = {
-			"channel": channel,
-			"text": text,
-			**kwargs,
-		}
-		if blocks is not None:
-			payload["blocks"] = blocks
-		return self.client.chat_postMessage(**payload)
+        self.client = WebClient(token=self.token)
+        self._cc_group_id = cc_group_id or os.getenv("SLACK_CC_GROUP_ID")
 
-	def send_message(self, *, channel: str, text: str, **kwargs: Any):
-		return self.post_message(channel=channel, text=text, **kwargs)
+    def post_message(
+        self,
+        *,
+        channel: str,
+        text: str,
+        blocks: list[dict[str, Any]] | None = None,
+        **kwargs: Any,
+    ):
+        payload = {
+            "channel": channel,
+            "text": text,
+            **kwargs,
+        }
 
-	def send_blocks(
-		self,
-		*,
-		channel: str,
-		blocks: list[dict[str, Any]],
-		text: str = " ",
-		**kwargs: Any,
-	):
-		return self.post_message(channel=channel, text=text, blocks=blocks, **kwargs)
-	def error_log(
-		self,
-		*,
-		channel: str,
-		error: str,
-		title: str | None = None,
-		**kwargs: Any,
-	):
-		if title is None:
-			title = "Error Log"
+        if blocks is not None:
+            payload["blocks"] = blocks
 
-		group_id = self._cc_group_id
-		mention = f"<@{group_id}>" if group_id else ""
+        return self.client.chat_postMessage(**payload)
 
-		# Parent message
-		parent = self.client.chat_postMessage(
-			channel=channel,
-			text=f"{title}".strip(),
-			blocks=[
-				{
-					"type": "section",
-					"text": {
-						"type": "mrkdwn",
-						"text": f"*{title}*".strip(),
-					},
-				},
-			],
-		)
+    def send_message(
+        self,
+        *,
+        channel: str,
+        text: str,
+        **kwargs: Any,
+    ):
+        return self.post_message(
+            channel=channel,
+            text=text,
+            **kwargs,
+        )
 
-		# Thread message
-		thread_text = f"```{error}```"
-		if mention:
-			thread_text += f"\n\nCC: {mention}"
+    def send_blocks(
+        self,
+        *,
+        channel: str,
+        blocks: list[dict[str, Any]],
+        text: str = " ",
+        **kwargs: Any,
+    ):
+        return self.post_message(
+            channel=channel,
+            text=text,
+            blocks=blocks,
+            **kwargs,
+        )
 
-		return self.client.chat_postMessage(
-			channel=channel,
-			thread_ts=parent["ts"],
-			text=thread_text,
-			blocks=[
-				{
-					"type": "section",
-					"text": {
-						"type": "mrkdwn",
-						"text": thread_text,
-					},
-				},
-			],
-		)
+    def dm_user(
+        self,
+        *,
+        user: str,
+        text: str,
+        blocks: list[dict[str, Any]] | None = None,
+        **kwargs: Any,
+    ):
+        """
+        Send a DM to a Slack user using their U... user ID.
 
-	def users_info(self, *, user: str):
-		return self.client.users_info(user=user)
+        No D... DM channel ID is required.
+        """
+        return self.post_message(
+            channel=user,
+            text=text,
+            blocks=blocks,
+            **kwargs,
+        )
+
+    def dm_user_blocks(
+        self,
+        *,
+        user: str,
+        blocks: list[dict[str, Any]],
+        text: str = " ",
+        **kwargs: Any,
+    ):
+        """Send Block Kit directly to a user using their U... ID."""
+        return self.dm_user(
+            user=user,
+            text=text,
+            blocks=blocks,
+            **kwargs,
+        )
+
+    def users_info(self, *, user: str):
+        return self.client.users_info(user=user)
+
+    def get_user_profile(self, user: str) -> dict[str, Any]:
+        response = self.client.users_info(user=user)
+
+        user_data = response["user"]
+        profile = user_data.get("profile", {})
+
+        return {
+            "id": user_data["id"],
+            "name": user_data.get("name"),
+            "real_name": (
+                user_data.get("real_name")
+                or profile.get("real_name")
+            ),
+            "display_name": (
+                profile.get("display_name")
+                or user_data.get("name")
+            ),
+            "image_24": profile.get("image_24"),
+            "image_32": profile.get("image_32"),
+            "image_48": profile.get("image_48"),
+            "image_72": profile.get("image_72"),
+            "image_192": profile.get("image_192"),
+            "image_512": profile.get("image_512"),
+        }
+
+    def error_log(
+        self,
+        *,
+        channel: str,
+        error: str,
+        title: str = "Error Log",
+        **kwargs: Any,
+    ):
+        group_id = self._cc_group_id
+        mention = f"<@{group_id}>" if group_id else ""
+
+        parent = self.client.chat_postMessage(
+            channel=channel,
+            text=title,
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"*{title}*",
+                    },
+                }
+            ],
+            **kwargs,
+        )
+
+        thread_text = f"```{error}```"
+
+        if mention:
+            thread_text += f"\n\nCC: {mention}"
+
+        return self.client.chat_postMessage(
+            channel=channel,
+            thread_ts=parent["ts"],
+            text=thread_text,
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": thread_text,
+                    },
+                }
+            ],
+        )
 
 
 slack_token = os.getenv("SLACK_TOKEN")
-slack_signing_secret = os.getenv("SLACK_SIGNING_SECRET")
 cc_group_id = os.getenv("SLACK_CC_GROUP_ID")
-slack_mode = os.getenv("SLACK_MODE", "https").strip().lower()
-slack_app_token = os.getenv("SLACK_APP_TOKEN")
 
 slack_bot = SlackBot(
-	token=slack_token,
-	signing_secret=slack_signing_secret,
-	cc_group_id=cc_group_id,
-	app_token=slack_app_token,
-	slack_mode=slack_mode,
+    token=slack_token,
+    cc_group_id=cc_group_id,
 )
+
 slack_client = slack_bot.client

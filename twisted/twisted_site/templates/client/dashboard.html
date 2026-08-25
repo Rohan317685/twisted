@@ -139,6 +139,14 @@
             <iframe class="w-full h-full block src-frame select-none border-0" src="about:blank"
                 frameborder="0"></iframe>
         </div>
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-se"></div>
+        <div class="resize-handle resize-sw"></div>
     </div>
 </template>
 
@@ -205,6 +213,7 @@
 
         realWin.querySelector(".title-bar").addEventListener("mousedown", () => focusWindow(id));
         dragWindow(realWin);
+        initResizeHandles(realWin);
         focusWindow(id);
         realWin.querySelector(".max-button").addEventListener("click", () => {
             fullscreenWindow(realWin);
@@ -340,6 +349,64 @@
             document.body.style.userSelect = "none";
             document.addEventListener("mousemove", onMove);
             document.addEventListener("mouseup", onUp);
+        });
+    }
+
+    function initResizeHandles(mywindow) {
+        const handles = mywindow.querySelectorAll(".resize-handle");
+        const frame = mywindow.querySelector(".src-frame");
+        handles.forEach((handle) => {
+            handle.addEventListener("mousedown", (e) => {
+                e.preventDefault();
+                if (!mywindow.classList.contains("resize")) return;
+                const dir = handle.classList[1].replace("resize-", "");
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startLeft = mywindow.offsetLeft;
+                const startTop = mywindow.offsetTop;
+                const startWidth = mywindow.offsetWidth;
+                const startHeight = mywindow.offsetHeight;
+                const minW = 200;
+                const minH = 200;
+                const oldPointerEvents = frame.style.pointerEvents;
+                frame.style.pointerEvents = "none";
+
+                function onMove(ev) {
+                    const dx = ev.clientX - startX;
+                    const dy = ev.clientY - startY;
+                    let newLeft = startLeft;
+                    let newTop = startTop;
+                    let newWidth = startWidth;
+                    let newHeight = startHeight;
+
+                    if (dir.includes("e")) newWidth = Math.max(minW, startWidth + dx);
+                    if (dir.includes("s")) newHeight = Math.max(minH, startHeight + dy);
+                    if (dir.includes("w")) {
+                        newWidth = Math.max(minW, startWidth - dx);
+                        newLeft = startLeft + (startWidth - newWidth);
+                    }
+                    if (dir.includes("n")) {
+                        newHeight = Math.max(minH, startHeight - dy);
+                        newTop = startTop + (startHeight - newHeight);
+                    }
+
+                    mywindow.style.left = newLeft + "px";
+                    mywindow.style.top = newTop + "px";
+                    mywindow.style.width = newWidth + "px";
+                    mywindow.style.height = newHeight + "px";
+                }
+
+                function onUp() {
+                    frame.style.pointerEvents = oldPointerEvents;
+                    document.removeEventListener("mousemove", onMove);
+                    document.removeEventListener("mouseup", onUp);
+                    document.body.style.userSelect = "";
+                }
+
+                document.body.style.userSelect = "none";
+                document.addEventListener("mousemove", onMove);
+                document.addEventListener("mouseup", onUp);
+            });
         });
     }
 
