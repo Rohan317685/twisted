@@ -3,7 +3,7 @@
     <img src="{% static 'images/twisted_logo.png' %}" alt=""
         class="fixed inset-0 z-0 bg-[url('static/images/twisted_logo.png')] pointer-events-none select-none my-auto justify-self-center opacity-60 bg-contain bg-scale scale-95 drop-shadow-lg shadow-primary" />
     <div class="relative z-10">
-        <div class="p-4 flex flex-col flex-wrap content-start gap-3 w-full h-full overflow-y-hidden">
+        <div class="flex flex-col flex-wrap content-start gap-3 w-full h-full overflow-y-hidden">
             {% if user.profile.is_staff %}
             <div class="font-vintage w-fit cursor-pointer select-none">
                 <a href="{% url 'admin.dash' %}" target="_blank">
@@ -32,25 +32,13 @@
             <div class="relative">
                 <button onclick="toggleStartMenu(event)"
                     class="flex shrink-0 items-center gap-1.5 sm:gap-2 border border-border bg-secondary px-2 sm:px-3 py-1.5 font-mono text-xs sm:text-sm font-bold text-secondary-foreground transition hover:bg-primary hover:text-primary-foreground">
-                    <img src="{% static 'images/twisted_logo.png' %}" alt="" class="w-8 h-5" /> Twist
+                    <img src="{% static 'images/twisted_logo.png' %}" class="h-4 w-6 object-contain" alt="">
+                    Twisted
                 </button>
 
-                <div id="start-menu" style="display: none; position: fixed; bottom: 36px; left: 4px; width: 520px"
-                    class="z-[10000] bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
-                    <div class="flex">
-                        <div class="flex-1 bg-twisted-999 p-2 space-y-0.5">
-                            {% for i in "0123456789" %}
-                            <button data-url="{% url 'fr.projects' %}"
-                                onclick="newWindow('Projects', this.dataset.url); toggleStartMenu(event)">
-                                class="w-full flex items-center gap-3 px-2 py-1.5 text-absolute-white text-left
-                                hover:bg-twisted-600">
-                                <img src="{% static 'images/round-square.jpg' %}" alt=""
-                                    class="w-7 h-7 object-cover border border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shrink-0" />
-                                <span class="text-sm">Projects</span>
-                            </button>
-                            {% endfor %}
-                        </div>
-
+                <div id="start-menu" style="display: none;"
+                    class="z-[10000] fixed bottom-12 left-1 bg-twisted-800 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black shadow-lg">
+                    <div class="flex h-80">
                         <div class="w-44 bg-twisted-600 p-3 pt-10 flex flex-col">
                             <div class="text-center mb-3">
                                 <img src="{{ user.profile.slack_pfp_url }}" alt=""
@@ -64,12 +52,11 @@
                                 class="font-vintage space-y-1 text-absolute-white text-sm border-t border-twisted-800 pt-2">
                                 {% if user.is_staff %}
                                 <a href="/admin/"
-                                    class="block text-absolute-white px-2 py-1 hover:bg-twisted-800">Supadmin
+                                    class="block text-absolute-white px-2 py-1 hover:bg-twisted-800">Admin
                                     Panel</a>
                                 {% endif %}
-                                <a href="#"
-                                    class="block text-absolute-white px-2 py-1 hover:bg-twisted-800">Settings</a>
-                                <a href="#" class="block text-absolute-white px-2 py-1 hover:bg-twisted-800">Help</a>
+                                <a href="https://docs.twisted.hackclub.com/" class="block text-absolute-white px-2 py-1 hover:bg-twisted-800">Docs</a>
+                                <button class="block text-absolute-white px-2 py-1 hover:bg-twisted-800">Docs</button>
                             </div>
                         </div>
                     </div>
@@ -89,27 +76,30 @@
             <div id="taskbar-windows" class="flex-1 flex items-center gap-1 px-2 overflow-x-auto"></div>
 
             <div class="flex items-center gap-2">
-                <div id="speaker-btn" onclick="toggleMusic()"
-                    class="cursor-pointer bg-twisted-600 px-2 py-1 border-2 border-t-twisted-200 border-l-twisted-200 border-r-dark-black border-b-dark-black active:border-t-dark-black active:border-l-dark-black active:border-r-twisted-200 active:border-b-twisted-200">
-                    <svg id="speaker-icon" width="20" height="16" viewBox="0 0 20 16" shape-rendering="crispEdges"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <rect x="2" y="6" width="2" height="4" fill="#CAB3E1" />
-                        <rect x="4" y="5" width="2" height="6" fill="#CAB3E1" />
-                        <rect x="6" y="4" width="2" height="8" fill="#CAB3E1" />
-                        <rect x="8" y="2" width="2" height="12" fill="#CAB3E1" />
-                        <g id="sound-waves">
-                            <rect x="12" y="5" width="2" height="6" fill="#8364A2" />
-                            <rect x="15" y="3" width="2" height="10" fill="#8364A2" />
-                        </g>
-                    </svg>
-                </div>
-                <canvas id="spectrum" width="100" height="24"
-                    class="border-2 border-t-dark-black border-l-dark-black border-r-twisted-200 border-b-twisted-200"></canvas>
+                <button id="speaker-btn" type="button" onclick="toggleMusic()" aria-label="Toggle music"
+                class="flex h-8 items-center border border-border bg-secondary px-2 text-secondary-foreground transition hover:bg-muted">
+                <svg id="speaker-icon" width="20" height="16" viewBox="0 0 20 16" shape-rendering="crispEdges"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="6" width="2" height="4" fill="#E0A7FF" />
+                    <rect x="4" y="5" width="2" height="6" fill="#E0A7FF" />
+                    <rect x="6" y="4" width="2" height="8" fill="#E0A7FF" />
+                    <rect x="8" y="2" width="2" height="12" fill="#E0A7FF" />
+
+                    <g id="sound-waves">
+                    <rect x="12" y="5" width="2" height="6" fill="#B96CFF" />
+                    <rect x="15" y="3" width="2" height="10" fill="#B96CFF" />
+                    </g>
+                </svg>
+                </button>
+
+                <canvas id="spectrum" width="100" height="24" class="hidden border border-border sm:block"></canvas>
+
                 <div id="taskbar-clock"
-                    class="!font-vintage !text-base !bg-twisted-600 !text-absolute-white !px-3 !py-1 !border-2 !border-t-dark-black !border-l-dark-black !border-r-twisted-200 !border-b-twisted-200 min-w-20 text-center">
-                    00:00 00
+                class="min-w-20 border border-border bg-background px-3 py-1.5 text-center font-mono text-xs text-foreground">
+                00:00 AM
                 </div>
             </div>
+
         </nav>
     </div>
 </main>
@@ -175,7 +165,7 @@
         false,
     );
 
-    function newWindow(title, src, w = 400, h = 400) {
+    function newWindow(title, src, w = 600, h = 600) {
         const template = document.getElementById("window-template");
         const container = document.getElementById("windows-container");
         const clone = template.content.cloneNode(true);
