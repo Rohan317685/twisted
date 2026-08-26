@@ -204,16 +204,6 @@ progress::-webkit-progress-bar {
   background: var(--color-accent);
 }
 
-::-webkit-scrollbar-button {
-  background: var(--color-primary);
-  border: 2px solid #1E072F;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-button:hover {
-  background: var(--color-accent);
-}
-
 ::-webkit-scrollbar-corner {
   background: #1E072F;
 }
