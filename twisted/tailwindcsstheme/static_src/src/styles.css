@@ -53,6 +53,7 @@
   --color-accent-foreground: var(--color-red-950);
   --color-primary: var(--color-red-600);
   --color-primary-foreground: var(--color-accent-foreground);
+  --color-surface: var(--color-zinc-900)
 }
 
 .os {
@@ -62,6 +63,18 @@
   --color-primary: #B96CFF;
   --color-primary-foreground: #190B24;
 
+  --color-twisted-200: #E0A7FF;
+  --color-twisted-400: #B96CFF;
+  --color-twisted-600: #8C3ED1;
+  --color-twisted-800: #61268F;
+  --color-twisted-999: #3A1750;
+
+  --color-absolute-white: #FFFFFF;
+  --color-fair-gray: #B8ADBF;
+  --color-dark-black: #120817;
+
+  --color-surface: #2E153C;
+  --color-dark: #1B0D25;
 }
 
 @theme {
@@ -106,19 +119,6 @@
 
   --color-destructive: #FF6B7A;
   --color-destructive-foreground: #2A080D;
-
-  --color-twisted-200: #E0A7FF;
-  --color-twisted-400: #B96CFF;
-  --color-twisted-600: #8C3ED1;
-  --color-twisted-800: #61268F;
-  --color-twisted-999: #3A1750;
-
-  --color-absolute-white: #FFFFFF;
-  --color-fair-gray: #B8ADBF;
-  --color-dark-black: #120817;
-
-  --color-surface: #2E153C;
-  --color-dark: #1B0D25;
 }
 
 button {
@@ -211,8 +211,6 @@ progress::-webkit-progress-bar {
 @utility no-scrollbar {
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }
-
-
 
 .resize-handle {
   position: absolute;

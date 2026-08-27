@@ -1,0 +1,97 @@
+<c-base>
+<div class="text-center bg-red-900 rounded-md mb-4">
+    DEBUG_REVIEW is set to true in .env! Please do not use this in production!
+    If this is a production environment, please switch DEBUG_REVIEW to false!
+</div>
+<div class="flex flex-col gap-2">
+    {% for ship in ships %}
+    <div>
+        <c-ui.card>
+            <h1 class="text-xl font-bold">
+                Ship for
+                {{ ship.project.project_name }}
+            </h1>
+            <div>
+                Created {{ ship.created_at }} //
+                Updated {{ ship.updated_at }}
+            </div>
+            <div>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ ship.id }}">
+                    <c-ui.table>
+                        <thead>
+                            <tr>
+                                <th>T1</th>
+                                <th>T2</th>
+                                <th>Fraud</th>
+                                <th>Final</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ ship.t1_updated_at }}</td>
+                                <td>{{ ship.t2_updated_at }}</td>
+                                <td>{{ ship.fraud_updated_at }}</td>
+                                <td>{{ ship.final_updated_at }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <c-ui.select name="t1_status" placeholder="Select an option">
+                                        <c-ui.select.option value="pending" selected="{% if ship.t1_status == 'pending' %}True{% endif %}">pending</c-ui.select.option>
+                                        <c-ui.select.option value="requested_changes" selected="{% if ship.t1_status == 'requested_changes' %}True{% endif %}">requested_changes</c-ui.select.option>
+                                        <c-ui.select.option value="rejected" selected="{% if ship.t1_status == 'rejected' %}True{% endif %}">rejected</c-ui.select.option>
+                                        <c-ui.select.option value="approved" selected="{% if ship.t1_status == 'approved' %}True{% endif %}">approved</c-ui.select.option>
+                                    </c-ui.select>
+                                </td>
+                                <td>
+                                    <c-ui.select name="t2_status" placeholder="Select an option">
+                                        <c-ui.select.option value="pending" selected="{% if ship.t2_status == 'pending' %}True{% endif %}">pending</c-ui.select.option>
+                                        <c-ui.select.option value="requested_changes" selected="{% if ship.t2_status == 'requested_changes' %}True{% endif %}">requested_changes</c-ui.select.option>
+                                        <c-ui.select.option value="rejected" selected="{% if ship.t2_status == 'rejected' %}True{% endif %}">rejected</c-ui.select.option>
+                                        <c-ui.select.option value="approved" selected="{% if ship.t2_status == 'approved' %}True{% endif %}">approved</c-ui.select.option>
+                                    </c-ui.select>
+                                </td>
+                                <td>
+                                    <c-ui.select name="fraud_status" placeholder="Select an option">
+                                        <c-ui.select.option value="pending" selected="{% if ship.fraud_status == 'pending' %}True{% endif %}">pending</c-ui.select.option>
+                                        <c-ui.select.option value="requested_changes" selected="{% if ship.fraud_status == 'requested_changes' %}True{% endif %}">requested_changes</c-ui.select.option>
+                                        <c-ui.select.option value="rejected" selected="{% if ship.fraud_status == 'rejected' %}True{% endif %}">rejected</c-ui.select.option>
+                                        <c-ui.select.option value="approved" selected="{% if ship.fraud_status == 'approved' %}True{% endif %}">approved</c-ui.select.option>
+                                    </c-ui.select>
+                                </td>
+                                <td>
+                                    <c-ui.select name="final_status" placeholder="Select an option">
+                                        <c-ui.select.option value="pending" selected="{% if ship.final_status == 'pending' %}True{% endif %}">pending</c-ui.select.option>
+                                        <c-ui.select.option value="requested_changes" selected="{% if ship.final_status == 'requested_changes' %}True{% endif %}">requested_changes</c-ui.select.option>
+                                        <c-ui.select.option value="rejected" selected="{% if ship.final_status == 'rejected' %}True{% endif %}">rejected</c-ui.select.option>
+                                        <c-ui.select.option value="approved" selected="{% if ship.final_status == 'approved' %}True{% endif %}">approved</c-ui.select.option>
+                                    </c-ui.select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <textarea name="t1_message">{{ ship.t1_message }}</textarea>
+                                </td>
+                                <td>
+                                    <textarea name="t2_message">{{ ship.t2_message }}</textarea>
+                                </td>
+                                <td>
+                                    <textarea name="fraud_message">{{ ship.fraud_message }}</textarea>
+                                </td>
+                                <td>
+                                    <textarea name="final_message">{{ ship.final_message }}</textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </c-ui.table>
+                    <div class="mt-2 text-right">
+                        <c-ui.button type="submit">Update</c-ui.button>
+                    </div>
+                </form>
+            </div>
+        </c-ui.card>
+    </div>
+    {% endfor %}
+</div>
+</c-base>

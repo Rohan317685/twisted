@@ -67,55 +67,17 @@
 
             <div class="mt-1 text-sm text-muted-foreground">This project is now read-only.</div>
 
-            <div class="mt-2 flex w-full overflow-auto gap-4 items-center justify-center">
+            <div class="mt-2 flex w-full overflow-auto gap-4 items-center justify-center md:justify-start">
                 <div class="w-24 mb-auto">
-                    <div class="mx-auto border flex border-border size-12 mb-2 rounded-full bg-green-700">
-                        <svg
-                            class="size-10 mx-auto my-auto text-green-400"
-                            viewBox="-8 -12 40 40"
-                            id="meteor-icon-kit__solid-checkmark"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M3.06066 6.4393C2.47487 5.85355 1.52513 5.85355 0.93934 6.4393C0.353553 7.0251 0.353553 7.9749 0.93934 8.5607L7.93934 15.5607C8.52513 16.1464 9.47487 16.1464 10.0607 15.5607L23.0607 2.56066C23.6464 1.97487 23.6464 1.02513 23.0607 0.43934C22.4749 -0.14645 21.5251 -0.14645 20.9393 0.43934L9 12.3787L3.06066 6.4393z"
-                                fill="currentColor"
-                            />
-                        </svg>
-                    </div>
+                    <c-project-ship-mark status="{{ project.latest_ship.t1_status }}" />
                     <p class="text-center w-full text-sm">first pass</p>
                 </div>
                 <div class="w-24 mb-auto">
-                    <div class="mx-auto border flex border-border size-12 mb-2 rounded-full bg-red-700">
-                        <svg
-                            class="size-10 mx-auto my-auto text-red-400"
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            stroke-linejoin="round"
-                            stroke-miterlimit="1.414"
-                            xmlns="http://www.w3.org/2000/svg"
-                            aria-label="view-close"
-                            viewBox="0 0 32 32"
-                            preserveAspectRatio="xMidYMid meet"
-                            fill="currentColor"
-                            width="256"
-                            height="256"
-                        >
-                            <path
-                                d="M11.121,9.707c-0.39,-0.391 -1.024,-0.391 -1.414,0c-0.391,0.39 -0.391,1.024 0,1.414l4.95,4.95l-4.95,4.95c-0.391,0.39 -0.391,1.023 0,1.414c0.39,0.39 1.024,0.39 1.414,0l4.95,-4.95l4.95,4.95c0.39,0.39 1.023,0.39 1.414,0c0.39,-0.391 0.39,-1.024 0,-1.414l-4.95,-4.95l4.95,-4.95c0.39,-0.39 0.39,-1.024 0,-1.414c-0.391,-0.391 -1.024,-0.391 -1.414,0l-4.95,4.95l-4.95,-4.95Z"
-                            />
-                        </svg>
-                    </div>
+                    <c-project-ship-mark status="{{ project.latest_ship.t2_status }}" />
                     <p class="text-center w-full text-sm">second pass</p>
                 </div>
                 <div class="w-24 mb-auto">
-                    <div class="mx-auto border flex border-border size-12 mb-2 rounded-full"></div>
-                    <p class="text-center w-full text-sm">fraud check</p>
-                </div>
-                <div class="w-24 mb-auto">
-                    <div class="mx-auto border flex border-border size-12 mb-2 rounded-full"></div>
+                    <c-project-ship-mark status="{{ project.latest_ship.final_status }}" />
                     <p class="text-center w-full text-sm">final review</p>
                 </div>
             </div>

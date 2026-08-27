@@ -28,6 +28,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'false').lower() in ['true', 'on', '1']
+DEBUG_REVIEW = os.environ.get('DEBUG_REVIEW', str(DEBUG)).lower() in ['true', 'on', '1']
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
