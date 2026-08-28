@@ -169,3 +169,19 @@ NPM_BIN_PATH = os.environ.get("NPM_BIN_PATH", "npm")
 
 # Django Messages Framework
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
+
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  # Keeps Gunicorn's loggers active
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
