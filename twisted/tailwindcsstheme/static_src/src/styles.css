@@ -212,6 +212,9 @@ progress::-webkit-progress-bar {
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }
 
+::-webkit-scrollbar-corner {
+  background: #1E072F;
+}
 .resize-handle {
   position: absolute;
   z-index: 10;
