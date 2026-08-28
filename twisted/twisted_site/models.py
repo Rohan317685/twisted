@@ -122,11 +122,16 @@ class Project(models.Model):
     def hackatime_time_unjournaled(self):
         return self.time_spent() - self.hackatime_logged(include_all_minutes=True)
 
+    def latest_ship(self):
+        ship = self.ships.order_by('-created_at').first()
+        return ship
+    
     def is_shipped(self):
-        ships = ProjectShip.objects.filter(project=self)
-        for ship in ships:
-            if ship.status not in ["rejected", "requested_changes"]:
-                return ship
+        latest_ship = self.latest_ship()
+        if latest_ship is None:
+            return False
+        if latest_ship.latest_status() not in ['requested_changes']:
+            return True
         return False
 
 
@@ -149,11 +154,10 @@ class Journal(models.Model):
 
 
 PROJECT_SHIP_STATUSES = {
-    "created": "Awaiting review",
-    "rejected": "Rejected ship",
-    "requested_changes": "Requested Changes",
-    "reqchecked": "Checked by T1",
-    "approved": "Approved by T2",
+    "pending": "Awaiting review",
+    "requested_changes": "Changes Requested",
+    "rejected": "Rejected",
+    "approved": "Approved"
 }
 
 
@@ -162,18 +166,59 @@ class ProjectShip(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    t1_status = models.CharField(default="pending", choices=PROJECT_SHIP_STATUSES, max_length=200)
     t1_updated_at = models.DateTimeField(default=None, null=True)
-    t2_updated_at = models.DateTimeField(default=None, null=True)
-
     t1_message = models.TextField(blank=True, default="")
+
+    t2_status = models.CharField(default="pending", choices=PROJECT_SHIP_STATUSES, max_length=200)
+    t2_updated_at = models.DateTimeField(default=None, null=True)
     t2_message = models.TextField(blank=True, default="")
 
-    status = models.CharField(
-        max_length=200, choices=PROJECT_SHIP_STATUSES, default="created"
-    )
+    fraud_status = models.CharField(default="pending", choices=PROJECT_SHIP_STATUSES, max_length=200)
+    fraud_updated_at = models.DateTimeField(default=None, null=True)
+    fraud_message = models.TextField(blank=True, default="")
 
+    final_status = models.CharField(default="pending", choices=PROJECT_SHIP_STATUSES, max_length=200)
+    final_updated_at = models.DateTimeField(default=None, null=True)
+    final_message = models.TextField(blank=True, default="")
+
+
+    def latest_status(self):
+        if self.final_status:
+            return self.final_status
+        if self.fraud_status:
+            return self.fraud_status
+        if self.t2_status:
+            return self.t2_status
+        if self.t1_status:
+            return self.t1_status
+    
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Check if object already exists in the database
+            return super().save(*args, **kwargs)
+        
+        original = ProjectShip.objects.get(pk=self.pk)
+
+        if original.t1_status != self.t1_status or original.t1_message != self.t1_message:
+            self.t1_updated_at = timezone.now()
+        
+        if original.t2_status != self.t2_status or original.t2_message != self.t2_message:
+            self.t2_updated_at = timezone.now()
+        
+        if original.fraud_status != self.fraud_status or original.fraud_message != self.fraud_message:
+            self.fraud_updated_at = timezone.now()
+        
+        if original.final_status != self.final_status or original.final_message != self.final_message:
+            self.final_updated_at = timezone.now()
+        
+        return super().save(*args, **kwargs)
+
+
+    
     def __str__(self):
-        return f"Ship created at {self.created_at} ({PROJECT_SHIP_STATUSES.get(str(self.status), self.status)})"
+        return f"Ship created at {self.created_at} ({PROJECT_SHIP_STATUSES.get(str(self.latest_status()), self.latest_status())})"
 
 
 class Pathway(models.Model):

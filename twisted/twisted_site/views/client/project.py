@@ -1,11 +1,10 @@
+from requests import HTTPError
 from markdown_it.rules_inline import image
 from django.http import JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect
 from ...models import Profile, Project, Journal, ProjectShip
 from ... import hackatime
-import re
-import math
 
 # Create your views here.
 class ProjectDetail(View):
@@ -52,9 +51,12 @@ class ProjectSettings(View):
         profile = request.user.profile
         context["profile"] = profile
 
-        context["hackatime_projects"] = hackatime.projects(
-            profile.hackatime_access_token
-        )
+        try:
+            context["hackatime_projects"] = hackatime.projects(
+                profile.hackatime_access_token
+            )
+        except HTTPError:
+            context['hackatime_projects'] = []
 
         return render(
             request,

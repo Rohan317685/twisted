@@ -6,7 +6,7 @@
         <div class="flex flex-col flex-wrap content-start gap-3 w-full h-full overflow-y-hidden">
             {% if user.profile.is_staff %}
             <div class="font-vintage w-fit cursor-pointer select-none">
-                <a href="{% url 'admin.dash' %}" target="_blank">
+                <a href="{% url 'admin.dash' %}">
                     <div class="size-15 bg-secondary border rounded-md flex items-center justify-center text-3xl">🛡️
                     </div>
                     <span class="text-white block text-center text-sm">Admin</span>
@@ -153,16 +153,16 @@
         <div class="window-body min-h-0 flex-1 overflow-hidden">
             <iframe class="w-full h-full block src-frame select-none border-0" src="about:blank"
                 frameborder="0"></iframe>
+            </div>
+            <div class="resize-handle resize-n"></div>
+            <div class="resize-handle resize-s"></div>
+            <div class="resize-handle resize-e"></div>
+            <div class="resize-handle resize-w"></div>
+            <div class="resize-handle resize-ne"></div>
+            <div class="resize-handle resize-nw"></div>
+            <div class="resize-handle resize-se"></div>
+            <div class="resize-handle resize-sw"></div>
         </div>
-        <div class="resize-handle resize-n"></div>
-        <div class="resize-handle resize-s"></div>
-        <div class="resize-handle resize-e"></div>
-        <div class="resize-handle resize-w"></div>
-        <div class="resize-handle resize-ne"></div>
-        <div class="resize-handle resize-nw"></div>
-        <div class="resize-handle resize-se"></div>
-        <div class="resize-handle resize-sw"></div>
-    </div>
 </template>
 
 <audio id="bg-music" loop>
@@ -301,6 +301,13 @@
         container = document.getElementById("windows-container");
         container.moveBefore(win, null);
 
+        document.querySelectorAll(".window").forEach((w) => {
+            w.style.zIndex = "";
+            w.querySelectorAll(".resize-handle").forEach((h) => (h.style.pointerEvents = "none"));
+        });
+        win.style.zIndex = "100";
+        win.querySelectorAll(".resize-handle").forEach((h) => (h.style.pointerEvents = "auto"));
+
         const btn = document.querySelector('#taskbar-windows button[data-win-id="' + id + '"]');
         if (btn) btn.classList.add("!bg-twisted-999");
     }
@@ -404,7 +411,7 @@
                         newHeight = Math.max(minH, startHeight - dy);
                         newTop = startTop + (startHeight - newHeight);
                     }
-
+                    
                     mywindow.style.left = newLeft + "px";
                     mywindow.style.top = newTop + "px";
                     mywindow.style.width = newWidth + "px";
