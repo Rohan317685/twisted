@@ -6,6 +6,4 @@ uv run gunicorn -w 3 mysite.wsgi:application \
     --threads=4 \
     --worker-class=gthread \
     --log-level info \
-    --access-logfile - \
-    --error-logfile - \
     --capture-output
