@@ -1,7 +1,7 @@
 {% extends "client/osbase.html" %} {% load static time_filters humanize %}
 {% block body %}
 
-<div class="w-full h-full flex flex-col bg-surface font-vintage">
+<div class="w-full h-full flex flex-col bg-surface text-foreground font-vintage">
 
     {% if info %}
     <div class="shrink-0 mx-2 mt-2 border border-border bg-twisted-400 p-2">
@@ -11,7 +11,7 @@
 
     {% if not success %}
 
-    <div class="shrink-0 flex items-center gap-2 bg-accent text-accent-foreground px-3 py-2 border-b border-border">
+    <div class="shrink-0 flex items-center gap-2 bg-card px-3 py-2 border-b border-border">
         <span class="font-bold text-lg">Submit project</span>
     </div>
 
@@ -27,9 +27,8 @@
 
                 <div class="text-base">
                     Please read through our
-                    <a href="#" class="underline font-bold hover:text-primary-foreground">
-                        submission guidelines
-                    </a>
+                    <a href="https://docs.twisted.hackclub.com/shipping/" class="underline font-bold hover:text-primary" target="_blank">
+                        submission guidelines</a>
                     before continuing.
                 </div>
 
@@ -38,7 +37,7 @@
             <div class="mt-4 border border-border bg-card text-card-foreground p-4 text-center">
 
                 <div class="text-2xl font-bold">
-                    Did yk 90% of rejections could have taken 5 minutes to fix pff?
+                    Did yk 90% of rejections could have taken 5 minutes to fix?
                 </div>
 
                 <div class="mt-4 text-sm text-muted-foreground">

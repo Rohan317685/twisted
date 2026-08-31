@@ -13,7 +13,11 @@
                     </span>
 
                     {% if project.is_shipped %}
-                    <span class="border border-success bg-success/20 px-2 py-0.5 text-xs text-success"> SHIPPED </span>
+                    {% if project.latest_ship.latest_status == 'rejected' %}
+                    <span class="border border-red-600 bg-red-600/20 px-2 py-0.5 text-xs text-red-600"> permanently rejected </span>
+                    {% else %}
+                    <span class="border border-success bg-success/20 px-2 py-0.5 text-xs text-success"> shipped </span>
+                    {% endif %}
                     {% endif %}
                 </div>
 
@@ -21,8 +25,9 @@
                     {{ project.project_description }}
                 </p>
             </div>
-
+            
             <div class="flex shrink-0 flex-wrap gap-1">
+                {% if project.user == request.user %}
                 {% if project.repo_url and project.time_logged > 60 %} {% if not project.is_shipped %}
                 <a href="{% url 'fr.projects.ship' project.id %}">
                     <button
@@ -31,7 +36,8 @@
                         ship project
                     </button>
                 </a>
-                {% endif %} {% endif %} {% if not project.is_shipped %}
+                {% endif %} {% endif %}
+                {% if not project.is_shipped %}
                 <a href="{% url 'fr.projects.settings' project.id %}">
                     <button
                         class="border border-border bg-secondary px-3 py-1.5 text-sm text-secondary-foreground hover:bg-primary hover:text-primary-foreground active:translate-y-px"
@@ -40,6 +46,15 @@
                     </button>
                 </a>
                 {% endif %}
+                {% endif %}
+                <button
+                    class="border border-border bg-secondary px-3 py-1.5 text-sm text-secondary-foreground hover:bg-primary hover:text-primary-foreground active:translate-y-px"
+                    data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'dashboard' %}?project={{ project.id }}"
+                    onclick="setTimeout(() => {alert(`copying ${this.dataset.url}`)}); navigator.clipboard.writeText(this.dataset.url)"
+                >
+                    Copy share link
+                </button>
+
             </div>
         </div>
     </div>
@@ -62,28 +77,9 @@
         </div>
 
         {% if project.is_shipped %}
-        <div class="mb-3 border border-success bg-success/10 p-3">
-            <div class="font-bold text-success">Project shipped</div>
+        {% endif %}
 
-            <div class="mt-1 text-sm text-muted-foreground">This project is now read-only.</div>
-
-            <div class="mt-2 flex w-full overflow-auto gap-4 items-center justify-center md:justify-start">
-                <div class="w-24 mb-auto">
-                    <c-project-ship-mark status="{{ project.latest_ship.t1_status }}" />
-                    <p class="text-center w-full text-sm">first pass</p>
-                </div>
-                <div class="w-24 mb-auto">
-                    <c-project-ship-mark status="{{ project.latest_ship.t2_status }}" />
-                    <p class="text-center w-full text-sm">second pass</p>
-                </div>
-                <div class="w-24 mb-auto">
-                    <c-project-ship-mark status="{{ project.latest_ship.final_status }}" />
-                    <p class="text-center w-full text-sm">final review</p>
-                </div>
-            </div>
-        </div>
-        {% endif %} {% if not project.hackatime_project_name and project.project_type != 'hardware' %}
-
+        {% if not project.hackatime_project_name and project.project_type != 'hardware' %}
         <div class="mb-3 border border-warning bg-warning/10 p-3">
             <div class="font-bold text-warning">Hackatime project not linked bru...</div>
 
@@ -98,9 +94,7 @@
                 Open project settings
             </a>
         </div>
-
         {% elif not project.repo_url %}
-
         <div class="mb-3 border border-warning bg-warning/10 p-3">
             <div class="font-bold text-warning">VRO repository not linked</div>
 
@@ -113,7 +107,6 @@
                 Open project settings
             </a>
         </div>
-
         {% elif project.time_logged < 60 %}
         <div class="mb-3 border border-warning bg-warning/10 p-3">
             <div class="font-bold text-warning">log more time!</div>
@@ -134,7 +127,7 @@
                 class="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-secondary px-3 py-2"
             >
                 <div>
-                    <div class="font-bold">Project journal</div>
+                    <div class="font-bold">Project activity</div>
 
                     <div class="text-xs text-muted-foreground">Devlogs and progress....</div>
                 </div>
@@ -150,8 +143,9 @@
             </div>
 
             <div class="p-2">
-                {% for journal in project.journals.all|dictsortreversed:"created_at" %}
-
+                {% for activity_item in journals %}
+                {% if activity_item.content %} {# bad way to check if activity item is a journal #}
+                {% with activity_item as journal %}
                 <article class="mb-2 border border-border bg-background last:mb-0">
                     <div class="flex flex-wrap items-center gap-2 border-b border-border bg-card px-3 py-2">
                         <div class="min-w-0 flex-1 text-sm">
@@ -208,6 +202,53 @@
                         </c-mdpreview>
                     </div>
                 </article>
+                {% endwith %}
+                {% elif activity_item.t1_status %} {# bad way to check if activity item is a ship #}
+                {% with activity_item as ship %}
+                {% if ship.final_status != 'pending' %}
+                <c-ship-message title="final check complete" status="{{ ship.get_final_status_display }}" :time="ship.final_updated_at">
+                    {{ ship.final_message|default:"no message!"|linebreaksbr }}
+                </c-ship-message>
+                {% endif %}
+                {% if ship.t2_status != 'pending' %}
+                <c-ship-message title="second pass complete" status="{{ ship.get_t2_status_display }}" :time="ship.t2_updated_at">
+                    {{ ship.t2_message|default:"no message!"|linebreaksbr }}
+                </c-ship-message>
+                {% endif %}
+                {% if ship.t1_status != 'pending' %}
+                <c-ship-message title="first pass complete" status="{{ ship.get_t1_status_display }}" :time="ship.t1_updated_at">
+                    {{ ship.t1_message|default:"no message!"|linebreaksbr }}
+                </c-ship-message>
+                {% endif %}
+                <div class="mb-3 border border-success bg-success/10">
+                    <div class="p-2 px-3 border-b border-success flex gap-2">
+                        <span class="font-bold text-success">Project shipped</span>
+                        <span class="mx-1 text-success opacity-50"> • </span>
+                        <span class="text-success opacity-50" title="{{ ship.created_at }}">
+                            {{ ship.created_at|naturaltime }}
+                        </span>
+                    </div>
+                    <div class="p-3">
+                        <div class="mt-1 text-sm text-muted-foreground">This project is now read-only.</div>
+
+                        <div class="mt-2 flex w-full overflow-auto gap-4 items-center justify-center md:justify-start">
+                            <div class="w-24 mb-auto">
+                                <c-project-ship-mark status="{{ ship.t1_status }}" />
+                                <p class="text-center w-full text-sm">first pass</p>
+                            </div>
+                            <div class="w-24 mb-auto">
+                                <c-project-ship-mark status="{{ ship.t2_status }}" />
+                                <p class="text-center w-full text-sm">second pass</p>
+                            </div>
+                            <div class="w-24 mb-auto">
+                                <c-project-ship-mark status="{{ ship.final_status }}" />
+                                <p class="text-center w-full text-sm">final review</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% endif %}
 
                 {% empty %}
 

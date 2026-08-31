@@ -185,13 +185,13 @@ class ProjectShip(models.Model):
 
 
     def latest_status(self):
-        if self.final_status:
+        if self.final_status != 'pending':
             return self.final_status
-        if self.fraud_status:
+        if self.fraud_status != 'pending':
             return self.fraud_status
-        if self.t2_status:
+        if self.t2_status != 'pending':
             return self.t2_status
-        if self.t1_status:
+        if self.t1_status != 'pending':
             return self.t1_status
     
     

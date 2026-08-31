@@ -1,9 +1,9 @@
 {% extends "client/osbase.html" %} {% load static %} {% block body %}
-<main class="h-full w-full bg-gradbg text-foreground p-5 overflow-clip">
+<main class="h-full w-full bg-gradbg text-foreground overflow-clip">
     <img src="{% static 'images/twisted_logo.png' %}" alt=""
         class="fixed inset-0 z-0 bg-[url('static/images/twisted_logo.png')] pointer-events-none select-none my-auto justify-self-center opacity-60 bg-contain bg-scale scale-95 drop-shadow-lg shadow-primary" />
     <div class="relative z-10">
-        <div class="flex flex-col flex-wrap content-start gap-3 w-full h-full overflow-y-hidden">
+        <div class="flex flex-col flex-wrap content-start gap-3 w-full h-full overflow-y-hidden p-5">
             {% if user.profile.is_staff %}
             <div class="font-vintage w-fit cursor-pointer select-none">
                 <a href="{% url 'admin.dash' %}">
@@ -189,7 +189,7 @@
         false,
     );
 
-    function newWindow(title, src, w = 600, h = 600) {
+    function newWindow(title, src, w = 600, h = 600, x=null, y=null) {
         const template = document.getElementById("window-template");
         const container = document.getElementById("windows-container");
         const clone = template.content.cloneNode(true);
@@ -199,9 +199,11 @@
 
         win.querySelector(".title-bar-text").textContent = title;
         win.querySelector(".src-frame").src = src;
+        console.log(x, y);
+        
+        if (x === null) x = Math.random() * (window.innerWidth - w);
+        if (y === null) y = Math.random() * (window.innerHeight - w);
 
-        x = Math.random() * (window.innerWidth - w);
-        y = Math.random() * (window.innerHeight - w);
 
         win.style.left = x + "px";
         win.style.top = y + "px";
@@ -540,5 +542,13 @@
     }
     drawSpectrum();
 </script>
+
+{% if startup_windows %}
+<div id="_startup" class="hidden">
+    {% for window in startup_windows %}
+    <iframe data-href="{{ window.href }}" data-title="{{ window.title }}" onload="console.log('loading...'); newWindow(this.dataset.title, this.dataset.href, 600, 600, 50, 50)"></iframe>
+    {% endfor %}
+</div>
+{% endif %}
 
 {% endblock body %}
