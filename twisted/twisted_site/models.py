@@ -363,7 +363,7 @@ class AuditLog(models.Model):
     post = models.BooleanField()
     pii = models.BooleanField(default=False)
 
-    additional_context = models.JSONField(default={})
+    additional_context = models.JSONField(null=True, default=None)
     
     def __str__(self):
         return f"Audit log for {self.user.profile.slack_username}. PII: {self.pii}"

@@ -27,7 +27,7 @@ class AdminView(View):
             SidebarLink(name="shop", icon="bag-add", text="Shop", href=resolve_url('admin.shop')),
             SidebarLink(name="review", icon="message-new", text="Review", href=resolve_url('admin.review')),
             SidebarLink(name="announcements", icon="important", text="Announcements", href=resolve_url('admin.announcements')),
-            SidebarLink(name="logs", icon="view", text="Audit Logs", href=resolve_url('admin.logs')),
+            SidebarLink(name="logs", icon="view", text="Audit Logs", href=resolve_url('admin.logs')+"?page=1"),
         ]
         context['profile'] = self.request.user.profile
         return context
@@ -42,7 +42,6 @@ class AdminView(View):
             user=request.user,
             path=self.request.get_full_path(),
             post=(request.method.lower() == 'post'),
-            additional_context={}
         )
         response = super().dispatch(request, *args, **kwargs)
         self.audit_log.save()
