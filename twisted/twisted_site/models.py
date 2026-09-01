@@ -355,3 +355,15 @@ class Pathway(models.Model):
     
     def __str__(self):
         return self.name
+
+class AuditLog(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='audit_logs')
+    path = models.CharField(max_length=400)
+    post = models.BooleanField()
+    pii = models.BooleanField(default=False)
+
+    additional_context = models.JSONField(default={})
+    
+    def __str__(self):
+        return f"Audit log for {self.user.profile.slack_username}. PII: {self.pii}"

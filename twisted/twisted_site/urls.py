@@ -38,4 +38,5 @@ urlpatterns = [
     path("admin/shop/", admin.ShopView.as_view(), name="admin.shop"),
     path("admin/review/", admin.ReviewView.as_view(), name="admin.review"),
     path("admin/announcements/", admin.AnnouncementsView.as_view(), name="admin.announcements"),
+    path("admin/logs/", admin.AuditLogsView.as_view(), name="admin.logs"),
 ]

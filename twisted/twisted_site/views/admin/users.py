@@ -36,15 +36,24 @@ class UserDetailView(AdminView):
     def get(self, request, id):
         context = self.get_context_data(page='users', subpage='detail')
         user = User.objects.get(id=id)
+
+        self.audit_log.additional_context['user_pfp__img'] = user.profile.slack_pfp_url
+        self.audit_log.additional_context['user'] = user.profile.slack_username
+        
         context['user'] = user
         context['login_maybe'] = os.environ.get("LOGIN_ENABLED") == 'maybe'
         return TemplateResponse(request, "admin/user.html", context)
     
     def post(self, request, id):
         user = User.objects.get(id=id)
+
+        self.audit_log.additional_context['user_pfp__img'] = user.profile.slack_pfp_url
+        self.audit_log.additional_context['user'] = user.profile.slack_username
+
         if request.POST.get('action') == 'toggle_is_allowed':
             prof = user.profile
             prof.is_allowed = not prof.is_allowed
+            self.audit_log.additional_context['is_allowed'] = f"Set to {prof.is_allowed}"
             prof.save()
             resp = redirect(self.request.path)
             resp["HX-Trigger"] = json.dumps({

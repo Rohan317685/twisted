@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import json
 from typing import Literal
 from django_htmx.http import trigger_client_event
+from ...models import AuditLog
 
 @dataclass
 class SidebarLink:
@@ -19,13 +20,14 @@ class AdminView(View):
         context['page'] = page
         context['subpage'] = subpage
         context["sidebar_links"] = [
-            SidebarLink(name="dashboard", icon="analytics", text="Dashboard", href=resolve_url('admin.dash')),
+            SidebarLink(name="dashboard", icon="analytics", text="Analytics", href=resolve_url('admin.dash')),
             SidebarLink(name="users", icon="profile", text="Users", href=resolve_url('admin.users')),
             SidebarLink(name="pathways", icon="controls", text="Pathways", href=resolve_url('admin.pathways')),
             SidebarLink(name="fulfillment", icon="list", text="Fulfillment", href=resolve_url('admin.fulfillment')),
             SidebarLink(name="shop", icon="bag-add", text="Shop", href=resolve_url('admin.shop')),
-            SidebarLink(name="review", icon="reply", text="Review", href=resolve_url('admin.review')),
+            SidebarLink(name="review", icon="message-new", text="Review", href=resolve_url('admin.review')),
             SidebarLink(name="announcements", icon="important", text="Announcements", href=resolve_url('admin.announcements')),
+            SidebarLink(name="logs", icon="view", text="Audit Logs", href=resolve_url('admin.logs')),
         ]
         context['profile'] = self.request.user.profile
         return context
@@ -36,5 +38,12 @@ class AdminView(View):
             return redirect('homepage')
         if not request.user.profile.is_staff:
             return redirect('dashboard')
+        self.audit_log = AuditLog(
+            user=request.user,
+            path=self.request.get_full_path(),
+            post=(request.method.lower() == 'post'),
+            additional_context={}
+        )
         response = super().dispatch(request, *args, **kwargs)
+        self.audit_log.save()
         return response
