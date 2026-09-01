@@ -25,6 +25,11 @@
                 <div class="size-15 bg-secondary border rounded-md flex items-center justify-center text-3xl">🛣️</div>
                 <span class="block text-center text-sm">Pathways</span>
             </div>
+            <div class="font-vintage w-fit cursor-pointer select-none" data-url="{% url 'fr.referrals' %}"
+                onclick="newWindow('Referrals', this.dataset.url)">
+                <div class="size-15 bg-secondary border rounded-md flex items-center justify-center text-3xl">👥</div>
+                <span class="block text-center text-sm">Referrals</span>
+            </div>
         </div>
 
         <div id="windows-container"></div>
@@ -47,6 +52,9 @@
                                     class="w-16 h-16 rounded-lg object-cover mx-auto mb-1 -mt-12 border-2 border-border shadow-lg" />
                                 <div class="text-absolute-white font-bold text-sm font-vintage">
                                     {{ profile.slack_username|default:user.username }}
+                                </div>
+                                <div class="text-absolute-white text-sm font-vintage">
+                                    {{ profile.twists }} twists
                                 </div>
                             </div>
 

@@ -38,6 +38,11 @@ class Profile(models.Model):
 
     is_staff = models.BooleanField(default=False)
     is_allowed = models.BooleanField(default=False)
+    
+    twists = models.IntegerField(default=0)
+    
+    referred_by = models.ForeignKey('twisted_site.Profile', on_delete=models.PROTECT, null=True, default=None, related_name="referrals")
+    my_referral_code = models.CharField(max_length=200, blank=True, default="")
 
     def shipped_projects(self):
         shipped_projects = []

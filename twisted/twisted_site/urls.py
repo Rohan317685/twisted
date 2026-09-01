@@ -26,6 +26,7 @@ urlpatterns = [
     path("dashboard/frame/projects/<int:id>/journals/new/untracked/", client.NewProjectUntrackedJournal.as_view(), name="fr.projects.journals.new.untracked"),
     path("dashboard/frame/journals/delete/<int:id>/", client.DeleteJournal.as_view(), name="fr.projects.journals.delete"),
     path("dashboard/frame/pathways/", client.PathwaysView.as_view(), name="fr.pathways"),
+    path("dashboard/frame/referrals/", client.ReferralsView.as_view(), name="fr.referrals"),
 
     path("admin/", admin.DashboardView.as_view(), name="admin.dash"),
     path("admin/users/", admin.UsersView.as_view(), name="admin.users"),
