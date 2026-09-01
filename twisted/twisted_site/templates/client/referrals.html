@@ -19,13 +19,16 @@
     </fieldset>
     {% endif %}
 
-    <div class="border border-border m-4">
+    <div class="border border-border m-4 p-2">
         <div>
             <h1 class="text-center font-bold">
                 Your referral URL (case sensitive!)
             </h1>
             <div class="text-center">
                 <a class="text-accent" href="{{ request.scheme }}://{{ request.get_host }}{% url 'homepage' %}?ref={{ profile.my_referral_code }}">{{ request.scheme }}://{{ request.get_host }}{% url 'homepage' %}?ref={{ profile.my_referral_code|default:"error!" }}</a>
+                <div>
+                    For someone to be considered a referral, they must be ID verified and log atleast an hour.
+                </div>
             </div>
         </div>
     </div>
@@ -50,8 +53,33 @@
                         <div class="font-bold">
                             {{ referral.slack_username }}
                         </div>
-                        <div>
-                            YSWS eligible: {{ referral.ysws_eligible|yesno }}
+                        <div class="flex align-middle gap-2">
+                            {% if referral.ysws_eligible %}
+                            <div class="bg-success-foreground border border-success text-success aspect-square h-4 my-auto text-center text-sm">
+                                ✓
+                            </div>
+                            {% else %}
+                            <div class="bg-warning-foreground border border-warning text-warning aspect-square h-4 my-auto text-center text-sm">
+                                ✗
+                            </div>
+                            {% endif %}
+                            <span>
+                                YSWS eligible: {{ referral.ysws_eligible|yesno }}
+                            </span>
+                        </div>
+                        <div class="flex align-middle gap-2">
+                            {% if referral.time_logged > 60 %}
+                            <div class="bg-success-foreground border border-success text-success aspect-square h-4 my-auto text-center text-sm">
+                                ✓
+                            </div>
+                            {% else %}
+                            <div class="bg-warning-foreground border border-warning text-warning aspect-square h-4 my-auto text-center text-sm">
+                                ✗
+                            </div>
+                            {% endif %}
+                            <span>
+                                Time logged: {{ referral.time_logged|minutes_to_hours_minutes }}/1h
+                            </span>
                         </div>
                     </div>
                 </div>
